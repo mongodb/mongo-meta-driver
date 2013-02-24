@@ -1,4 +1,4 @@
 module Mongo
-  module Logging
+  module Loggable
   end
 end
