@@ -1,6 +1,6 @@
 module Mongo
   module ReadPreference
-    class Primary
+    class PrimaryPreferred
 
       def select(cluster)
       end
