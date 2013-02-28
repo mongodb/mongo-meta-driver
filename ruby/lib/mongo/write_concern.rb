@@ -1,4 +1,4 @@
 module Mongo
-  module Logging
+  module WriteConcern
   end
 end
