@@ -2,7 +2,7 @@ $:.unshift(File.join(File.dirname(__FILE__), '..', 'lib'))
 require 'bson'
 require 'test/unit'
 require 'benchmark'
-#require 'ruby-prof'
+require 'ruby-prof'
 
 class BenchTest < Test::Unit::TestCase
 
@@ -187,6 +187,66 @@ class BenchTest < Test::Unit::TestCase
       print_gain(measurement[2], measurement[0])
 
     end
+  end
+
+  def reset_integer_bson_int32?
+    Integer.class_eval <<-EVAL
+      def bson_int32?
+        (MIN_32BIT <= self) && (self <= MAX_32BIT)
+      end
+    EVAL
+  end
+
+  def set_new_integer_bson_int32?
+    Integer.class_eval <<-EVAL
+      @@fixnum_highbits32 = ~((1 << 32) - 1)
+      def bson_int32?
+        (self & @@fixnum_highbits32) == 0
+      end
+    EVAL
+  end
+
+  def test_bson_int32?
+    count = 100_000_000
+    measurement = []
+    Benchmark.bm(@label_width) do |bench|
+
+      reset_integer_bson_int32?
+      measurement << bench.report('Integer#bson_int32? old') do
+        count.times {|i| i.bson_int32? }
+      end
+
+      set_new_integer_bson_int32?
+      measurement << bench.report('Integer#bson_int32? new') do
+        count.times {|i| i.bson_int32? }
+      end
+
+      reset_integer_bson_int32?
+    end
+
+    print_gain(measurement[1], measurement[0])
+  end
+
+  def test_ruby_prof
+    size = 1024
+    hash = Hash[*(0..size).to_a.collect{|i| [ ('a' + i.to_s), i]}.flatten]
+
+    result = nil
+    Benchmark.bm(@label_width) do |bench|
+      bench.report('test ruby prof') do
+
+        RubyProf.start
+        1000.times { hash.to_bson }
+        result = RubyProf.stop
+
+      end
+    end
+
+    File.open('ruby-prof.out', 'w') do |f|
+      RubyProf::FlatPrinter.new(result).print(f)
+      RubyProf::GraphPrinter.new(result).print(f, {})
+    end
+
   end
 
 end
