@@ -22,6 +22,9 @@ consider doc key memo
         string ~ gain: 0.15 (33 --> 28) Xeon
     with safety limit, mutex overhead eats up the benefit
 
+consider Integer#bson_int32? (identified by ruby-prof)
+    native !?!
+
 consider append for
 
     to_bson_time - has native
