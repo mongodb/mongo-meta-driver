@@ -4,5 +4,3 @@ $LOAD_PATH.unshift(File.join(File.dirname(__FILE__), "..", "lib"))
 require "bson"
 require "rspec"
 require "yaml"
-
-Dir["./spec/support/**/*.rb"].each { |file| require file }
