@@ -48,5 +48,5 @@ Additional Resources
 
 - `MongoDB.org <http://mongodb.org/>`_
 - `MongoDB Manual <http://docs.mongodb.org>`_
-- `MongoDB API References <http://api.monogdb.org>`_
+- `MongoDB API References <http://api.mongodb.org>`_
 - `MongoDB Drivers <http://www.mongodb.org/display/DOCS/Drivers>`_
