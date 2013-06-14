@@ -7,31 +7,30 @@ Feature: Serialize Elements
 
   Scenario Outline: Serialize BSON types
     Given a <value_type> value
-    When I serialize the value
-    Then the BSON element should have the BSON type <bson_type>
+    Then the value should correspond to the BSON type <bson_type>
 
     Examples:
       | value_type   | bson_type |
-      | double       | 01        |
-      | string       | 02        |
-      | document     | 03        |
-      | array        | 04        |
-      | binary       | 05        |
-      | undefined    | 06        |
-      | object_id    | 07        |
-      | boolean      | 08        |
-      | datetime     | 09        |
-      | null         | 0A        |
-      | regex        | 0B        |
-      | db_pointer   | 0C        |
-      | code         | 0D        |
-      | symbol       | 0E        |
-      | code_w_scope | 0F        |
-      | int32        | 10        |
-      | timestamp    | 11        |
-      | int64        | 12        |
-      | min_key      | FF        |
-      | max_key      | 7F        |
+      | double       |        01 |
+      | string       |        02 |
+      | document     |        03 |
+      | array        |        04 |
+      | binary       |        05 |
+      | undefined    |        06 |
+      | object_id    |        07 |
+      | boolean      |        08 |
+      | datetime     |        09 |
+      | null         |        0A |
+      | regex        |        0B |
+      | db_pointer   |        0C |
+      | code         |        0D |
+      | symbol       |        0E |
+      | code_w_scope |        0F |
+      | int32        |        10 |
+      | timestamp    |        11 |
+      | int64        |        12 |
+      | min_key      |        FF |
+      | max_key      |        7F |
 
   Scenario Outline: Serialize simple BSON values
     Given a <value_type> value <value>
@@ -83,21 +82,22 @@ Feature: Serialize Elements
     Then the result should be <hex_bytes>
 
     Examples:
-      | value | binary_type | hex_bytes                  |
-      | data  | generic     | 080000000064617461         |
-      | data  | function    | 080000000164617461         |
-      | data  | old         | 0c000000020400000064617461 |
-      | data  | uuid_old    | 080000000364617461         |
-      | data  | uuid        | 080000000464617461         |
-      | data  | md5         | 080000000564617461         |
-      | data  | user        | 080000008064617461         |
+      | value | binary_type | hex_bytes                   |
+      | data  | generic     | 040000000064617461          |
+      | data  | function    | 040000000164617461          |
+      | data  | old         | 08000000020400000064617461  |
+      | data  | uuid_old    | 040000000364617461          |
+      | data  | uuid        | 040000000464617461          |
+      | data  | md5         | 040000000564617461          |
+      | data  | user        | 040000008064617461          |
 
+  # TODO: validate these values. hex_bytes is just the serializer output...
   Scenario Outline: Serialize code values
     Given a code value <code> with scope <scope>
     When I serialize the value
     Then the result should be <hex_bytes>
 
     Examples:
-      | code         | scope     | hex_bytes |
-      | function(){} |           |           |
-      | function(){} | {:a => 1} |           |
+      | code         | scope     | hex_bytes                                                              |
+      | function(){} |           | 0e00000066756e6374696f6e2829207b7d00                                   |
+      | function(){} | {:a => 1} | 230000000e00000066756e6374696f6e2829207b7d000c000000106100010000000000 |

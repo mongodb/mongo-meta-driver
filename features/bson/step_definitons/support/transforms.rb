@@ -1,23 +1,25 @@
 RUBY_TRANSFORM = {
-  :double       => lambda {|arg| arg.to_f            },
-  :string       => lambda {|arg| arg.to_s            },
-  :hash         => lambda {|arg| Hash[arg]           },
-  :undefined    => lambda {|arg| BSON::Undefined     },
-  :object_id    => lambda {|arg| BSON::ObjectId.new  },
-  :true         => lambda {|arg| true                },
-  :false        => lambda {|arg| false               },
-  :datetime     => lambda {|arg| Time.new(arg)       },
-  :null         => lambda {|arg| nil                 },
-  :regex        => lambda {|arg| /#{arg}/            },
-  :db_pointer   => lambda {|arg| DBPointer.new       },
-  :code         => lambda {|arg| Code.new(arg)       },
-  :symbol       => lambda {|arg| arg.to_sym          },
-  :code_w_scope => lambda {|arg| Code.new(arg)       },
-  :int32        => lambda {|arg| arg.to_i            },
-  :timestamp    => lambda {|arg| BSON::Timestamp.new },
-  :int64        => lambda {|arg| arg.to_i            },
-  :min_key      => lambda {|arg| BSON::MinkKey       },
-  :max_key      => lambda {|arg| BSON::MaxKey        }
+  :double       => lambda {|arg| arg.to_f                 },
+  :string       => lambda {|arg| arg.to_s                 },
+  :hash         => lambda {|arg| Hash[arg]                },
+  :undefined    => lambda {|arg| BSON::Undefined          },
+  :object_id    => lambda {|arg| BSON::ObjectId.new       },
+  :true         => lambda {|arg| true                     },
+  :false        => lambda {|arg| false                    },
+  :datetime     => lambda {|arg| Time.new(arg)            },
+  :null         => lambda {|arg| nil                      },
+  :regex        => lambda {|arg| /#{arg}/                 },
+  # TODO - handle this better?
+  :db_pointer   => lambda {|arg| lambda {true}            },
+  :code         => lambda {|arg| Code.new(arg)            },
+  :symbol       => lambda {|arg| arg.to_sym               },
+  # TODO - what about scope?
+  :code_w_scope => lambda {|arg| CodeWithScope.new(arg)   },
+  :int32        => lambda {|arg| arg.to_i                 },
+  :timestamp    => lambda {|arg| BSON::Timestamp.new      },
+  :int64        => lambda {|arg| arg.to_i                 },
+  :min_key      => lambda {|arg| BSON::MinkKey            },
+  :max_key      => lambda {|arg| BSON::MaxKey             }
 }
 
 Transform /^double value(?: (-?\d+\.?\d+))?$/ do |double|
@@ -46,7 +48,12 @@ Transform /^undefined value(?: (\S+))?$/ do |undefined|
 end
 
 Transform /^object_id value(?: (\S+))?$/ do |obj_id|
-  BSON::ObjectId.from_string(obj_id)
+  begin
+    oid = BSON::ObjectId.from_string(obj_id)
+  rescue BSON::ObjectId::Invalid
+    oid = BSON::ObjectId.from_string("50d3409d82cb8a4fc7000001")
+  end
+  oid
 end
 
 Transform /^boolean value(?: (\S+))?$/ do |boolean|
@@ -66,19 +73,26 @@ Transform /^symbol value(?: (\S+))?$/ do |symbol|
 end
 
 Transform /^code_w_scope value(?: (\S+))?$/ do |code|
-  BSON::Code.new(code.to_s, {:a => 1})
+  BSON::CodeWithScope.new(code.to_s, {:a => 1})
 end
 
 Transform /^regex value(?: (\S+))?$/ do |regex|
   /#{regex}/
 end
 
+# deprecated. we use a lambda so it doesn't conflict with other things
+# (we don't have too many other options. kind of a gross hack)
 Transform /^db_pointer value(?: (\S+))?$/ do |db_pointer|
-  BSON::DBPointer.new("a.b", BSON::ObjectId.new("50d3409d82cb8a4fc7000001"))
+  lambda {true}
 end
 
-Transform /^code value(?: (\S+))?$/ do |code|
-  BSON::Code.new(code.to_s)
+Transform /^code value(?: (\S+)(?: with scope (\S+))?)?$/ do |code, scope|
+  puts "\n\n\nTHIS CASE\n\n\n"
+  if scope == ""
+    BSON::Code.new(code.to_s)
+  else
+    BSON::CodeWithScope.new(code.to_s, scope.to_s)
+  end
 end
 
 Transform /^symbol value(?: (\S+))?$/ do |symbol|
@@ -105,8 +119,8 @@ Transform /^max_key value(?: (\S+))?$/ do |max_key|
   BSON::MaxKey
 end
 
-Transform /^BSON type (\S+)$/ do |type|
-  [type].pack("H*")
+Transform /^BSON type (\S+)$/ do |type_code|
+  [type_code].pack("H*")
 end
 
 Transform /^table:value_type,value$/ do |table|
@@ -133,5 +147,5 @@ Transform /^table:bson_type,e_name,value$/ do |table|
     bson
   end
   bson << "\x00"
-  [[bson.bytesize + 4].pack(BSON::INT32_PACK), bson].join
+  [[bson.bytesize + 4].pack(BSON::Int32::PACK), bson].join
 end
