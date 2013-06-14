@@ -92,12 +92,14 @@ Feature: Serialize Elements
       | data  | user        | 040000008064617461          |
 
   # TODO: validate these values. hex_bytes is just the serializer output...
+  # TODO: don't use eval() to read in scope...
   Scenario Outline: Serialize code values
     Given a code value <code> with scope <scope>
     When I serialize the value
     Then the result should be <hex_bytes>
 
     Examples:
-      | code         | scope     | hex_bytes                                                              |
-      | function(){} |           | 0e00000066756e6374696f6e2829207b7d00                                   |
-      | function(){} | {:a => 1} | 230000000e00000066756e6374696f6e2829207b7d000c000000106100010000000000 |
+      | code         | scope     | hex_bytes                                                            |
+      | function(){} |           | 0d00000066756e6374696f6e28297b7d00                                   |
+      | function(){} | {:a => 1} | 220000000d00000066756e6374696f6e28297b7d000c000000106100010000000000 |
+

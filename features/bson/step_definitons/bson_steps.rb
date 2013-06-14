@@ -24,7 +24,7 @@ Then /^the result should be the ((?:\S+) value (?:\S+))$/ do |value|
 end
 
 Given /^a (\S+ value(?: .*)?)$/ do |value|
-  puts "\n\n\nVALUE IS\n\n\n"
+  puts "\n\n\nVALUE IS\ #{value}n\n\n"
   @value = value
 end
 

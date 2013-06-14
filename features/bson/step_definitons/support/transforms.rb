@@ -72,6 +72,7 @@ Transform /^symbol value(?: (\S+))?$/ do |symbol|
   symbol.to_sym
 end
 
+# probably unneeded; see the "code value" case, which is more readable
 Transform /^code_w_scope value(?: (\S+))?$/ do |code|
   BSON::CodeWithScope.new(code.to_s, {:a => 1})
 end
@@ -80,18 +81,19 @@ Transform /^regex value(?: (\S+))?$/ do |regex|
   /#{regex}/
 end
 
-# deprecated. we use a lambda so it doesn't conflict with other things
+# db_pointer is deprecated, and not supported by this implementation.
+# we use a lambda so it doesn't conflict with other things
 # (we don't have too many other options. kind of a gross hack)
 Transform /^db_pointer value(?: (\S+))?$/ do |db_pointer|
   lambda {true}
 end
 
-Transform /^code value(?: (\S+)(?: with scope (\S+))?)?$/ do |code, scope|
-  puts "\n\n\nTHIS CASE\n\n\n"
-  if scope == ""
+# TODO: make this not use an eval.
+Transform /^code value(?: (\S+)(?: with scope (.+)?)?)?.*$/ do |code, scope|
+  if scope.nil?
     BSON::Code.new(code.to_s)
   else
-    BSON::CodeWithScope.new(code.to_s, scope.to_s)
+    BSON::CodeWithScope.new(code.to_s, eval(scope.to_s))
   end
 end
 
