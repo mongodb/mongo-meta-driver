@@ -24,7 +24,6 @@ Then /^the result should be the ((?:\S+) value (?:\S+))$/ do |value|
 end
 
 Given /^a (\S+ value(?: .*)?)$/ do |value|
-  puts "\n\n\nVALUE IS\ #{value}n\n\n"
   @value = value
 end
 
@@ -32,8 +31,8 @@ When /^I serialize the value$/ do
   @bson = @value.to_bson
 end
 
+# unneeded?
 Then /^the BSON element should have the (BSON type \S+)$/ do |type|
-  #p @bson
   pending
 end
 
