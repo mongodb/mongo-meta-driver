@@ -1,9 +1,11 @@
 # language: en
+# see deserialize.feature; the two should be kept in sync
+# as much as is possible/makes sense
 @bson
 Feature: Serialize Elements 
   As a user of MongoDB
   In order to store data in the database
-  The driver needs to serialize bson elements
+  The driver needs to serialize BSON elements
 
   Scenario Outline: Serialize BSON types
     Given a <value_type> value
@@ -57,7 +59,7 @@ Feature: Serialize Elements
       | string | string     | test  |
       | int32  | int32      | 1234  |
     When I serialize the value
-    Then the result should be the bson document:
+    Then the result should be the BSON document:
       | bson_type | e_name | value              |
       | 01        | double | 1f85eb51b81e0940   |
       | 02        | string | 050000007465737400 |
@@ -70,7 +72,7 @@ Feature: Serialize Elements
       | string     | test  |
       | int32      | 1234  |
     When I serialize the value
-    Then the result should be the bson document:
+    Then the result should be the BSON document:
       | bson_type | e_name | value              |
       | 01        | 0      | 1f85eb51b81e0940   |
       | 02        | 1      | 050000007465737400 |
@@ -92,7 +94,7 @@ Feature: Serialize Elements
       | data  | user        | 040000008064617461          |
 
   # TODO: validate these values. hex_bytes is just the serializer output...
-  # TODO: don't use eval() to read in scope...
+  # TODO: don't use eval() to read in scope, if possible...
   Scenario Outline: Serialize code values
     Given a code value <code> with scope <scope>
     When I serialize the value
@@ -102,4 +104,5 @@ Feature: Serialize Elements
       | code         | scope     | hex_bytes                                                            |
       | function(){} |           | 0d00000066756e6374696f6e28297b7d00                                   |
       | function(){} | {:a => 1} | 220000000d00000066756e6374696f6e28297b7d000c000000106100010000000000 |
+
 

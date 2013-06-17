@@ -125,6 +125,10 @@ Transform /^BSON type (\S+)$/ do |type_code|
   [type_code].pack("H*")
 end
 
+Transform /^BSON value (\S+)$/ do |bson|
+  StringIO.new(bson)
+end
+
 Transform /^table:value_type,value$/ do |table|
   table.map_headers! { |header| header.downcase.to_sym }
   table.hashes.map do |hash|
@@ -151,3 +155,4 @@ Transform /^table:bson_type,e_name,value$/ do |table|
   bson << "\x00"
   [[bson.bytesize + 4].pack(BSON::Int32::PACK), bson].join
 end
+

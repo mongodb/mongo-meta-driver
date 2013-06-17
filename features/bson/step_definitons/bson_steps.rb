@@ -1,4 +1,4 @@
-# TODO: look in serialize.feature for <value_type>
+# TODO: look in serialize.featur2e for <value_type>
 Given /^a document containing a ((?:\S+) value (?:.+))$/ do |value|
   @doc = {:k => value}
 end
@@ -31,6 +31,14 @@ When /^I serialize the value$/ do
   @bson = @value.to_bson
 end
 
+# deserializing a value isn't so simple
+# since we need its type
+When /^I deserialize the value$/ do
+  @deserialized = Hash.from_bson(@value)
+  p @deserialized
+  raise "STOOOOOOP"
+end
+
 # unneeded?
 Then /^the BSON element should have the (BSON type \S+)$/ do |type|
   pending
@@ -39,7 +47,7 @@ end
 Then /^the value should correspond to the (BSON type \S+)$/ do |type|
   if @value.class == Proc
     # How we handle deprecated things (like DB pointers). Hacky.
-    @value.call # ought to return true
+    @value.call # ideally, defined to return something meaningful
     
   elsif @value.respond_to? :bson_type
     # the typical case
@@ -57,7 +65,18 @@ Given /^a (?:\S+) with the following items:$/ do |obj|
   @value = obj
 end
 
+Given /^the following BSON document:$/ do |doc|
+  @value = doc
+end
+
 Then /^the result should be the bson document:$/ do |doc|
   @bson.should == doc
 end
 
+Then /^the result should be the array:$/ do |array|
+  @deserialized.should == array
+end
+
+Then /^the BSON type should correspond to the (value type \S+)$/ do |type|
+  type.should == BSON::Registry.get(@value)
+end
