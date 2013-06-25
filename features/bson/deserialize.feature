@@ -35,35 +35,34 @@ Feature: Deserialize Elements
       | min_key      |        FF |
       | max_key      |        7F |
 
-  Scenario Outline: Deserialize simple BSON values
-    Given a BSON value <hex_bytes>
-    When I deserialize the value
-    Then the result should be <value>
-    And the result should have type <value_type>
+  # TODO: make this less unwieldy by using transforms?
+  Scenario Outline: Deserialize singleton BSON objects
+    Given an IO stream containing <hex_bytes>
+    When I deserialize the stream
+    Then the result should be the <type> value <value>
 
-   # copied from serialize.feature
     Examples:
-      | value_type | value                    |                hex_bytes |
-      | double     | 3.1459                   |         26e4839ecd2a0940 |
-      | string     | test                     |       050000007465737400 |
-      | object_id  | 50d3409d82cb8a4fc7000001 | 50d3409d82cb8a4fc7000001 |
-      | boolean    | false                    |                       00 |
-      | boolean     | true                     |                       01 |
-      | datetime   | 946702800                |         8054e26bdc000000 |
-      | regex      | regex                    |           72656765780000 |
-      | symbol     | symbol                   |   0700000073796d626f6c00 |
-      | int64      | 2147483648               |         0000008000000000 |
-      | int32      | 12345                    |                 39300000 |
+    | hex_bytes                                | type      | value                    |
+    | 10000000016b0026e4839ecd2a094000         | double    | 3.1459                   |
+    | 11000000026b0005000000746573740000       | string    | test                     |
+    | 14000000076b0050d3409d82cb8a4fc700000100 | object_id | 50d3409d82cb8a4fc7000001 |
+    | 09000000086b000000                       | boolean   | false                    |
+    | 09000000086b000100                       | boolean   | true                     |
+    | 10000000096b008054e26bdc00000000         | datetime  | 946702800                |
+    | 0f0000000b6b007265676578000000           | regex     | regex                    |
+    | 130000000e6b000700000073796d626f6c0000   | symbol    | symbol                   |
+    | 10000000126b00000000800000000000         | int64     | 2147483648               |
+    | 0c000000106b003930000000                 | int32     | 12345                    |
 
   # adapted from serialize.feature
   Scenario: Deserialize hash value
-    Given the following BSON document:
+    Given an IO stream containing the following BSON document:
     | bson_type | e_name | value              |
     |        01 | double | 1f85eb51b81e0940   |
     |        02 | string | 050000007465737400 |
     |        10 | int32  | d2040000           |
-    When I deserialize the value
-    Then the result should be the hash:
+    When I deserialize the stream
+    Then the result should be the following hash:
     | key    | value_type | value |
     | double | double     | 3.14  |
     | string | string     | test  |
@@ -71,13 +70,13 @@ Feature: Deserialize Elements
 
     # adapted from serialize.feature
     Scenario: Deserialize array value
-      Given the following BSON document:
+      Given an IO stream containing the following BSON document:
       | bson_type | e_name | value              |
       | 01        | 0      | 1f85eb51b81e0940   |
       | 02        | 1      | 050000007465737400 |
       | 10        | 2      | d2040000           |
-      When I deserialize the value
-      Then the result should be the array:
+      When I deserialize the stream
+      Then the result should be a hash corresponding to the following array:
       | value_type | value |
       | double     | 3.14  |
       | string     | test  |
@@ -85,30 +84,27 @@ Feature: Deserialize Elements
 
       # adapted from serialize.feature
       Scenario Outline: Deserialize binary values
-        Given a BSON value <hex_bytes>
-        When I serialize the value
-        Then the result should be <value>
-        And the result should have type <binary_type>
+        Given an IO stream containing <hex_bytes>
+        When I deserialize the stream
+        Then the result should be the binary value <value> with binary type <binary_type>
 
         Examples:
-        | value | binary_type | hex_bytes                   |
-        | data  | generic     | 040000000064617461          |
-        | data  | function    | 040000000164617461          |
-        | data  | old         | 08000000020400000064617461  |
-        | data  | uuid_old    | 040000000364617461          |
-        | data  | uuid        | 040000000464617461          |
-        | data  | md5         | 040000000564617461          |
-        | data  | user        | 040000008064617461          |
+        | value | binary_type | hex_bytes                                  |
+        | data  | generic     | 11000000056b0004000000006461746100         |
+        | data  | function    | 11000000056b0004000000016461746100         |
+        | data  | old         | 15000000056b000800000002040000006461746100 |
+        | data  | uuid_old    | 11000000056b0004000000036461746100         |
+        | data  | uuid        | 11000000056b0004000000046461746100         |
+        | data  | md5         | 11000000056b0004000000056461746100         |
+        | data  | user        | 11000000056b0004000000806461746100         |
 
 
-      Scenario: Test serialized code execution
-        Given a code value "function f(){return (1 + 2);} f()"
-        When I serialize the value
-        And I run the serialized code
-        Then the code should return 3
+      Scenario Outline: Deserialize code
+        Given an IO stream containing <hex_bytes>
+        When I deserialize the stream
+        Then the result should be a code value "<code>" with scope <scope>
 
-      Scenario: Test code execution with scope
-        Given a code value "function f(){return (1 + a);} f()" with scope {:a => 1}
-        When I serialize the value
-        And I run the serialized code
-        Then the code should return 2
+        Examples:
+        | hex_bytes                                                                          | code         | scope      |
+        | 190000000d6b000d00000066756e6374696f6e28297b7d0000                                 | function(){} |            |
+        | 290000000f6b00210000000d00000066756e6374696f6e28297b7d000c000000106100010000000000 | function(){} | {'a' => 1} |

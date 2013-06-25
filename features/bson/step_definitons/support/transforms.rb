@@ -10,7 +10,7 @@ RUBY_TRANSFORM = {
   :null         => lambda {|arg| nil                      },
   :regex        => lambda {|arg| /#{arg}/                 },
   # TODO - handle this better?
-  :db_pointer   => lambda {|arg| lambda {true}            },
+  :db_pointer   => lambda {|arg| lambda{nil}              },
   :code         => lambda {|arg| Code.new(arg)            },
   :symbol       => lambda {|arg| arg.to_sym               },
   # TODO - what about scope?
@@ -20,6 +20,29 @@ RUBY_TRANSFORM = {
   :int64        => lambda {|arg| arg.to_i                 },
   :min_key      => lambda {|arg| BSON::MinkKey            },
   :max_key      => lambda {|arg| BSON::MaxKey             }
+}
+
+BSON_TO_RUBY_TYPE = {
+  :double => Float,
+  :string => String,
+  :document => Hash,
+  :array => Array,
+  :binary => BSON::Binary,
+  :undefined => BSON::Undefined,
+  :object_id => BSON::ObjectId,
+  :boolean => BSON::Boolean,
+  :datetime => Time,
+  :null => NilClass,
+  :regex => Regexp,
+  :db_pointer => nil,
+  :code => BSON::Code,
+  :symbol => Symbol,
+  :code_w_scope => BSON::CodeWithScope,
+  :int32 => BSON::Int32,
+  :timestamp => BSON::Timestamp,
+  :int64 => BSON::Int64,
+  :min_key => BSON::MinKey,
+  :max_key => BSON::MaxKey
 }
 
 Transform /^double value(?: (-?\d+\.?\d+))?$/ do |double|
@@ -40,6 +63,7 @@ end
 
 Transform /^binary value(?: (\S+)(?: with binary type (\S+))?)?$/ do |binary, type|
   type = type ? type.to_sym : type
+  puts "\nbinary transform\n"
   BSON::Binary.new(binary.to_s.strip, type)
 end
 
@@ -89,7 +113,9 @@ Transform /^db_pointer value(?: (\S+))?$/ do |db_pointer|
 end
 
 # TODO: make this not use an eval.
-Transform /^code value(?: (\S+)(?: with scope (.+)?)?)?.*$/ do |code, scope|
+# TODO: change delimeter from " to something that won't appear in js code
+Transform /^code value(?: \"(.+)\"(?: with scope (.+)?)?)?.*$/ do |code, scope|
+  puts "\nCODE: #{code} SCOPE: #{scope}\n\n"
   if scope.nil?
     BSON::Code.new(code.to_s)
   else
@@ -121,12 +147,20 @@ Transform /^max_key value(?: (\S+))?$/ do |max_key|
   BSON::MaxKey
 end
 
-Transform /^BSON type (\S+)$/ do |type_code|
-  [type_code].pack("H*")
+Transform /^value type (\S+)$/ do |type|
+  BSON_TO_RUBY_TYPE.fetch(type.to_sym)
 end
 
-Transform /^BSON value (\S+)$/ do |bson|
-  StringIO.new(bson)
+ #based on the transforms below
+ Transform /^BSON value (\S+) with BSON type (\S+)$/ do |value, bson_type|
+  bson = String.new
+  bson << [bson_type].pack("H*")
+  bson << bson_type
+  bson << "example".to_bson_cstring
+  bson << [value].pack("H*")
+  bson << "\x00"
+  # unsure what this does exactly. pad?
+  StringIO.new([[bson.bytesize + 4].pack(BSON::Int32::PACK), bson].join)
 end
 
 Transform /^table:value_type,value$/ do |table|
