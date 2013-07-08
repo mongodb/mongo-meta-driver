@@ -1,0 +1,3 @@
+[submodule "bson-ruby"]
+	path = bson-ruby
+	url = git://github.com/mongodb/bson-ruby.git
