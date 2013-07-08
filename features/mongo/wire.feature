@@ -77,7 +77,7 @@ Feature: Creating commands for database
       | num_to_return | cursor_id | message                                                                                  |
       | 10            | 5         | 2c000000d204000000000000d5070000000000006d7964622e6d79636f6c6c000a0000000500000000000000 |
 
-  Scenario Outline: Generating OP_DELETE messsages (deleting documents)
+  Scenario Outline: Generating OP_DELETE messages (deleting documents)
     Given I am generating an OP_DELETE message
     And I am selecting documents to delete by the document <selector>
     And I am <multiple_remove> permitting removal of multiple documents
