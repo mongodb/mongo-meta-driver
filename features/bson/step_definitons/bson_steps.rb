@@ -13,7 +13,6 @@ end
 
 When /^I deserialize the stream$/ do
   @document = Hash.from_bson(@io)
-  puts "produced the document #{@document.inspect}"
 end
 
 Then /^the result should be ([0-9a-fA-F]+)$/ do |hex_bytes|
@@ -89,7 +88,6 @@ Then /^the result should be the BSON document:$/ do |doc|
 end
 
 Then /^the result should be a (code value .*)$/ do |code|
-  puts "comparing code #{code.inspect} against doccode #{@document['k'].inspect}"
   doccode = @document['k']
   doccode.javascript.should == code.javascript
   if code.class == BSON::CodeWithScope || doccode.class == BSON::CodeWithScope

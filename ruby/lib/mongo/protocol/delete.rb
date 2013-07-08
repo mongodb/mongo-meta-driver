@@ -1,3 +1,4 @@
+
 module Mongo
   module Protocol
     class Delete

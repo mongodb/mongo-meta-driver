@@ -18,7 +18,7 @@ RUBY_TRANSFORM = {
   :int32        => lambda {|arg| arg.to_i                 },
   :timestamp    => lambda {|arg| BSON::Timestamp.new      },
   :int64        => lambda {|arg| arg.to_i                 },
-  :min_key      => lambda {|arg| BSON::MinkKey            },
+  :min_key      => lambda {|arg| BSON::MinKey             },
   :max_key      => lambda {|arg| BSON::MaxKey             }
 }
 
@@ -63,7 +63,6 @@ end
 
 Transform /^binary value(?: (\S+)(?: with binary type (\S+))?)?$/ do |binary, type|
   type = type ? type.to_sym : type
-  puts "\nbinary transform\n"
   BSON::Binary.new(binary.to_s.strip, type)
 end
 
@@ -115,7 +114,6 @@ end
 # TODO: make this not use an eval.
 # TODO: change delimeter from " to something that won't appear in js code
 Transform /^code value(?: \"(.+)\"(?: with scope (.+)?)?)?.*$/ do |code, scope|
-  puts "\nCODE: #{code} SCOPE: #{scope}\n\n"
   if scope.nil?
     BSON::Code.new(code.to_s)
   else
@@ -152,7 +150,7 @@ Transform /^value type (\S+)$/ do |type|
 end
 
  #based on the transforms below
- Transform /^BSON value (\S+) with BSON type (\S+)$/ do |value, bson_type|
+Transform /^BSON value (\S+) with BSON type (\S+)$/ do |value, bson_type|
   bson = String.new
   bson << [bson_type].pack("H*")
   bson << bson_type

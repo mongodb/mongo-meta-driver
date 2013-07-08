@@ -12,26 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-#require "mongo/environment"
+# Base file for MongoDB wire protocol
+
 require "bson"
 
-# The core namespace for the client-facing sections of the driver
-#
-# TODO: add an @since
-module Mongo
-  # constants
-end
-
-require "wire"
-#require "mongo/protocol"
-# require "mongo/client"
-# require "mongo/cluster"
-# require "mongo/collection"
-#require "mongo/cursor"
-
-# require "mongo/database"
-# require "mongo/node"
-# require "mongo/pool"
-
-# load relevant extensions?
-
+require "wire/element"
+require "wire/message"
+require "wire/header"
+require "wire/update"
+require "wire/insert"
+require "wire/query"
+require "wire/getmore"
+require "wire/delete"
+require "wire/killcursors"
+require "wire/reply"
