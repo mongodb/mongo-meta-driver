@@ -8,6 +8,10 @@ Given /^a valid port (\d+)$/ do
   pending
 end
 
+Given /^a MongoDB instance has been launched on host (\S+)$/ do |host|
+  @remote_host = host
+  @remote_port = 27107
+end
 Given /^a MongoDB instance has been launched on host (\S+) at port (\d+)$/ do |host, port|
   @remote_host = host
   @remote_port = port
