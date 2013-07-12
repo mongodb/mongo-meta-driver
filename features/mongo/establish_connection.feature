@@ -11,36 +11,38 @@ Feature: Establish Connection
     Given a MongoDB instance has been launched on host 127.0.0.1 at port 27017
 
   Scenario: Successfully connecting with a host using a hostname (default port)
-    When I request a connection to MongoDB with hostname 127.0.0.1
-    Then I will receive a connected client to the instance running on host <host_name> at port 27017
+    Given the hostname 127.0.0.1
+    When I request a connection to MongoDB with that hostname
+    Then I will receive a connected client to the MongoDB instance running on host 127.0.0.1 at port 27017
 
   Scenario: Successfully connecting with a host using a hostname and port
-    Given a valid hostname 127.0.0.1
-    And a valid port 27017
-    When I request a connection to MongoDB with hostname 127.0.0.1 at port 27017
-    Then I will receive a connected client to the MongoDB instance on host 127.0.0.1 at port 27017
+    Given the hostname 127.0.0.1
+    And the port 27017
+    When I request a connection to MongoDB with that hostname and port
+    Then I will receive a connected client to the MongoDB instance running on host 127.0.0.1 at port 27017
 
-  # TODO - distinguish between different cases of unacceptable hostnames/ports?
-  Scenario: Failing to establish a connection because of invalid hostname
-    Given an invalid hostname %@$.com
-    And a valid port 27017
-    When I request a connection with hostname MongoDB on %@$.com
-    Then I will receive an error message stating that hostname %@$.com is invalid
+  # TODO - distinguish between different cases of unacceptable hostnames/ports, or failed connections generally?
+  Scenario: Failing to establish a connection because host does not exist
+    Given the hostname example.com
+    And the port 27017
+    When I request a connection to MongoDB with that hostname and port
+    Then I will receive an error message stating that the connection failed
     And I will not receive a client
-    
+
   Scenario: Failing to establish a connection because of invalid port
-    Given a valid hostname 127.0.0.1
-    And an invalid port -5
-    When I request a connection to MongoDB with hostname 127.0.0.1 at port -5
-    Then I will receive an error message stating that port -5 is invalid
+    Given the hostname 127.0.0.1
+    And the port -5
+    When I request a connection to MongoDB with that hostname and port
+    Then I will receive an error message stating that the connection failed
     And I will not receive a client
-
-  Scenario: Failing to establish a connection because the connection is refused
-    Given a valid hostname 127.0.0.1
-    And a valid port 27017
-    But there is no MongoDB instance running on host 127.0.0.1 at port 27017
-    Then I will receive an error message stating that the connection to host 127.0.0.1 at port 27017 was refused
-    And I will not receive a client
+#
+#  Scenario: Failing to establish a connection because the connection is refused
+#    Given the hostname 127.0.0.1
+#    And the port 27017
+#    But there is no MongoDB instance running on host 127.0.0.1 at port 27017
+#    When I request a connection to MongoDB with that hostname and port
+#    Then I will receive an error message stating that the connection to host 127.0.0.1 at port 27017 was refused
+#    And I will not receive a client
 
   #Scenario Outline: Failing to establish a connection because of invalid credentials
   #  Given a valid hostname <host_name> and port <port>

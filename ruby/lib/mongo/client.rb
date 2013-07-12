@@ -12,39 +12,52 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-require "mongo"
-
-
 # Represents a connection to a MongoDB instance
 #
 # TODO: add an @since
+require 'socket'
+require 'wire'
+require 'timeout'
 module Mongo
   class Client
     # describe connection
-    class ConnHandle
-      def initialize(hostname, port)
-        if not hostname.nil? and not port.nil?
-          @valid = true
-        else
-          @valid = false
-        end
-      end
-      def is_valid?
-        @valid
-      end
-    end
+    attr_reader :hostname, :port, :socket, :error
 
-    attr_accessor :hostname
-    attr_accessor :port
-    
+    CONN_TIMEOUT_SEC = 5
+
     def initialize(hostname, port)
+      @connected = false
+      if hostname.nil? or port.nil?
+        raise ArgumentError.new('Hostname and port cannot be nil')
+      end
       @hostname = hostname
       @port = port
-      @conn = ConnHandle.new(hostname, port)
+
+      # ensure socket does not hang forever
+      begin
+        @socket = timeout(CONN_TIMEOUT_SEC) do
+          TCPSocket.new(@hostname, @port)
+        end
+      rescue
+        @socket = nil
+        @error = 'Connection failed.' # TODO add a reason
+      end
+
+      @connected = true
     end
-    
+
     def connected?
-      @conn.is_valid?
+      @connected
+    end
+
+    # TODO: have a validation function to check socket connectedness
+
+    def get_db(dbname)
+      Database.new(@socket, dbname)
+    end
+
+    def [] (dbname)
+      get_db dbname
     end
   end
 end
