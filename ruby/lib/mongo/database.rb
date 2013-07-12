@@ -12,20 +12,45 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# TODO: properly memoize everything to avoid excess object creation
 # Represents a database on a connected MongoDB instance
 #
 require 'socket'
 require 'wire'
 module Mongo
-  class Database
-    attr_reader :dbname, :socket
+  class Client
+    class Database
+      attr_reader :name, :error
 
-    def get_coll(collname)
-      Collection.new(@socket, collname)
-    end
+      # should only be called from client
+      def initialize(dbname, socket, client)
+        @valid = false
+        @name = dbname
+        @socket = socket
+        @client = client
+        if @client.valid?
+          @valid = true
+        else
+          @error = "Failed to get database #{@name} because invalid client was given."
+        end
+      end
 
-    def [] (collname)
-      get_coll collname
+      def get_coll(collname)
+        Collection.new(@socket, collname)
+      end
+
+      def [] (collname)
+        get_coll collname
+      end
+
+      # check whether this is a db on the given client object
+      def is_on_client?(client)
+        @client.equal? client
+      end
+
+      def valid?
+        @valid
+      end
     end
   end
 end

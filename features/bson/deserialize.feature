@@ -1,7 +1,7 @@
 # language: en
 # see serialize.feature; the two should be kept in sync
 # as much as is possible/makes sense
-@bson
+@mongo @bson
 Feature: Deserialize Elements
   As a user of MongoDB
   In order to retreive data from the database

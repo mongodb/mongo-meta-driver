@@ -13,7 +13,8 @@
 # limitations under the License.
 
 #require "mongo/environment"
-require "bson"
+$:.unshift(File.dirname(__FILE__))
+require 'bson'
 
 # The core namespace for the client-facing sections of the driver
 #
@@ -22,10 +23,11 @@ module Mongo
   # constants
 end
 
-require "wire"
+require 'mongo/wire'
+require 'mongo/client'
+require 'mongo/database'
 #require "mongo/protocol"
-# require "mongo/client"
-# require "mongo/cluster"
+# # require "mongo/cluster"
 # require "mongo/collection"
 #require "mongo/cursor"
 

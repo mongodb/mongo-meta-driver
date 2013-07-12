@@ -1,7 +1,7 @@
 # language: en
 # NB: example messages are taken from the production Ruby driver.
 # I have tried to double-check some against the Python driver as well.
-@wire
+@mongo @wire
 Feature: Creating commands for database
   As a user of MongoDB
   In order to communicate with MongoDB

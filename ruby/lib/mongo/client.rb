@@ -21,39 +21,47 @@ require 'timeout'
 module Mongo
   class Client
     # describe connection
-    attr_reader :hostname, :port, :socket, :error
+    attr_reader :hostname, :port, :error
 
-    CONN_TIMEOUT_SEC = 5
+    DEFAULT_CONN_TIMEOUT = 5
+    DEFAULT_PORT=27017
 
-    def initialize(hostname, port)
-      @connected = false
-      if hostname.nil? or port.nil?
-        raise ArgumentError.new('Hostname and port cannot be nil')
+    # opts is a hash containing extra options, including
+    # port: which tcp port to connect to
+    # timeout: float, number of seconds to wait before giving up on socket connection
+    def initialize(hostname, opts={})
+      @valid = false
+      if hostname.nil?
+        raise ArgumentError.new('Hostname cannot be nil')
       end
       @hostname = hostname
-      @port = port
 
-      # ensure socket does not hang forever
+      @port = opts[:port]
+      @port ||= DEFAULT_PORT
+
+      # ensure connection attempt does not hang for too long
+      timeout = opts[:timeout]
+      timeout ||= DEFAULT_CONN_TIMEOUT
       begin
-        @socket = timeout(CONN_TIMEOUT_SEC) do
+        @socket = timeout(timeout) do
           TCPSocket.new(@hostname, @port)
         end
+        @valid = true
       rescue
         @socket = nil
-        @error = 'Connection failed.' # TODO add a reason
+        @error = "Unable to connect to #{@hostname}:#{@port}." # TODO add a reason
+        @valid = false
       end
-
-      @connected = true
     end
 
-    def connected?
-      @connected
+    def valid?
+      @valid
     end
 
     # TODO: have a validation function to check socket connectedness
 
     def get_db(dbname)
-      Database.new(@socket, dbname)
+      Database.new(dbname, @socket, self)
     end
 
     def [] (dbname)
