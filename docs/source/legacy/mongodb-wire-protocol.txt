@@ -51,7 +51,7 @@ In general, each message consists of a standard message header followed
 by request-specific data. The standard message header is structured as
 follows:
 
-.. code-block:: sh
+.. code-block:: c
 
    struct MsgHeader {
        int32   messageLength; // total message size, including this
@@ -141,7 +141,7 @@ OP_UPDATE
 The OP_UPDATE message is used to update a document in a collection. The
 format of a OP_UPDATE message is the following:
 
-.. code-block:: sh
+.. code-block:: c
 
    struct OP_UPDATE {
        MsgHeader header;             // standard message header
@@ -193,7 +193,7 @@ OP_INSERT
 The OP_INSERT message is used to insert one or more documents into a
 collection. The format of the OP_INSERT message is
 
-.. code-block:: sh
+.. code-block:: c
 
    struct {
        MsgHeader header;             // standard message header
@@ -240,18 +240,18 @@ OP_QUERY
 The OP_QUERY message is used to query the database for documents in a
 collection. The format of the OP_QUERY message is:
 
-.. code-block:: sh
+.. code-block:: c
 
    struct OP_QUERY {
-       MsgHeader header;                // standard message header
+       MsgHeader header;                 // standard message header
        int32     flags;                  // bit vector of query options.  See below for details.
-       cstring   fullCollectionName;    // "dbname.collectionname"
-       int32     numberToSkip;          // number of documents to skip
-       int32     numberToReturn;        // number of documents to return
-                                        //  in the first OP_REPLY batch
-       document  query;                 // query object.  See below for details.
-     [ document  returnFieldSelector; ] // Optional. Selector indicating the fields
-                                        //  to return.  See below for details.
+       cstring   fullCollectionName ;    // "dbname.collectionname"
+       int32     numberToSkip;           // number of documents to skip
+       int32     numberToReturn;         // number of documents to return
+                                         //  in the first OP_REPLY batch
+       document  query;                  // query object.  See below for details.
+     [ document  returnFieldsSelector; ] // Optional. Selector indicating the fields
+                                         //  to return.  See below for details.
    }
 
 .. list-table:: Flags
@@ -304,7 +304,7 @@ collection. The format of the OP_QUERY message is:
      - Reserved
      - Must be set to 0.
 
-**fullCollectionName**: The full collection name. The full collection name
+**fullCollectionName** The full collection name. The full collection name
 is the concatenation of the database name with the collection name,
 using a ``.`` for the concatenation. For example, for the database ``foo``
 and the collection ``bar``, the full collection name is ``foo.bar``.
@@ -338,7 +338,7 @@ returned, and and the integer value ``1``. In JSON notation, a
 ``returnFieldsSelector`` to limit to the fields ``a``, ``b`` and ``c``
 would be:
 
-.. code-block:: sh
+.. code-block:: javascript
 
    { a : 1, b : 1, c : 1}
 
@@ -353,7 +353,7 @@ OP_GET_MORE
 The OP_GET_MORE message is used to query the database for documents in a
 collection. The format of the OP_GET_MORE message is:
 
-.. code-block:: sh
+.. code-block:: c
 
    struct {
        MsgHeader header;             // standard message header
@@ -391,7 +391,7 @@ OP_DELETE
 The OP_DELETE message is used to remove one or more documents from a
 collection. The format of the OP_DELETE message is:
 
-.. code-block:: sh
+.. code-block:: c
 
    struct {
        MsgHeader header;             // standard message header
