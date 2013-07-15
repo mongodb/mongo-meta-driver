@@ -17,7 +17,7 @@ Transform /^the document (.*)$/ do |doc_str|
   if doc_str.strip.empty?
     nil
   else
-    eval doc_str
+    JSON[doc_str]
   end
 end
 

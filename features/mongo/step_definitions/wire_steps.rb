@@ -38,7 +38,7 @@ end
 Given /^I am inserting the documents:$/ do |table|
   # table is a Cucumber::Ast::Table
   @docs_to_insert = table.rows.map do |row|
-    eval(row.first) # row.first?
+    JSON[row.first]
   end
 end
 
@@ -215,7 +215,7 @@ end
 
 Then /^the message should contain the documents (.*)$/ do |docs_str|
   puts docs_str
-  docs = eval(docs_str)
+  docs = JSON[docs_str]
   @msg.documents.should == docs
 end
 
