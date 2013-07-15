@@ -62,6 +62,11 @@ Given /^MongoDB has responded with the OP_REPLY message (\S+)$/ do |wire|
   @wire = [wire].pack('H*')
 end
 
+# actually, message header generation. for ensuring randomness of IDs, headers are all we need
+Given /^I have generated a message$/ do
+  @header_1 = Mongo::Wire::MessageHeader.new
+end
+
 # binary flags below
 # the weird or-ing stuff has to do with needing to tolerate the difference
 # between human-generated and table-generated scenarios
@@ -109,7 +114,7 @@ end
 
 When /^I generate the wire protocol message for this request$/ do
   @msg = @msg_class.new
-  @msg.get_header.request_id(@id).message_class(@msg_class)
+  @msg.get_header.request_id(@id)
 
   # hack to make the case statement comparisons work
   case [@msg_class]
@@ -155,6 +160,10 @@ end
 
 When /^I parse the message$/ do
   @msg = Mongo::Wire::ResponseMessage::Reply.new(@wire)
+end
+
+When /^I generate another message$/ do
+  @header_2 = Mongo::Wire::MessageHeader.new
 end
 
 
@@ -208,4 +217,9 @@ Then /^the message should contain the documents (.*)$/ do |docs_str|
   puts docs_str
   docs = eval(docs_str)
   @msg.documents.should == docs
+end
+
+
+Then /^the two messages should not have the same request ID$/ do
+  @header_1.get_request_id.should_not == @header_2.get_request_id
 end

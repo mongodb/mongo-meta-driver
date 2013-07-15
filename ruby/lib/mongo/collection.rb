@@ -14,6 +14,7 @@
 
 # Represents a collection on a database on a connected MongoDB instance
 #
+require 'wire'
 module Mongo
   class Client
     class Collection
@@ -22,7 +23,7 @@ module Mongo
       # should only be called from database
       def initialize(collname, socket, db)
         @valid = false
-        @name = coll
+        @name = collname
         @socket = socket
         @db = db
         if @db.valid?
@@ -32,9 +33,12 @@ module Mongo
         end
       end
 
-      # send commands!!
-
-      def
+      # insert (a) document(s) into the collection
+      def insert(one_or_more_docs, opts = {})
+        cmd = Mongo::Wire::RequestMessage::Insert.new
+        cmd.flags.continue_on_error (opts['continue_on_error'] == true)
+        cmd.
+      end
     end
   end
 end

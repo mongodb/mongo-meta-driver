@@ -17,7 +17,7 @@ When /^I ask the database for that collection$/ do
 end
 
 
-Then /^I will receive a valid collection corresponding to the collection (\S+) on that database$/ do |collname|
+Then /^I will receive a valid collection object corresponding to the collection (\S+) on that database$/ do |collname|
   @coll.nil?.should == false
   @coll.class.should == Mongo::Client::Collection
   @coll.error.nil?.should == true

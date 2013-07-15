@@ -121,4 +121,7 @@ Feature: Creating commands for database
       | 10     | 42          | 12345         | 10         | 0            | not          |               | not                |               | []                                                                                                     | 240000000a0000002a000000010000000900000039300000000000000a00000000000000                                                                                                                                                                                                   |
       | 59     | 61          | 6543210       | 7          | 1            |              | not           | not                |               | [{'$err'=>"can't map file memory - mongo requires 64 bit build for larger datasets", "code" => 10084}] | 850000003b0000003d000000010000000a0000006ad76300000000000700000001000000610000000224657272004800000063616e2774206d61702066696c65206d656d6f7279202d206d6f6e676f20726571756972657320363420626974206275696c6420666f72206c61726765722064617461736574730010636f6465006427000000 |
 
-
+  Scenario: Unique message ID generation
+    Given I have generated a message
+    When I generate another message
+    Then the two messages should not have the same request ID

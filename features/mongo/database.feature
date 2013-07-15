@@ -1,5 +1,4 @@
 # language: en
-@mongo @interface @database
 # TODO: finish the basic things
 # TODO: write concern/read preference
 # TODO: sharding??
@@ -7,7 +6,7 @@
 # stored procedures
 # indexes
 # profiling
-
+@mongo @interface @database
 Feature: Interacting with the Database object
   As a user of MongoDB
   In order to read or make changes to a database on a running instance of MongoDB
@@ -24,7 +23,12 @@ Feature: Interacting with the Database object
   Scenario: Successfully obtaining a Collection object
     Given the collection mycoll
     When I ask the database for that collection
-    Then I will receive a valid collection corresponding to the collection mycoll on that database
+    Then I will receive a valid collection object corresponding to the collection mycoll on that database
+
+  # should be empty first
+  Scenario: Inserting into a collection
+    Given the collection mycoll
+    When I
 
 #  Scenario: Renaming a collection
 #    When I ask the database object to change the name of collection <coll_name1> to <coll_name2>

@@ -70,6 +70,7 @@ module Mongo
 
         def initialize
           @header = MessageHeader.new
+          @header.message_class(self.class)
           @flags = RequestFlags.new
         end
 
