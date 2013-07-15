@@ -67,7 +67,7 @@ intersphinx_mapping = {
 # -- Options for HTML output ---------------------------------------------------
 
 html_theme = 'mongodb'
-html_theme_path = ['themes']
+html_theme_path = ['build/docs-tools/themes']
 
 html_title = project + ' Manual'
 
