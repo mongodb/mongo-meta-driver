@@ -21,6 +21,17 @@ Transform /^the document (.*)$/ do |doc_str|
   end
 end
 
+# produce an array of documents
+Transform /^table:document$/ do |table|
+  docs = table.rows.map do |doc_str|
+    if doc_str.strip.empty?
+      nil
+    else
+      JSON[doc_str]
+    end
+  end
+end
+
 Transform /^I am (not | |).+$/ do |empty_or_not|
   empty_or_not.strip.empty?
 end

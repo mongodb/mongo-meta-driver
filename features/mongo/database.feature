@@ -28,29 +28,39 @@ Feature: Interacting with the Database object
   # should be empty first
   Scenario: Inserting into a collection
     Given the collection mycoll
+    And the collection has been emptied
     When I ask the database for that collection
-    And I ask the collection to insert the document {'a' => 'b'}
-    Then the collection should contain the document {'a' => 'b'}
+    And I ask the collection to insert the document {"a" : "b"}
+    Then the collection should contain only the document {"a" : "b"}
 
+  # contains only?
   Scenario: Deleting from a collection
     Given the collection mycoll
-    And the collection contains the document {'a' => 'b', '1' => '6'}
-    When I ask the collection to delete all documents matching {'a' => 'b'}
-    Then the collection should not contain the document {'a' => 'b', '1' => '6'}
+    And the collection contains the document {"a" : "b", "1" : "6"}
+    When I ask the collection to delete all documents matching the document {"a" : "b"}
+    Then the collection should not contain the document {"a" : "b", "1" : "6"}
 
+  # need to be able to deal with replies from the db
   Scenario: Querying on a collection
     Given the collection mycoll
     And the collection contains the documents:
-      | doc                      |
-      | {'a' => 'b', '1' => '6'} |
-      | {'a' => 'b', '1' => '5'} |
-      | {'c' => 'b', '1' => '4'} |
-      | {'a' => 'b', '1' => '3'} |
-    When I query the collection with {'a' => 'b', '1' => {'$lt', '5'}}
+      | document               |
+      | {"a" : "b", "1" : "6"} |
+      | {"a" : "b", "1" : "5"} |
+      | {"c" : "b", "1" : "4"} |
+      | {"a" : "b", "1" : "3"} |
+    When I query the collection using the document {"a" : "b", "1" : {"$lt" : "5"}}
     Then I should receive the documents:
-      | doc                      |
-      | {'a' => 'b', '1' => '5'} |
-      | {'a' => 'b', '1' => '3'} |
+      | document               |
+      | {"a" : "b", "1" : "5"} |
+      | {"a" : "b", "1" : "3"} |
+
+  # get more
+  # kill cursors
+  # parse db replies??
+  Scenario:
+
+# renaming, dropping, ... a collection
 
 #  Scenario: Renaming a collection
 #    When I ask the database object to change the name of collection <coll_name1> to <coll_name2>

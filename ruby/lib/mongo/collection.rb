@@ -35,9 +35,21 @@ module Mongo
 
       # insert (a) document(s) into the collection
       def insert(one_or_more_docs, opts = {})
+        docs = one_or_more_docs
+        if one_or_more_docs.class == Hash
+          docs = [one_or_more_docs]
+        end
         cmd = Mongo::Wire::RequestMessage::Insert.new
-        cmd.flags.continue_on_error (opts['continue_on_error'] == true)
-        cmd.
+        cmd.flags.continue_on_error(opts['continue_on_error'])
+           .full_collection_name("#{@db.name}.#{@name}")
+           .documents(docs)
+        # send command
+        @socket.send(cmd.to_wire)
+        # somehow make sure it succeeded?
+      end
+
+      def valid?
+        @valid
       end
     end
   end

@@ -26,6 +26,7 @@ end
 require 'mongo/wire'
 require 'mongo/client'
 require 'mongo/database'
+require 'mongo/collection'
 #require "mongo/protocol"
 # # require "mongo/cluster"
 # require "mongo/collection"

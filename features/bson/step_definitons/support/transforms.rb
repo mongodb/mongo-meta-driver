@@ -116,7 +116,6 @@ Transform /^code value(?: \"(.+)\"(?: with scope (.+)?)?)?$/ do |code, scope|
   if scope.nil?
     BSON::Code.new(code.to_s)
   else
-    puts "OH YEAH"
     BSON::CodeWithScope.new(code.to_s, JSON[scope.to_s])
   end
 end

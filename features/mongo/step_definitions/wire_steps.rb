@@ -214,7 +214,6 @@ end
 
 
 Then /^the message should contain the documents (.*)$/ do |docs_str|
-  puts docs_str
   docs = JSON[docs_str]
   @msg.documents.should == docs
 end

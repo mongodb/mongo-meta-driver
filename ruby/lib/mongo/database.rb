@@ -36,7 +36,7 @@ module Mongo
       end
 
       def get_coll(collname)
-        Collection.new(@socket, collname)
+        Mongo::Client::Collection.new(collname, @socket, self)
       end
 
       def [] (collname)

@@ -7,6 +7,7 @@ group :development, :test do
   gem "rspec"
   gem "rake-compiler"
   gem "cucumber"
+  gem "mongo"
 
   if ENV["CI"]
     gem "coveralls", :require => false
