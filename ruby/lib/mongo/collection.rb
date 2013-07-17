@@ -14,11 +14,23 @@
 
 # Represents a collection on a database on a connected MongoDB instance
 #
+
+# TODO: write concern?
+
 require 'wire'
 module Mongo
   class Client
     class Collection
       attr_reader :name, :error
+
+      # utilities
+      def is_on_db(db)
+        @db.equal? db
+      end
+
+      def valid?
+        @valid
+      end
 
       # should only be called from database
       def initialize(collname, socket, db)
@@ -33,7 +45,13 @@ module Mongo
         end
       end
 
+      def full_name
+        "#{@db.name}.#{@name}"
+      end
+
+      # CRUD ops
       # insert (a) document(s) into the collection
+      # TODO: sensible defaults
       def insert(one_or_more_docs, opts = {})
         docs = one_or_more_docs
         if one_or_more_docs.class == Hash
@@ -41,16 +59,38 @@ module Mongo
         end
         cmd = Mongo::Wire::RequestMessage::Insert.new
         cmd.flags.continue_on_error(opts['continue_on_error'])
-           .full_collection_name("#{@db.name}.#{@name}")
+        cmd.full_collection_name(full_name)
            .documents(docs)
-        # send command
         @socket.send(cmd.to_wire)
-        # somehow make sure it succeeded?
       end
 
-      def valid?
-        @valid
+      def remove(selector = {}, opts = {})
+        cmd = Mongo::Wire::RequestMessage::Delete.new
+        cmd.flags.single_remove(opts['single_remove'])
+        cmd.full_collection_name(full_name)
+           .selector(selector)
+        @socket.send(cmd.to_wire)
       end
+
+      def find(query_doc = {}, return_fields = nil, n_skip = 0, n_ret = 0, opts = {})
+        cmd = Mongo::Wire::RequestMessage::Query.new
+        timeout = opts['timeout'] # wait 5s for a response (or user specified)
+        timeout ||= 5
+        cmd.flags.tailable_cursor(opts['tailable_cursor']).slave_ok(opts['slave_ok'])
+                 .no_cursor_timeout(opts['no_cursor_timeout'])
+                 .await_data(opts['await_data']).exhaust(opts['exhaust'])
+                 .partial(opts['partial'])
+        cmd.full_collection_name(full_name)
+           .query(query_doc).return_field_selector(return_fields)
+           .number_to_skip(n_skip).number_to_return(n_ret)
+
+        @socket.send(cmd.to_wire)
+
+        # get a response
+        result = Mongo::Wire::ResponseMessage::Reply.new(@socket)
+        result
+      end
+
     end
   end
 end

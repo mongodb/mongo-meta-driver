@@ -15,35 +15,31 @@ Feature: Interacting with the Database object
 
   Background:
     Given I have successfully obtained a database object connected to a database on a running instance of MongoDB
-
+    And the collection mycoll
+    And I ask the database for that collection
 #  Scenario: Listing collections
 #    When I ask the database object for a list of collections
 #    Then I will receive a list of the collections in the database
 
   Scenario: Successfully obtaining a Collection object
-    Given the collection mycoll
-    When I ask the database for that collection
-    Then I will receive a valid collection object corresponding to the collection mycoll on that database
+    Then I will have a valid collection object corresponding to the collection mycoll on that database
 
-  # should be empty first
   Scenario: Inserting into a collection
-    Given the collection mycoll
+    Given the collection object for collection mycoll
     And the collection has been emptied
     When I ask the database for that collection
     And I ask the collection to insert the document {"a" : "b"}
     Then the collection should contain only the document {"a" : "b"}
 
-  # contains only?
   Scenario: Deleting from a collection
-    Given the collection mycoll
-    And the collection contains the document {"a" : "b", "1" : "6"}
+    Given the collection contains only the document {"a" : "b", "1" : "6"}
+    When I ask the database for that collection
     When I ask the collection to delete all documents matching the document {"a" : "b"}
     Then the collection should not contain the document {"a" : "b", "1" : "6"}
 
   # need to be able to deal with replies from the db
   Scenario: Querying on a collection
-    Given the collection mycoll
-    And the collection contains the documents:
+    Given the collection contains only the documents:
       | document               |
       | {"a" : "b", "1" : "6"} |
       | {"a" : "b", "1" : "5"} |

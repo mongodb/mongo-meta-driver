@@ -159,7 +159,7 @@ When /^I generate the wire protocol message for this request$/ do
 end
 
 When /^I parse the message$/ do
-  @msg = Mongo::Wire::ResponseMessage::Reply.new(@wire)
+  @msg = Mongo::Wire::ResponseMessage::Reply.new(StringIO.new(@wire))
 end
 
 When /^I generate another message$/ do

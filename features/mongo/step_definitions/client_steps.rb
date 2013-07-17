@@ -34,6 +34,7 @@ end
 Then /^I will receive a connected client to the MongoDB instance running on host (\S+) at port (\d+)$/ do |host, port|
   @client.nil?.should == false
   @client.class.should == Mongo::Client
+  puts "error: #{@client.error.inspect}"
   @client.error.nil?.should == true
   @client.valid?.should == true
   @client.hostname.should == host

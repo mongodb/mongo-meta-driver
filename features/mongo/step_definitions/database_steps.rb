@@ -11,24 +11,25 @@ end
 
 Given /^the collection (\S+)$/ do |collname|
   @collname = collname
+end
 
-  # set up reference connection
-  @ref_client = Mongo::MongoClient.new('localhost', 27017)
-  @ref_coll = @ref_client[@dbname][@collname]
+Given /^the collection object for collection (\S+)$/ do |collname|
+  @collname = collname
+  @coll = @db[@collname]
 end
 
 Given /^the collection has been emptied$/ do
-  @ref_coll.remove
+  @coll.remove
 end
 
-Given /^the collection contains (the document .*)$/ do |doc|
-  @doc_in_collection = doc
-  pending
-  # actually do the insert
+Given /^the collection contains only (the document .*)$/ do |doc|
+  @coll.remove
+  @coll.insert doc
 end
 
-Given /^the collection contains the documents:$/ do |docs_as_list_of_hash|
-  pending
+Given /^the collection contains only the documents:$/ do |docs|
+  @coll.remove
+  @coll.insert docs
 end
 
 
@@ -37,21 +38,19 @@ When /^I ask the database for that collection$/ do
 end
 
 When /^I ask the collection to insert (the document .*)$/ do |doc|
-  @doc_to_insert = JSON[doc]
-  pending
+  @coll.insert doc
 end
 
 When /^I ask the collection to delete all documents matching (the document .*)$/ do |doc|
-  @doc_to_delete = doc
-  pending
+  @coll.remove doc
 end
 
 When /^I query the collection using (the document .*)$/ do |doc|
-  pending
+  @query_result = @coll.find doc
 end
 
 
-Then /^I will receive a valid collection object corresponding to the collection (\S+) on that database$/ do |collname|
+Then /^I will have a valid collection object corresponding to the collection (\S+) on that database$/ do |collname|
   @coll.nil?.should == false
   @coll.class.should == Mongo::Client::Collection
   @coll.error.nil?.should == true
@@ -65,14 +64,16 @@ Then /^I will not receive a valid collection$/ do
 end
 
 Then /^the collection should contain only (the document .*)$/ do |doc|
-  @doc_in_collection = JSON[doc]
-  pending
+  @coll.find.documents.should == [doc]
 end
 
 Then /^the collection should not contain (the document .*)$/ do |doc|
-  pending
+  similar_docs = @coll.find
+  res = similar_docs.all? do |similar_doc|
+    similar_doc.should_not == doc
+  end
 end
 
-Then /^I should receive the documents:$/ do |docs_as_list_of_hash|
-  pending
+Then /^I should receive the documents:$/ do |docs|
+  @query_result.documents.should == docs
 end
