@@ -24,37 +24,77 @@ Feature: Interacting with the Database object
   Scenario: Successfully obtaining a Collection object
     Then I will have a valid collection object corresponding to the collection mycoll on that database
 
-  Scenario: Inserting into a collection
-    Given the collection object for collection mycoll
-    And the collection has been emptied
-    When I ask the database for that collection
-    And I ask the collection to insert the document {"a" : "b"}
+  Scenario: Inserting a single document into an empty collection
+    Given the collection has been emptied
+    And I want to insert the document {"a" : "b"}
+    When I perform this insert operation
     Then the collection should contain only the document {"a" : "b"}
 
+  Scenario: Inserting multiple documents into a nonempty collection
+    Given the collection contains only the documents:
+      | document               |
+      | {"a" : "1", "b" : "2"} |
+      | {"a" : "4", "b" : "6"} |
+    And I want to insert the documents:
+      | document                              |
+      | {"a" : "-5", "b" : "16"}              |
+      | {"a" : "10", "b" : "0.1", "c" : "-2"} |
+    When I perform this insert operation
+    Then the collection should contain only the documents:
+      | document                              |
+      | {"a" : "1", "b" : "2"}                |
+      | {"a" : "4", "b" : "6"}                |
+      | {"a" : "-5", "b" : "16"}              |
+      | {"a" : "10", "b" : "0.1", "c" : "-2"} |
+
   Scenario: Deleting from a collection
-    Given the collection contains only the document {"a" : "b", "1" : "6"}
-    When I ask the database for that collection
-    When I ask the collection to delete all documents matching the document {"a" : "b"}
-    Then the collection should not contain the document {"a" : "b", "1" : "6"}
+    Given the collection contains only the documents:
+      | document               |
+      | {"a" : "b", "1" : "6"} |
+      | {"a" : "b", "1" : "7"} |
+    And I want to delete documents according to the document {"1" : "6"}
+    When I perform this delete operation
+    Then the collection should contain only the document {"a" : "b", "1" : "7"}
 
   # need to be able to deal with replies from the db
   Scenario: Querying on a collection
     Given the collection contains only the documents:
       | document               |
-      | {"a" : "b", "1" : "6"} |
-      | {"a" : "b", "1" : "5"} |
-      | {"c" : "b", "1" : "4"} |
-      | {"a" : "b", "1" : "3"} |
-    When I query the collection using the document {"a" : "b", "1" : {"$lt" : "5"}}
+      | {"a" : "b", "c" : "6"} |
+      | {"a" : "b", "c" : "5"} |
+      | {"c" : "b", "c" : "4"} |
+      | {"a" : "b", "c" : "3"} |
+      | {"a" : "c", "c" : "1"} |
+    And I want find documents matching the document {"a" : "b", "c" : {"$lte" : "5"}}
+    When I perform this query
     Then I should receive the documents:
       | document               |
-      | {"a" : "b", "1" : "5"} |
-      | {"a" : "b", "1" : "3"} |
+      | {"a" : "b", "c" : "5"} |
+      | {"a" : "b", "c" : "3"} |
+
+  Scenario: Updating a collection successfully
+    Given the collection contains only the documents:
+      | document                                          |
+      | {"name" : "mario", "profession" : "plumber"}      |
+      | {"name" : "batman", "profession" : "superhero"}   |
+      | {"name" : "superman", "profession" : "superhero"} |
+    And I want to update documents selected by the document {"name" : "mario"}
+    And I want to perform the update specified by the document {"$set" : {"profession" : "hacker"}}
+    When I perform this update
+    Then the collection should contain only the documents:
+      | document                                          |
+      | {"name" : "mario", "profession" : "hacker"}       |
+      | {"name" : "batman", "profession" : "superhero"}   |
+      | {"name" : "superman", "profession" : "superhero"} |
+#  Scenario: Updating a collection unsuccessfully
+#
+#  Scenario: Upsert that reduces to an update
+#
+#  Scenario: Upsert that reduces to an insert
 
   # get more
   # kill cursors
   # parse db replies??
-  Scenario:
 
 # renaming, dropping, ... a collection
 
@@ -68,6 +108,7 @@ Feature: Interacting with the Database object
 #    Then I will receive the error that <coll_name1> does not exist
 #    When I ask the database for collection <coll_name2>
 #    # TODO - ensure that
+     # TODO - options!!!!!
 #    Then I will receive a collection object for <coll_name2>
 
 # TODO: getting collections from an invalid db

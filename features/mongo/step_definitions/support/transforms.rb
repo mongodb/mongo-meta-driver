@@ -23,7 +23,8 @@ end
 
 # produce an array of documents
 Transform /^table:document$/ do |table|
-  docs = table.rows.map do |doc_str|
+  docs = table.rows.map do |doc_str_arr|
+    doc_str = doc_str_arr.first
     if doc_str.strip.empty?
       nil
     else

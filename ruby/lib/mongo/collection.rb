@@ -58,37 +58,48 @@ module Mongo
           docs = [one_or_more_docs]
         end
         cmd = Mongo::Wire::RequestMessage::Insert.new
-        cmd.flags.continue_on_error(opts['continue_on_error'])
+        cmd.get_flags.continue_on_error(opts.false_get 'continue_on_error')
         cmd.full_collection_name(full_name)
            .documents(docs)
-        @socket.send(cmd.to_wire)
-      end
-
-      def remove(selector = {}, opts = {})
-        cmd = Mongo::Wire::RequestMessage::Delete.new
-        cmd.flags.single_remove(opts['single_remove'])
-        cmd.full_collection_name(full_name)
-           .selector(selector)
-        @socket.send(cmd.to_wire)
+        @socket.send(cmd.to_wire, 0)
       end
 
       def find(query_doc = {}, return_fields = nil, n_skip = 0, n_ret = 0, opts = {})
         cmd = Mongo::Wire::RequestMessage::Query.new
         timeout = opts['timeout'] # wait 5s for a response (or user specified)
         timeout ||= 5
-        cmd.flags.tailable_cursor(opts['tailable_cursor']).slave_ok(opts['slave_ok'])
-                 .no_cursor_timeout(opts['no_cursor_timeout'])
-                 .await_data(opts['await_data']).exhaust(opts['exhaust'])
-                 .partial(opts['partial'])
+        cmd.get_flags.tailable_cursor(opts.false_get 'tailable_cursor').slave_ok(opts.false_get 'slave_ok')
+                     .no_cursor_timeout(opts.false_get 'no_cursor_timeout')
+                     .await_data(opts.false_get 'await_data').exhaust(opts.false_get 'exhaust')
+                     .partial(opts.false_get 'partial')
         cmd.full_collection_name(full_name)
            .query(query_doc).return_field_selector(return_fields)
            .number_to_skip(n_skip).number_to_return(n_ret)
 
-        @socket.send(cmd.to_wire)
+        @socket.send(cmd.to_wire, 0)
 
         # get a response
-        result = Mongo::Wire::ResponseMessage::Reply.new(@socket)
+        result = timeout(timeout) do
+          Mongo::Wire::ResponseMessage::Reply.new(@socket)
+        end
         result
+      end
+
+      def update(selector = {}, update_spec = {}, opts = {})
+        cmd = Mongo::Wire::RequestMessage::Update.new
+        cmd.get_flags.upsert(opts.false_get 'upsert').multi_update(opts.false_get 'multi_update')
+        cmd.full_collection_name(full_name)
+           .selector(selector).update(update_spec)
+
+        @socket.send(cmd.to_wire, 0)
+      end
+
+      def remove(selector = {}, opts = {})
+        cmd = Mongo::Wire::RequestMessage::Delete.new
+        cmd.get_flags.single_remove(opts.false_get 'single_remove')
+        cmd.full_collection_name(full_name)
+        .selector(selector)
+        @socket.send(cmd.to_wire, 0)
       end
 
     end
