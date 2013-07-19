@@ -33,22 +33,28 @@ When /^I ask the database for that collection$/ do
 end
 
 # TODO: maybe split this up?
-# Perform a CRUD operation. See below for steps describing these ops
-# and their options
+# Perform a CRUD operation.
+# All of these options get set up in wire_steps.rb
 When /^I perform this (\S+)(?: operation)?(?: on the collection)?$/ do |which_op|
+
   case which_op
     when 'insert'
-      @coll.insert(@insert_docs, @insert_options)
+      insert_options = hashify [:continue_on_error]
+      @coll.insert(@docs_to_insert, insert_options)
+
     when 'query'
-      # TODO: these won't be needed eventually
-      @query_skip_count ||= 0
-      @query_return_count ||= 0
+      query_options = hashify [:tailable_cursor, :slave_ok, :no_cursor_timeout, :await_data, :exhaust, :partial]
       @query_result =
-        @coll.find(@query_doc, @query_field_doc, @query_skip_count, @query_return_count, @query_options)
+        @coll.find(@query_doc, @return_select_doc, @num_skip_results, @num_return_results, query_options)
+
     when 'update'
-      @coll.update(@update_select_doc, @update_spec_doc, @update_options)
+      update_options = hashify [:upsert, :multi_update]
+      @coll.update(@update_doc, @update_spec_doc, update_options)
+
     when 'delete'
-      @coll.remove(@delete_doc, @delete_options)
+      delete_options = hashify [:single_remove]
+      @coll.remove(@delete_doc, delete_options)
+
   end
 end
 
@@ -95,55 +101,9 @@ Then /^I should receive the documents:$/ do |docs|
   result.should_be_permutation_of docs
 end
 
-#
-# insert-related steps
-Given /^I want to insert (the document .*)$/ do |doc|
-  @insert_docs = [doc]
-  @insert_options ||= {}
+Given /^I am performing an? (\S+)(?: operation)?$/ do |op_type|
+  @which_op = op_type
 end
 
-Given /^I want to insert the documents:$/ do |docs|
-  @insert_docs = docs
-  @insert_options ||= {}
-end
-
-# options; to be called after one of the above
-
-#
-# query-related steps
-Given /^I want find documents matching (the document .*)$/ do |doc|
-  @query_doc = doc
-  @query_options ||= {}
-end
-
-Given /^I want to project only the fields of (the document .*)$/ do |doc|
-  @query_field_doc = doc
-  @query_options ||= {}
-end
-
-# options; to be called after one of the above
-# Given /^$/
-
-#
-# update-related steps
-Given /^I want to update documents selected by (the document .*)$/ do |doc|
-  @update_select_doc = doc
-  @update_options ||= {}
-end
-
-Given /^I want to perform the update specified by (the document .*)$/ do |doc|
-  @update_spec_doc = doc
-  @update_options ||= {}
-end
-
-# options; to be called after one of the above
-
-#
-# delete-related steps
-# declares you're doing a delete. do this one before specifying options
-Given /^I want to delete documents according to (the document .*)$/ do |doc|
-  @delete_doc = doc
-  @delete_options ||= {}
-end
-
-# options; to be called after one of the above
+# for the "Given" steps that "fill out" the command you're generating
+# see wire_steps.rb

@@ -19,7 +19,7 @@
 class Hash
   # get a key; if it's not there, get a default value
   def default_get(key, default=nil)
-    if member? key
+    if member? key and not fetch(key).nil?
       fetch key
     else
       default

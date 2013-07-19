@@ -14,8 +14,8 @@ Feature: Creating commands for database
 
   Scenario Outline: Generating OP_UPDATE messages (updating documents)
     Given I am generating an OP_UPDATE message
-    And I am selecting fields to update by the document <selector>
-    And I am updating by the document <update>
+    And I am performing the update specified by the document <selector>
+    And I am updating documents matching the document <update>
     And I am <upsert> doing an upsert
     And I am <multi_update> doing a multi update
     When I generate the wire protocol message for this request
@@ -30,7 +30,7 @@ Feature: Creating commands for database
     Given I am generating an OP_INSERT message
     And I am not doing a continue on error
     And I am inserting the documents:
-      | doc                                 |
+      | document                            |
       | {"a" : 1, "b" : 2}                  |
       | {"a" : 1, "g" : {"d" : 1}, "b" : 2} |
       | {"c" : "c"}                         |
@@ -40,9 +40,7 @@ Feature: Creating commands for database
   Scenario: Generating an OP_INSERT message with continue on error
     Given I am generating an OP_INSERT message
     And I am doing a continue on error
-    And I am inserting the documents:
-      | doc                |
-      | {"a" : 1, "b" : 2} |
+    And I am inserting the document {"a" : 1, "b" : 2}
     When I generate the wire protocol message for this request
     Then the generated message should match 33000000d204000000000000d2070000010000006d7964622e6d79636f6c6c0013000000106100010000001062000200000000
 
@@ -50,7 +48,7 @@ Feature: Creating commands for database
     Given I am generating an OP_QUERY message
     And I am skipping <num_to_skip> results
     And I am returning <num_to_return> results
-    And I am querying by the document <query>
+    And I am querying for documents matching the document <query>
     And I am selecting fields to return by the document <return_selector>
     And I am <tailable_cursor> doing a tailable cursor query
     And I am <slave_ok> permitting querying of a replica slave
@@ -79,7 +77,7 @@ Feature: Creating commands for database
 
   Scenario Outline: Generating OP_DELETE messages (deleting documents)
     Given I am generating an OP_DELETE message
-    And I am selecting documents to delete by the document <selector>
+    And I am deleting documents matching the document <selector>
     And I am <multiple_remove> permitting removal of multiple documents
     When I generate the wire protocol message for this request
     Then the generated message should match <message>

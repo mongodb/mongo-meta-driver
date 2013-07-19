@@ -24,6 +24,7 @@ module Mongo
 end
 
 require 'mongo/wire'
+require 'mongo/array_and_hash_util'
 require 'mongo/client'
 require 'mongo/database'
 require 'mongo/collection'

@@ -16,7 +16,18 @@
 # Called from step definitions
 
 class Array
+  # assert that this array is a permutation of other
   def should_be_permutation_of(other)
     self.to_multiset.should == other.to_multiset
   end
+end
+
+# convert an array of symbols into a hash
+# mapping that symbol to the value of instance variable with that name
+def hashify(symbols)
+  acc = {}
+  symbols.each do |symbol|
+    acc[symbol] = instance_variable_get ("@#{symbol}".to_sym)
+  end
+  acc
 end

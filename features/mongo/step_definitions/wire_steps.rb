@@ -1,4 +1,5 @@
 # step definitions for wire protocol
+# many of these are shared by the client CRUD interface
 Given /^my request will have an ID of (\d+)$/ do |id|
   @id = id.to_i
 end
@@ -11,23 +12,23 @@ Given /^I am (generating an? \S+ message)$/ do |op_class|
   @msg_class = op_class
 end
 
-Given /^I am selecting fields to update by (the document .*)$/ do |doc|
-  @update_select_doc = doc
+Given /^I am performing the update specified by (the document .*)$/ do |doc|
+  @update_spec_doc = doc
 end
 
 Given /^I am selecting fields to return by (the document .*)$/ do |doc|
   @return_select_doc = doc
 end
 
-Given /^I am updating by (the document .*)$/ do |doc|
+Given /^I am updating(?: the)? documents? matching (the document .*)$/ do |doc|
   @update_doc = doc
 end
 
-Given /^I am querying by (the document .*)$/ do |doc|
+Given /^I am querying for documents matching (the document .*)$/ do |doc|
   @query_doc = doc
 end
 
-Given /^I am selecting documents to delete by (the document .*)$/ do |doc|
+Given /^I am deleting documents matching (the document .*)$/ do |doc|
   @delete_doc = doc
 end
 
@@ -35,11 +36,12 @@ Given /^I am requesting results for the cursor with id (\d+)$/ do |cur_id|
   @cursor_to_get_more = cur_id.to_i
 end
 
-Given /^I am inserting the documents:$/ do |table|
-  # table is a Cucumber::Ast::Table
-  @docs_to_insert = table.rows.map do |row|
-    JSON[row.first]
-  end
+Given /^I am inserting (the document .*)$/ do |doc|
+  @docs_to_insert = [doc]
+end
+
+Given /^I am inserting the documents:$/ do |docs|
+  @docs_to_insert = docs
 end
 
 Given /^I am deleting the cursors with ids:$/ do |table|
@@ -71,6 +73,7 @@ end
 # the weird or-ing stuff has to do with needing to tolerate the difference
 # between human-generated and table-generated scenarios
 # (the latter may have an extra space)
+
 Given /^(I am (?:not | |)doing an upsert)$/ do |bool|
   @upsert = bool
 end
@@ -122,7 +125,7 @@ When /^I generate the wire protocol message for this request$/ do
     flags = Mongo::Wire::RequestMessage::Update::RequestFlags.new
     flags.upsert(@upsert).multi_update(@multi_update)
     @msg.flags(flags)
-        .full_collection_name(@coll_name).selector(@update_select_doc).update(@update_doc)
+        .full_collection_name(@coll_name).selector(@update_spec_doc).update(@update_doc)
 
   when [Mongo::Wire::RequestMessage::Insert]
     flags = Mongo::Wire::RequestMessage::Insert::RequestFlags.new
