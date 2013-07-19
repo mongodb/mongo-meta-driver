@@ -53,11 +53,11 @@ end
 
 # non-binary options
 Given /^I am skipping (\d+) results$/ do |num|
-  @num_skip_results = num.to_i
+  @skip_num = num.to_i
 end
 
 Given /^I am returning (\d+) results$/ do |num|
-  @num_return_results = num.to_i
+  @return_num = num.to_i
 end
 
 Given /^MongoDB has responded with the OP_REPLY message (\S+)$/ do |wire|
@@ -139,12 +139,12 @@ When /^I generate the wire protocol message for this request$/ do
          .no_cursor_timeout(@no_cursor_timeout).await_data(@await_data)
          .exhaust(@exhaust).partial(@partial)
     @msg.flags(flags)
-        .full_collection_name(@coll_name).number_to_skip(@num_skip_results)
-        .number_to_return(@num_return_results).query(@query_doc)
+        .full_collection_name(@coll_name).number_to_skip(@skip_num)
+        .number_to_return(@return_num).query(@query_doc)
         .return_field_selector(@return_select_doc)
 
   when [Mongo::Wire::RequestMessage::GetMore]
-    @msg.full_collection_name(@coll_name).number_to_return(@num_return_results)
+    @msg.full_collection_name(@coll_name).number_to_return(@return_num)
         .cursor_id(@cursor_to_get_more)
 
   when [Mongo::Wire::RequestMessage::Delete]

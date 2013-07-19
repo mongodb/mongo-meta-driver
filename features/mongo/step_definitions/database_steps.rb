@@ -27,6 +27,13 @@ Given /^the collection contains only the documents:$/ do |docs|
   @coll.insert docs
 end
 
+Given /^I am performing an? (\S+)(?: operation)?$/ do |op_type|
+  @which_op = op_type
+end
+
+# for the "Given" steps that "fill out" the command you're generating
+# with all its required options, see wire_steps.rb
+
 
 When /^I ask the database for that collection$/ do
  @coll = @db[@collname]
@@ -39,20 +46,22 @@ When /^I perform this (\S+)(?: operation)?(?: on the collection)?$/ do |which_op
 
   case which_op
     when 'insert'
-      insert_options = hashify [:continue_on_error]
+      insert_options = sym_hashify [:continue_on_error]
       @coll.insert(@docs_to_insert, insert_options)
 
     when 'query'
-      query_options = hashify [:tailable_cursor, :slave_ok, :no_cursor_timeout, :await_data, :exhaust, :partial]
+      query_options = sym_hashify [:skip_num, :return_num,
+                               :tailable_cursor, :slave_ok, :no_cursor_timeout,
+                               :await_data, :exhaust, :partial]
       @query_result =
-        @coll.find(@query_doc, @return_select_doc, @num_skip_results, @num_return_results, query_options)
+        @coll.find(@query_doc, @return_select_doc, query_options)
 
     when 'update'
-      update_options = hashify [:upsert, :multi_update]
+      update_options = sym_hashify [:upsert, :multi_update]
       @coll.update(@update_doc, @update_spec_doc, update_options)
 
     when 'delete'
-      delete_options = hashify [:single_remove]
+      delete_options = sym_hashify [:single_remove]
       @coll.remove(@delete_doc, delete_options)
 
   end
@@ -72,38 +81,32 @@ Then /^I will not receive a valid collection$/ do
 end
 
 # compensate for the fact that the object will have an unpredictable ID
+# we ignore the ID of result, ONLY IF result has no IDs at all
 Then /^the collection should contain only (the document .*)$/ do |doc|
-  result = @coll.find.documents.map do |result_doc|
-    result_doc.silent_delete '_id'
-  end
-  p result.class
+  result = @coll.find.documents
+  result.compensate_for_id_fields [doc]
   result.should_be_permutation_of [doc]
 end
 
 Then /^the collection should contain only the documents:$/ do |docs|
-  result = @coll.find.documents.map do |result_doc|
-    result_doc.silent_delete '_id'
-  end
+  result = @coll.find.documents
+  result.compensate_for_id_fields docs
   result.should_be_permutation_of docs
 end
 
 Then /^the collection should not contain (the document .*)$/ do |doc|
   # grab everything from db, check all of them
-  @coll.find.documents.all? do |queried_doc|
-    queried_doc.silent_delete('_id').should_not == doc
+  result = @coll.find.documents
+  result.compensate_for_id_fields [doc]
+  result.each do |queried_doc|
+    queried_doc.should_not == doc
   end
 end
 
 Then /^I should receive the documents:$/ do |docs|
-  result = @query_result.documents.map do |result_doc|
-    result_doc.silent_delete '_id'
-  end
+  result = @query_result.documents
+  result.compensate_for_id_fields docs
   result.should_be_permutation_of docs
 end
 
-Given /^I am performing an? (\S+)(?: operation)?$/ do |op_type|
-  @which_op = op_type
-end
 
-# for the "Given" steps that "fill out" the command you're generating
-# see wire_steps.rb

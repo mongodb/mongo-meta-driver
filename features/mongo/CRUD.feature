@@ -6,7 +6,7 @@
 # stored procedures
 # indexes
 # profiling
-@mongo @interface @database
+@mongo @interface @CRUD
 Feature: Performing CRUD operations on a MongoDB database
   As a user of MongoDB
   In order to read or make changes to a database on a running instance of MongoDB
@@ -49,7 +49,30 @@ Feature: Performing CRUD operations on a MongoDB database
       | {"a" : "-5", "b" : "16"}              |
       | {"a" : "10", "b" : "0.1", "c" : "-2"} |
 
-  # delete (Demove)
+  # TODO: error messages? getting last err?
+  Scenario: Failing to insert because of duplicate IDs
+    Given the collection contains only the document {"_id" : "5", "name" : "mongoDB"}
+    And I am inserting the documents:
+      | document |
+      | {"_id" : "5", "name" : "10gen"}  |
+      | {"_id" : "6", "name" : "hadoop"} |
+    When I perform this insert operation
+    Then the collection should contain only the document {"_id" : "5", "name" : "mongoDB"}
+
+  Scenario: Continuing with insertion (with continue-on-error) despite error
+    Given the collection contains only the document {"_id" : "5", "name" : "mongoDB"}
+    And I am inserting the documents:
+      | document                         |
+      | {"_id" : "5", "name" : "10gen"}  |
+      | {"_id" : "6", "name" : "hadoop"} |
+    And I am doing a continue on error
+    When I perform this insert operation
+    Then the collection should contain only the documents:
+      | document                          |
+      | {"_id" : "5", "name" : "mongoDB"} |
+      | {"_id" : "6", "name" : "hadoop"}  |
+
+# delete (Remove)
   Scenario: Deleting from a collection
     Given the collection contains only the documents:
       | document               |
@@ -153,9 +176,6 @@ Feature: Performing CRUD operations on a MongoDB database
       | {"name" : "mario", "profession" : "plumber"}      |
       | {"name" : "batman", "profession" : "vigilante"}   |
       | {"name" : "superman", "profession" : "vigilante"} |
-
-  Scenario:
-    Given
 
 
   # get more

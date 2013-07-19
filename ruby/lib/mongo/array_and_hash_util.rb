@@ -16,6 +16,8 @@
 # to make it easier to use with default settings
 # and for chaining removals usefully
 
+# TODO: move some or all of this to the cucumber util.rb?
+# not all of it is necessarily part of the library
 class Hash
   # get a key; if it's not there, get a default value
   def default_get(key, default=nil)
@@ -39,6 +41,20 @@ class Hash
     delete key
     self
   end
+
+
+  # multiset ops
+  def multiset_add(item)
+    self[item] = (self[item] || 0) + 1
+  end
+
+  def multiset_delete(item)
+    if self[item] <= 1
+      self.delete item
+    else
+      self[item] = self[item] - 1
+    end
+  end
 end
 
 class Array
@@ -46,7 +62,7 @@ class Array
   # mapping each item in the list to the number of times we've seen it
   def to_multiset
     inject({}) do |multiset, item|
-      multiset.store(item, (multiset[item] || 0) + 1)
+      multiset.multiset_add item
       multiset
     end
   end

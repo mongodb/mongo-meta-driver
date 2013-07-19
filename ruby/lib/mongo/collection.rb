@@ -51,12 +51,10 @@ module Mongo
 
       # CRUD ops
       # insert (a) document(s) into the collection
-      # TODO: sensible defaults
       def insert(one_or_more_docs, opts = {})
         docs = one_or_more_docs
-        if one_or_more_docs.class == Hash
-          docs = [one_or_more_docs]
-        end
+        docs = [one_or_more_docs] if one_or_more_docs.class != Array
+
         cmd = Mongo::Wire::RequestMessage::Insert.new
         cmd.get_flags.continue_on_error(opts.false_get :continue_on_error)
         cmd.full_collection_name(full_name)
@@ -70,13 +68,18 @@ module Mongo
         cmd = Mongo::Wire::RequestMessage::Query.new
         timeout = opts['timeout'] # wait 5s for a response (or user specified)
         timeout ||= 5
-        cmd.get_flags.tailable_cursor(opts.false_get :tailable_cursor).slave_ok(opts.false_get :slave_ok)
+        cmd.get_flags.tailable_cursor(opts.false_get :tailable_cursor)
+                     .slave_ok(opts.false_get :slave_ok)
                      .no_cursor_timeout(opts.false_get :no_cursor_timeout)
-                     .await_data(opts.false_get :await_data).exhaust(opts.false_get :exhaust)
+                     .await_data(opts.false_get :await_data)
+                     .exhaust(opts.false_get :exhaust)
                      .partial(opts.false_get :partial)
+
         cmd.full_collection_name(full_name)
-           .query(query_doc).return_field_selector(return_fields)
-           .number_to_skip(n_skip).number_to_return(n_ret)
+           .query(query_doc)
+           .return_field_selector(return_fields)
+           .number_to_skip(opts.default_get :skip_num, 0)
+           .number_to_return(opts.default_get :return_num, 0)
 
         @socket.send(cmd.to_wire, 0)
 
