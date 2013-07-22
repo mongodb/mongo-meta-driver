@@ -129,6 +129,7 @@ module Mongo
 
         def initialize
           @header = MessageHeader.new
+          @header.message_class(self.class)
           @flags = RequestFlags.new
           @number_to_skip = 0
           @number_to_return = 0

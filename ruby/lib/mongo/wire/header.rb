@@ -15,10 +15,14 @@
 # Defines the header common to all wire-protocol messages
 module Mongo
   module Wire
+    # parameters to RNG, for IDs
+    MAX_UNSIGN_INT_32 =  (2 ** 32) - 1
+    MIN_SIGN_INT_32 = -(2 ** 31)
+
     # message header, common to all message types
     class MessageHeader
-      class << self; include WireUtil; end
-      # todo - do i even need the message_length field?
+      class << self; include WireUtil end
+
       access_with_validation [
         [ 
           :message_length,
@@ -73,6 +77,11 @@ module Mongo
         out = [bytes].pack('l<')
         out << rest
         out
+      end
+
+      def initialize
+        # Default setting for request ID. This can be overriden by user.
+        @request_id = Random::DEFAULT.rand(MAX_UNSIGN_INT_32) + MIN_SIGN_INT_32
       end
 
       def self.from_wire(message)

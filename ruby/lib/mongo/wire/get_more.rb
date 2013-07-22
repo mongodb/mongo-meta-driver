@@ -47,6 +47,7 @@ module Mongo
 
         def initialize
           @header = MessageHeader.new
+          @header.message_class(self.class)
         end
 
         def to_wire
