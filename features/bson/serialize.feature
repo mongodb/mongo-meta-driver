@@ -1,7 +1,7 @@
 # language: en
 # see deserialize.feature; the two should be kept in sync
 # as much as is possible/makes sense
-@bson
+@mongo @bson
 Feature: Serialize Elements 
   As a user of MongoDB
   In order to store data in the database
@@ -93,17 +93,15 @@ Feature: Serialize Elements
       | data  | md5         | 040000000564617461          |
       | data  | user        | 040000008064617461          |
 
-  # TODO: validate these values. hex_bytes is just the serializer output...
-  # TODO: don't use eval() to read in scope, if possible...
   Scenario Outline: Serialize code values
     Given a code value "<code>" with scope <scope>
     When I serialize the value
     Then the result should be <hex_bytes>
 
     Examples:
-      | code         | scope     | hex_bytes                                                          |
-      | function(){} |           | 0d00000066756e6374696f6e28297b7d00                                 |
-      | function(){} | {:a => 1} | 210000000d00000066756e6374696f6e28297b7d000c0000001061000100000000 |
+      | code         | scope        | hex_bytes                                                          |
+      | function(){} |              | 0d00000066756e6374696f6e28297b7d00                                 |
+      | function(){} | {"a" : 1}    | 210000000d00000066756e6374696f6e28297b7d000c0000001061000100000000 |
 
 
 

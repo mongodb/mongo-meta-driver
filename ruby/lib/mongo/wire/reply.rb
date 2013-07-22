@@ -50,8 +50,14 @@ module Mongo
         attr_reader :documents       # Array of Hashes
 
         # deserialize a reply message from the wire
-        def initialize(message)
-          # 4 int32s for message header, then the message
+        # message_io should be an IO.
+        def initialize(message_io)
+          # determine the length
+          length_bytes = message_io.read(4)
+          length = length_bytes.unpack('l<')[0]
+
+          # get the whole message, and parse it
+          message = length_bytes + message_io.read(length - 4)
           vals = message.unpack('l<l<l<l<l<q<l<l<a*')
 
           header_wire = vals.slice(0, 4).pack('l<l<l<l<')

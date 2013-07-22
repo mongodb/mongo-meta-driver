@@ -111,13 +111,12 @@ Transform /^db_pointer value(?: (\S+))?$/ do |db_pointer|
   lambda {true}
 end
 
-# TODO: make this not use an eval.
 # TODO: change delimeter from " to something that won't appear in js code
-Transform /^code value(?: \"(.+)\"(?: with scope (.+)?)?)?.*$/ do |code, scope|
+Transform /^code value(?: \"(.+)\"(?: with scope (.+)?)?)?$/ do |code, scope|
   if scope.nil?
     BSON::Code.new(code.to_s)
   else
-    BSON::CodeWithScope.new(code.to_s, eval(scope.to_s))
+    BSON::CodeWithScope.new(code.to_s, JSON[scope.to_s])
   end
 end
 
