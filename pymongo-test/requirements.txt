@@ -1,0 +1,4 @@
+pymongo
+lettuce
+nose
+JSON
