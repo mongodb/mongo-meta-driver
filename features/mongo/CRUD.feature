@@ -1,5 +1,4 @@
 # language: en
-# TODO: finish the basic things
 # TODO: write concern/read preference
 # TODO: sharding??
 # TODO: authentication?
@@ -24,6 +23,7 @@ Feature: Performing CRUD operations on a MongoDB database
 
   Scenario: Successfully obtaining a Collection object
     Then I will have a valid collection object corresponding to the collection mycoll on that database
+
 
   # insert (Create)
   Scenario: Inserting a single document into an empty collection
@@ -71,30 +71,6 @@ Feature: Performing CRUD operations on a MongoDB database
       | document                          |
       | {"_id" : "5", "name" : "mongoDB"} |
       | {"_id" : "6", "name" : "hadoop"}  |
-
-# delete (Remove)
-  Scenario: Deleting from a collection
-    Given the collection contains only the documents:
-      | document               |
-      | {"a" : "b", "1" : "6"} |
-      | {"a" : "b", "1" : "7"} |
-    And I am deleting documents matching the document {"1" : "6"}
-    When I perform this delete operation
-    Then the collection should contain only the document {"a" : "b", "1" : "7"}
-
-  Scenario: Attempting to delete from a collection with no matching documents
-    Given the collection contains only the documents:
-      | document                                                       |
-      | {"a" : "b", "1" : "6"}                                         |
-      | {"a" : "b", "1" : "7"}                                         |
-      | {"age" : "6", "address" : {"street" : "43", "number" : "277"}} |
-    And I am deleting documents matching the document {"age" : {"$lt" : "5"}}
-    When I perform this delete operation
-    Then the collection should contain only the documents:
-      | document                                                       |
-      | {"a" : "b", "1" : "6"}                                         |
-      | {"a" : "b", "1" : "7"}                                         |
-      | {"age" : "6", "address" : {"street" : "43", "number" : "277"}} |
 
 
   # query (Read)
@@ -178,7 +154,32 @@ Feature: Performing CRUD operations on a MongoDB database
       | {"name" : "superman", "profession" : "vigilante"} |
 
 
-  # get more
+# delete (Delete)
+  Scenario: Deleting from a collection
+    Given the collection contains only the documents:
+      | document               |
+      | {"a" : "b", "1" : "6"} |
+      | {"a" : "b", "1" : "7"} |
+    And I am deleting documents matching the document {"1" : "6"}
+    When I perform this delete operation
+    Then the collection should contain only the document {"a" : "b", "1" : "7"}
+
+  Scenario: Attempting to delete from a collection with no matching documents
+    Given the collection contains only the documents:
+      | document                                                       |
+      | {"a" : "b", "1" : "6"}                                         |
+      | {"a" : "b", "1" : "7"}                                         |
+      | {"age" : "6", "address" : {"street" : "43", "number" : "277"}} |
+    And I am deleting documents matching the document {"age" : {"$lt" : "5"}}
+    When I perform this delete operation
+    Then the collection should contain only the documents:
+      | document                                                       |
+      | {"a" : "b", "1" : "6"}                                         |
+      | {"a" : "b", "1" : "7"}                                         |
+      | {"age" : "6", "address" : {"street" : "43", "number" : "277"}} |
+
+
+# get more
   # kill cursors
   # parse db replies??
 
