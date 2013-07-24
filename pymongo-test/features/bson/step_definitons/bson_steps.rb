@@ -12,7 +12,7 @@ When /^I serialize the document$/ do
 end
 
 When /^I deserialize the stream$/ do
-  @document = Hash.from_bson(@io)
+  @out_doc = Hash.from_bson(@io)
 end
 
 Then /^the result should be ([0-9a-fA-F]+)$/ do |hex_bytes|
@@ -20,14 +20,14 @@ Then /^the result should be ([0-9a-fA-F]+)$/ do |hex_bytes|
 end
 
 Then /^the result should be the ((?:\S+) value (?:\S+))$/ do |value|
-  @document['k'].should eq(value)
+  @out_doc['k'].should eq(value)
 end
 
 # based on a similar transform from transforms.rb which doesn't work for some reason
 Then /^the result should be the binary value (\S+) with binary type (\S+)$/ do |binary, type|
   type = type ? type.to_sym : type
   binary_obj = BSON::Binary.new(binary.to_s.strip, type)
-  @document['k'].should eq(binary_obj)
+  @out_doc['k'].should eq(binary_obj)
 end
 
 Given /^a (\S+ value(?: .*)?)$/ do |value|
@@ -88,7 +88,7 @@ Then /^the result should be the BSON document:$/ do |doc|
 end
 
 Then /^the result should be a (code value .*)$/ do |code|
-  doccode = @document['k']
+  doccode = @out_doc['k']
   doccode.javascript.should == code.javascript
   if code.class == BSON::CodeWithScope || doccode.class == BSON::CodeWithScope
     doccode.scope.should == code.scope
@@ -99,16 +99,18 @@ end
 # the result should be of the form { 0 => first_elem, 1 => second_elem ...}
 Then /^the result should be a hash corresponding to the following array:$/ do |array|
   # process the array, verifying its structure
-  res_array = (@document.inject([0, []]) do |acc, e|
-    e[0].to_i.should == acc[0]
-    e.length.should == 2
-    [acc[0] + 1, acc[1] << e[1]]
-  end)[1]
+  res_array = (@out_doc.inject([0, []]) do |acc, key_val|
+    key_val.length.should == 2
+    [key, val] = key_val
+    [index, vals] = acc
+    key.to_i.should == index
+    [index + 1, vals << val]
+  end).last
   # verify contents
   res_array.should == array
 end
 
 Then /^the result should be the following hash:$/ do |hash|
-  @document.should == hash
+  @out_doc.should == hash
 end
 

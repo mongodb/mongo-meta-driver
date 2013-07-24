@@ -1,4 +1,3 @@
 pymongo
-lettuce
 nose
-JSON
+freshen
