@@ -1,7 +1,12 @@
 # Definitions of utility functions for step definitions
+import functools
+import re
+# import inspect
+
 #
-# Useful functions
+# Miscellaneous Useful functions
 #
+
 # utilities for marshalling data into and out of binary form
 def pack_hex(hex_str):
   if len(hex_str) % 2 != 0:
@@ -12,9 +17,14 @@ def pack_hex(hex_str):
 def not_provided(arg):
   return (arg is None or arg.strip() == "")
 
+# helper function for passing tests that don't make sense for this implementation
+def trivial_pass():
+  print "This test doesn't make sense with this implementation."
+
 #
 # Transform system implementation
 #
+
 
 # transform a series of arguments. will try to match each
 # basically a dispatcher, calling the registered functions
@@ -33,6 +43,24 @@ def transform(reg_str):
   
   return register_transform
 
+# transform an input string according to transform rules
+def do_transform(arg_str):
+  # if this argument is not a string, pass it through
+  if type(arg_str) != str and type(arg_str) != unicode:
+    return arg_str
+
+  # if it is, attempt to match against transforms
+  for re_func_pair in transform_registry:
+    re, func = re_func_pair
+    match = re.search(arg_str)
+    # if we have a match at this transform
+    if match is not None:
+      transform_func_arguments = match.groups()
+      return func(*transform_func_arguments)
+
+  # otherwise pass through unchanged
+  return arg_str
+
 # TODO: enable you to do multiple transforms??
 
 # declaring steps that can take transforms
@@ -41,27 +69,16 @@ def transform(reg_str):
 def step_tr(step_decorator, reg_str):
 
   # modify the function the user provides
+  @functools.wraps(step_decorator)
   def do_step_with_transform(user_func):
 
     # before calling the function, pass its arguments (capture groups) into transforms
+    @functools.wraps(user_func)   # make Python give us useful line numbers
     def transform_wrapped(*args):
 
-      # used by map to check individual argument for a match, and call the corresponding function
-      # remember, each argument is a regex capture group
-      def dispatch(arg_str):
-        for re_func_pair in transform_registry:
-          re, func = re_func_pair
-          match = re.search(arg_str)
-          # if we have a match at this transform
-          if match is not None:
-            transform_func_arguments = match.groups()
-            return func(*transform_func_arguments)
-
-        # otherwise pass through unchanged
-        return arg
-
       # attempt to match against transforms
-      modified_args = args.map(dispatch)
+      # transform each argument. remember, each is a regex capture group
+      modified_args = map(do_transform, list(args))
       user_func(*modified_args)
 
     # register the wrapped function using the step decorator
@@ -69,13 +86,3 @@ def step_tr(step_decorator, reg_str):
 
   # finally, return the function to work with Python's decorators
   return do_step_with_transform
-
-
-      # mod_args = []
-      # for arg_str in args:
-      #   # we're basically
-      #   mod_arg_str
-      #   for re_func_pair in transform_registry:
-      #     re, func = re_func_pair
-      #     if re.match(arg_str):
-      #       mod_args.append()
