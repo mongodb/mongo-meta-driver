@@ -7,37 +7,37 @@ Feature: Serialize Elements
   In order to store data in the database
   The driver needs to serialize BSON elements
 
-  Scenario Outline: Serialize BSON types
-    Given a <value_type> value
-    Then the value should correspond to the BSON type <bson_type>
+  # Scenario Outline: Serialize BSON types
+  #   Given a <value_type> value
+  #   Then the value should correspond to the BSON type <bson_type>
 
-    Examples:
-      | value_type   | bson_type |
-      | double       |        01 |
-      | string       |        02 |
-      | document     |        03 |
-      | array        |        04 |
-      | binary       |        05 |
-      | undefined    |        06 |
-      | object_id    |        07 |
-      | boolean      |        08 |
-      | datetime     |        09 |
-      | null         |        0A |
-      | regex        |        0B |
-      | db_pointer   |        0C |
-      | code         |        0D |
-   #   | symbol       |        0E |
-      | code_w_scope |        0F |
-      | int32        |        10 |
-      | timestamp    |        11 |
-      | int64        |        12 |
-      | min_key      |        FF |
-      | max_key      |        7F |
+  #   Examples:
+  #     | value_type   | bson_type |
+  #     | double       |        01 |
+  #     | string       |        02 |
+  #     | document     |        03 |
+  #     | array        |        04 |
+  #     | binary       |        05 |
+  #     | undefined    |        06 |
+  #     | object_id    |        07 |
+  #     | boolean      |        08 |
+  #     | datetime     |        09 |
+  #     | null         |        0A |
+  #     | regex        |        0B |
+  #     | db_pointer   |        0C |
+  #     | code         |        0D |
+  #     | symbol       |        0E |
+  #     | code_w_scope |        0F |
+  #     | int32        |        10 |
+  #     | timestamp    |        11 |
+  #     | int64        |        12 |
+  #     | min_key      |        FF |
+  #     | max_key      |        7F |
 
   # CLARIFY
   Scenario Outline: Serialize documents containing simple BSON values
     Given a <value_type> value <value>
-    When I serialize the value
+    When I serialize a document mapping the key k to the value
     Then the result should be <hex_bytes>
 
     Examples:
@@ -49,9 +49,35 @@ Feature: Serialize Elements
       | boolean    | true                     | 09000000086b000100                       |
       | datetime   | 946702800                | 10000000096b008054e26bdc00000000         | 
       | regex      | regex                    | 0f0000000b6b007265676578000000           | 
-      #| symbol     | symbol                   | 130000000e6b000700000073796d626f6c0000   |
+    # | symbol     | symbol                   | 130000000e6b000700000073796d626f6c0000   |
       | int32      | 12345                    | 0c000000106b003930000000                 |
       | int64      | 2147483648               | 10000000126b00000000800000000000         |
+
+  # Scenario: Serialize hash value
+  #   Given a hash with the following items:
+  #     | key    | value_type | value |
+  #     | double | double     | 3.14  |
+  #     | string | string     | test  |
+  #     | int32  | int32      | 1234  |
+  #   When I serialize the value
+  #   Then the result should be the BSON document:
+  #     | bson_type | e_name | value              |
+  #     | 01        | double | 1f85eb51b81e0940   |
+  #     | 02        | string | 050000007465737400 |
+  #     | 10        | int32  | d2040000           |
+
+  # Scenario: Serialize array value
+  #   Given an array with the following items:
+  #     | value_type | value |
+  #     | double     | 3.14  |
+  #     | string     | test  |
+  #     | int32      | 1234  |
+  #   When I serialize the value
+  #   Then the result should be the BSON document:
+  #     | bson_type | e_name | value              |
+  #     | 01        | 0      | 1f85eb51b81e0940   |
+  #     | 02        | 1      | 050000007465737400 |
+  #     | 10        | 2      | d2040000           |
 
   Scenario: Serialize hash value
     Given a hash with the following items:
@@ -59,29 +85,21 @@ Feature: Serialize Elements
       | double | double     | 3.14  |
       | string | string     | test  |
       | int32  | int32      | 1234  |
-    When I serialize the value
-    Then the result should be the BSON document:
-      | bson_type | e_name | value              |
-      | 01        | double | 1f85eb51b81e0940   |
-      | 02        | string | 050000007465737400 |
-      | 10        | int32  | d2040000           |
+    When I serialize a document mapping the key k to the value
+    Then the result should be 39000000036b003100000001646f75626c65001f85eb51b81e094002737472696e670005000000746573740010696e74333200d20400000000
 
   Scenario: Serialize array value
-    Given a array with the following items:
+    Given an array with the following items:
       | value_type | value |
       | double     | 3.14  |
       | string     | test  |
       | int32      | 1234  |
-    When I serialize the value
-    Then the result should be the BSON document:
-      | bson_type | e_name | value              |
-      | 01        | 0      | 1f85eb51b81e0940   |
-      | 02        | 1      | 050000007465737400 |
-      | 10        | 2      | d2040000           |
+    When I serialize a document mapping the key k to the value
+    Then the result should be 2b000000046b00230000000130001f85eb51b81e0940023100050000007465737400103200d20400000000
 
   Scenario Outline: Serialize binary values
     Given a binary value <value> with binary type <binary_type>
-    When I serialize the value
+    When I serialize a document mapping the key k to the value
     Then the result should be <hex_bytes>
 
     Examples:
@@ -96,7 +114,7 @@ Feature: Serialize Elements
 
   Scenario Outline: Serialize code values
     Given a code value "<code>" with scope <scope>
-    When I serialize the value
+    When I serialize a document mapping the key k to the value
     Then the result should be <hex_bytes>
 
     Examples:

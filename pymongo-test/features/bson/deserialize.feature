@@ -54,59 +54,78 @@ Feature: Deserialize Elements
     | 10000000126b00000000800000000000         | int64     | 2147483648               |
     | 0c000000106b003930000000                 | int32     | 12345                    |
 
-  # adapted from serialize.feature
+  # # adapted from serialize.feature
+  # Scenario: Deserialize hash value
+  #   Given an IO stream containing the following BSON document:
+  #   | bson_type | e_name | value              |
+  #   |        01 | double | 1f85eb51b81e0940   |
+  #   |        02 | string | 050000007465737400 |
+  #   |        10 | int32  | d2040000           |
+  #   When I deserialize the stream
+  #   Then the result should be the following hash:
+  #   | key    | value_type | value |
+  #   | double | double     | 3.14  |
+  #   | string | string     | test  |
+  #   | int32  | int32      | 1234  |
+
+  #   # adapted from serialize.feature
+  #   Scenario: Deserialize array value
+  #     Given an IO stream containing the following BSON document:
+  #     | bson_type | e_name | value              |
+  #     | 01        | 0      | 1f85eb51b81e0940   |
+  #     | 02        | 1      | 050000007465737400 |
+  #     | 10        | 2      | d2040000           |
+  #     When I deserialize the stream
+  #     Then the result should be the following hash:
+  #     | key | value_type | value |
+  #     |   0 | double     | 3.14  |
+  #     |   1 | string     | test  |
+  #     |   2 | int32      | 1234  |
+
   Scenario: Deserialize hash value
-    Given an IO stream containing the following BSON document:
-    | bson_type | e_name | value              |
-    |        01 | double | 1f85eb51b81e0940   |
-    |        02 | string | 050000007465737400 |
-    |        10 | int32  | d2040000           |
+    Given an IO stream containing 3100000001646f75626c65001f85eb51b81e094002737472696e670005000000746573740010696e74333200d204000000
     When I deserialize the stream
     Then the result should be the following hash:
-    | key    | value_type | value |
-    | double | double     | 3.14  |
-    | string | string     | test  |
-    | int32  | int32      | 1234  |
+      | key    | value_type | value |
+      | double | double     | 3.14  |
+      | string | string     | test  |
+      | int32  | int32      | 1234  |
 
-    # adapted from serialize.feature
-    Scenario: Deserialize array value
-      Given an IO stream containing the following BSON document:
-      | bson_type | e_name | value              |
-      | 01        | 0      | 1f85eb51b81e0940   |
-      | 02        | 1      | 050000007465737400 |
-      | 10        | 2      | d2040000           |
-      When I deserialize the stream
-      Then the result should be a hash corresponding to the following array:
+  # TODO arrays
+  Scenario: Deserialize array
+    Given an IO stream containing 2b000000046b00230000000130001f85eb51b81e0940023100050000007465737400103200d20400000000
+    When I deserialize the stream
+    Then the result should be a document mapping k to the following array:
       | value_type | value |
       | double     | 3.14  |
       | string     | test  |
       | int32      | 1234  |
 
-      # adapted from serialize.feature
-      Scenario Outline: Deserialize binary values
-        Given an IO stream containing <hex_bytes>
-        When I deserialize the stream
-        Then the result should be the binary value <value> with binary type <binary_type>
+  # adapted from serialize.feature
+  Scenario Outline: Deserialize binary values
+    Given an IO stream containing <hex_bytes>
+    When I deserialize the stream
+    Then the result should be the binary value <value> with binary type <binary_type>
 
 # some of these don't work for some reason with pymongo. unsure if it's a bug.
-        Examples:
-        | value | binary_type | hex_bytes                                  |
-        | data  | generic     | 11000000056b0004000000006461746100         |
-        | data  | function    | 11000000056b0004000000016461746100         |
-        | data  | old         | 15000000056b000800000002040000006461746100 |
+    Examples:
+    | value | binary_type | hex_bytes                                  |
+    | data  | generic     | 11000000056b0004000000006461746100         |
+    | data  | function    | 11000000056b0004000000016461746100         |
+    | data  | old         | 15000000056b000800000002040000006461746100 |
 # yeah, maybe it's that the encoded UUIDs are not valid... ?
 #        | data  | uuid_old    | 11000000056b0004000000036461746100         |
 #        | data  | uuid        | 11000000056b0004000000046461746100         |
-        | data  | md5         | 11000000056b0004000000056461746100         |
-        | data  | user        | 11000000056b0004000000806461746100         |
+    | data  | md5         | 11000000056b0004000000056461746100         |
+    | data  | user        | 11000000056b0004000000806461746100         |
 
 
-      Scenario Outline: Deserialize code
-        Given an IO stream containing <hex_bytes>
-        When I deserialize the stream
-        Then the result should be a code value "<code>" with scope <scope>
+  Scenario Outline: Deserialize code
+    Given an IO stream containing <hex_bytes>
+    When I deserialize the stream
+    Then the result should be a code value "<code>" with scope <scope>
 
-        Examples:
-        | hex_bytes                                                                          | code         | scope      |
-        | 190000000d6b000d00000066756e6374696f6e28297b7d0000                                 | function(){} |            |
-        | 290000000f6b00210000000d00000066756e6374696f6e28297b7d000c000000106100010000000000 | function(){} | {"a" : 1}  |
+    Examples:
+    | hex_bytes                                                                          | code         | scope      |
+    | 190000000d6b000d00000066756e6374696f6e28297b7d0000                                 | function(){} |            |
+    | 290000000f6b00210000000d00000066756e6374696f6e28297b7d000c000000106100010000000000 | function(){} | {"a" : 1}  |

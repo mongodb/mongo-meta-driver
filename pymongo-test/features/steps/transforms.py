@@ -170,7 +170,7 @@ def transform_value_type(typ):
 #   bson = ""
 #   bson += 
 
-@transform(r"^table:value_type,value$")
-def transform_value_type_value_table(table):
-  for row in table.iterrows():
-    print row
+# @transform(r"^table:value_type,value$")
+# def transform_value_type_value_table(table):
+#   for row in table.iterrows():
+#     print row
