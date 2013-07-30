@@ -34,7 +34,7 @@ Feature: Serialize Elements
   #     | min_key      |        FF |
   #     | max_key      |        7F |
 
-  # CLARIFY
+  # CLARIFY - ALL of these are really documents with key k
   Scenario Outline: Serialize documents containing simple BSON values
     Given a <value_type> value <value>
     When I serialize a document mapping the key k to the value
@@ -52,32 +52,6 @@ Feature: Serialize Elements
     # | symbol     | symbol                   | 130000000e6b000700000073796d626f6c0000   |
       | int32      | 12345                    | 0c000000106b003930000000                 |
       | int64      | 2147483648               | 10000000126b00000000800000000000         |
-
-  # Scenario: Serialize hash value
-  #   Given a hash with the following items:
-  #     | key    | value_type | value |
-  #     | double | double     | 3.14  |
-  #     | string | string     | test  |
-  #     | int32  | int32      | 1234  |
-  #   When I serialize the value
-  #   Then the result should be the BSON document:
-  #     | bson_type | e_name | value              |
-  #     | 01        | double | 1f85eb51b81e0940   |
-  #     | 02        | string | 050000007465737400 |
-  #     | 10        | int32  | d2040000           |
-
-  # Scenario: Serialize array value
-  #   Given an array with the following items:
-  #     | value_type | value |
-  #     | double     | 3.14  |
-  #     | string     | test  |
-  #     | int32      | 1234  |
-  #   When I serialize the value
-  #   Then the result should be the BSON document:
-  #     | bson_type | e_name | value              |
-  #     | 01        | 0      | 1f85eb51b81e0940   |
-  #     | 02        | 1      | 050000007465737400 |
-  #     | 10        | 2      | d2040000           |
 
   Scenario: Serialize hash value
     Given a hash with the following items:
