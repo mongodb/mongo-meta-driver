@@ -23,12 +23,11 @@ end
 
 # produce an array of documents
 Transform /^table:document$/ do |table|
-  docs = table.rows.map do |doc_str_singleton|
+  docs = []
+  table.rows.each do |doc_str_singleton|
     doc_str = doc_str_singleton.first
-    if doc_str.strip.empty?
-      nil
-    else
-      JSON[doc_str]
+    if not doc_str.strip.empty?
+      docs << JSON[doc_str]
     end
   end
 end
