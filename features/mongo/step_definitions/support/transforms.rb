@@ -30,6 +30,7 @@ Transform /^table:document$/ do |table|
       docs << JSON[doc_str]
     end
   end
+  docs
 end
 
 Transform /^I am (not | |).+$/ do |empty_or_not|
