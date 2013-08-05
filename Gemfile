@@ -2,6 +2,7 @@ source "https://rubygems.org"
 
 gem "json", :platforms => [ :ruby_18, :jruby ]
 gem "rake"
+gem "bson", :git => "git@github.com:mongodb/bson-ruby.git"
 
 group :development, :test do
   gem "rspec"

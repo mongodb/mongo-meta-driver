@@ -60,7 +60,7 @@ help:
 	@echo "	 push		runs publication process and pushes to docs site to production."
 	@echo "	 pdfs		generates pdfs more efficently than latexpdf."
 	@echo
-
+noop:
 #
 # Meta targets that control the build and publication process.
 #

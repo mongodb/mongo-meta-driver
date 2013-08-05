@@ -19,8 +19,9 @@ Step Definitions
 .. literalinclude:: /features/bson/step_definitons/bson_steps.rb
    :language: ruby
 
-Implementation (Ruby)
----------------------
+..
+   Implementation (Ruby)
+   ---------------------
 
-.. literalinclude:: /implementation-ruby/bson.rb
-   :language: ruby
+   .. literalinclude:: /implementation-ruby/bson.rb
+      :language: ruby

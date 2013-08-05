@@ -1,0 +1,29 @@
+git:
+  remote:
+    upstream: 'mongodb/mongo-meta-driver'
+    tools: 'mongodb/docs-tools'
+  branches:
+    manual: 'master'
+    published:
+      - 'master'
+      # the branches/published list **must** be ordered from most to
+      # least recent release.
+version:
+  published:
+    - 'master'
+  stable: null
+  upcoming: null
+build:
+  system:
+    files: []
+    static:
+      - 'makefile.compatibility'
+  paths:
+    output: 'build'
+    source: 'source'
+    includes: 'source/includes'
+    images: 'source/images'
+    tools: 'bin'
+    buildsystem: 'build/docs-tools'
+    builddata: 'bin/builddata'
+...
