@@ -5,7 +5,7 @@
 # stored procedures
 # indexes
 # profiling
-@mongo @interface @CRUD
+@mongo @interface @CRUD @ruby
 Feature: Performing CRUD operations on a MongoDB database
   As a user of MongoDB
   In order to read or make changes to a database on a running instance of MongoDB

@@ -1,5 +1,6 @@
 # language: en
-@mongo @interface @client
+# Ruby only for now, since these steps are not yet implemented for Python
+@mongo @interface @client @ruby
 Feature: Client Object
   As a user of MongoDB
   In order to interact with MongoDB

@@ -7,6 +7,7 @@ Feature: Serialize Elements
   In order to store data in the database
   The driver needs to serialize BSON elements
 
+  @ruby
   Scenario Outline: Serialize BSON types
     Given a <value_type> value
     Then the value should correspond to the BSON type <bson_type>
@@ -34,75 +35,71 @@ Feature: Serialize Elements
       | min_key      |        FF |
       | max_key      |        7F |
 
-  Scenario Outline: Serialize simple BSON values
+  Scenario Outline: Serialize documents containing simple BSON values
     Given a <value_type> value <value>
-    When I serialize the value
+    When I serialize a document mapping the key k to the value
     Then the result should be <hex_bytes>
 
-    Examples:
-      | value_type | value                    | hex_bytes                |
-      | double     | 3.1459                   | 26e4839ecd2a0940         |
-      | string     | test                     | 050000007465737400       |
-      | object_id  | 50d3409d82cb8a4fc7000001 | 50d3409d82cb8a4fc7000001 |
-      | boolean    | false                    | 00                       |
-      | boolean    | true                     | 01                       |
-      | datetime   | 946702800                | 8054e26bdc000000         |
-      | regex      | regex                    | 72656765780000           |
-      | symbol     | symbol                   | 0700000073796d626f6c00   |
-      | int32      | 12345                    | 39300000                 |
-      | int64      | 2147483648               | 0000008000000000         |
+    @ruby @python
+    Examples: Universally Supported
+        | value_type | value                    | hex_bytes                                |
+        | double     | 3.1459                   | 10000000016b0026e4839ecd2a094000         |
+        | string     | test                     | 11000000026b0005000000746573740000       |
+        | object_id  | 50d3409d82cb8a4fc7000001 | 14000000076b0050d3409d82cb8a4fc700000100 |
+        | boolean    | false                    | 09000000086b000000                       |
+        | boolean    | true                     | 09000000086b000100                       |
+        | datetime   | 946702800                | 10000000096b008054e26bdc00000000         |
+        | regex      | regex                    | 0f0000000b6b007265676578000000           |
+        | int32      | 12345                    | 0c000000106b003930000000                 |
+        | int64      | 2147483648               | 10000000126b00000000800000000000         |
+    @ruby
+    Examples: Ruby only
+      | value_type | value                    | hex_bytes                                |
+      | symbol     | symbol                   | 130000000e6b000700000073796d626f6c0000   |
 
+  @ruby @python
   Scenario: Serialize hash value
     Given a hash with the following items:
       | key    | value_type | value |
       | double | double     | 3.14  |
       | string | string     | test  |
       | int32  | int32      | 1234  |
-    When I serialize the value
-    Then the result should be the BSON document:
-      | bson_type | e_name | value              |
-      | 01        | double | 1f85eb51b81e0940   |
-      | 02        | string | 050000007465737400 |
-      | 10        | int32  | d2040000           |
+    When I serialize a document mapping the key k to the value
+    Then the result should be 39000000036b003100000001646f75626c65001f85eb51b81e094002737472696e670005000000746573740010696e74333200d20400000000
 
+  @ruby @python
   Scenario: Serialize array value
-    Given a array with the following items:
+    Given an array value with the following items:
       | value_type | value |
       | double     | 3.14  |
       | string     | test  |
       | int32      | 1234  |
-    When I serialize the value
-    Then the result should be the BSON document:
-      | bson_type | e_name | value              |
-      | 01        | 0      | 1f85eb51b81e0940   |
-      | 02        | 1      | 050000007465737400 |
-      | 10        | 2      | d2040000           |
+    When I serialize a document mapping the key k to the value
+    Then the result should be 2b000000046b00230000000130001f85eb51b81e0940023100050000007465737400103200d20400000000
 
+  @ruby @python
   Scenario Outline: Serialize binary values
     Given a binary value <value> with binary type <binary_type>
-    When I serialize the value
+    When I serialize a document mapping the key k to the value
     Then the result should be <hex_bytes>
 
     Examples:
-      | value | binary_type | hex_bytes                   |
-      | data  | generic     | 040000000064617461          |
-      | data  | function    | 040000000164617461          |
-      | data  | old         | 08000000020400000064617461  |
-      | data  | uuid_old    | 040000000364617461          |
-      | data  | uuid        | 040000000464617461          |
-      | data  | md5         | 040000000564617461          |
-      | data  | user        | 040000008064617461          |
+      | value | binary_type | hex_bytes                                  |
+      | data  | generic     | 11000000056b0004000000006461746100         |
+      | data  | function    | 11000000056b0004000000016461746100         |
+      | data  | old         | 15000000056b000800000002040000006461746100 |
+      | data  | uuid_old    | 11000000056b0004000000036461746100         |
+      | data  | uuid        | 11000000056b0004000000046461746100         |
+      | data  | md5         | 11000000056b0004000000056461746100         |
+      | data  | user        | 11000000056b0004000000806461746100         |
 
+  @ruby @python
   Scenario Outline: Serialize code values
     Given a code value "<code>" with scope <scope>
-    When I serialize the value
+    When I serialize a document mapping the key k to the value
     Then the result should be <hex_bytes>
 
     Examples:
-      | code         | scope        | hex_bytes                                                          |
-      | function(){} |              | 0d00000066756e6374696f6e28297b7d00                                 |
-      | function(){} | {"a" : 1}    | 210000000d00000066756e6374696f6e28297b7d000c0000001061000100000000 |
-
-
-
-
+      | code         | scope        | hex_bytes                                                                          |
+      | function(){} |              | 190000000d6b000d00000066756e6374696f6e28297b7d0000                                 |
+      | function(){} | {"a" : 1}    | 290000000f6b00210000000d00000066756e6374696f6e28297b7d000c000000106100010000000000 |

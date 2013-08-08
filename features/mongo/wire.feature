@@ -12,6 +12,7 @@ Feature: Creating commands for database
     Given my request will have an ID of 1234
     And I am using the collection "mydb.mycoll"
 
+  @ruby @python
   Scenario Outline: Generating OP_UPDATE messages (updating documents)
     Given I am generating an OP_UPDATE message
     And I am performing the update specified by the document <selector>
@@ -26,6 +27,8 @@ Feature: Creating commands for database
       | {"a" : 1}          | {"a" : 2} | not    |              | 3c000000d204000000000000d1070000000000006d7964622e6d79636f6c6c00020000000c00000010610001000000000c0000001061000200000000               |
       | {"a" : 2, "b" : 3} | {"b" : 4} |        | not          | 43000000d204000000000000d1070000000000006d7964622e6d79636f6c6c0001000000130000001061000200000010620003000000000c0000001062000400000000 |
 
+  # in Python, we need to deal with ordering issues
+  @ruby
   Scenario: Generating an OP_INSERT message (inserting documents)
     Given I am generating an OP_INSERT message
     And I am not doing a continue on error
@@ -37,6 +40,7 @@ Feature: Creating commands for database
     When I generate the wire protocol message for this request
     Then the generated message should match 63000000d204000000000000d2070000000000006d7964622e6d79636f6c6c001300000010610001000000106200020000000022000000106100010000000367000c000000106400010000000010620002000000000e00000002630002000000630000
 
+  @ruby @python
   Scenario: Generating an OP_INSERT message with continue on error
     Given I am generating an OP_INSERT message
     And I am doing a continue on error
@@ -44,6 +48,7 @@ Feature: Creating commands for database
     When I generate the wire protocol message for this request
     Then the generated message should match 33000000d204000000000000d2070000010000006d7964622e6d79636f6c6c0013000000106100010000001062000200000000
 
+  @ruby @python
   Scenario Outline: Generating OP_QUERY messages (querying for documents)
     Given I am generating an OP_QUERY message
     And I am skipping <num_to_skip> results
@@ -64,6 +69,7 @@ Feature: Creating commands for database
       | 3           | 3             | {"a" : 1, "b" : 2}   | {"c" : 1}       |                 | not      | not               |            | not     | not     | 47000000d204000000000000d4070000220000006d7964622e6d79636f6c6c000300000003000000130000001061000100000010620002000000000c0000001063000100000000 |
       | 0           | 10            | {"b" : {"$lte" : 4}} |                 | not             |          |                   | not        |         |         | 3f000000d204000000000000d4070000d40000006d7964622e6d79636f6c6c00000000000a000000170000000362000f00000010246c746500040000000000                 |
 
+  @ruby @python
   Scenario Outline: Generating OP_GET_MORE messages (requesting more documents from an existing cursor)
     Given I am generating an OP_GET_MORE message
     And I am returning <num_to_return> results
@@ -75,6 +81,7 @@ Feature: Creating commands for database
       | num_to_return | cursor_id | message                                                                                  |
       | 10            | 5         | 2c000000d204000000000000d5070000000000006d7964622e6d79636f6c6c000a0000000500000000000000 |
 
+  @ruby @python
   Scenario Outline: Generating OP_DELETE messages (deleting documents)
     Given I am generating an OP_DELETE message
     And I am deleting documents matching the document <selector>
@@ -86,6 +93,8 @@ Feature: Creating commands for database
       | selector  | multiple_remove | message                                                                                          |
       | {"a" : 1} | not             | 30000000d204000000000000d6070000000000006d7964622e6d79636f6c6c00010000000c0000001061000100000000 |
 
+
+  @ruby @python
   Scenario: Generating an OP_KILL_CURSORS message (request closing of active cursors)
     Given I am generating an OP_KILL_CURSORS message
     And I am deleting the cursors with ids:
@@ -97,6 +106,9 @@ Feature: Creating commands for database
     When I generate the wire protocol message for this request
     Then the generated message should match 38000000d204000000000000d707000000000000040000001127000000000000224e00000000000033750000000000000110a5d4e8000000
 
+  # PyMongo doesn't have a good facility for analyzing responses
+  # at least, not one that's a well-exposed API
+  @ruby
   Scenario Outline: Parsing an OP_REPLY message (response from server)
     Given MongoDB has responded with the OP_REPLY message <message>
     When I parse the message
@@ -119,6 +131,8 @@ Feature: Creating commands for database
       | 10     | 42          | 12345         | 10         | 0            | not          |               | not                |               | []                                                                                                    | 240000000a0000002a000000010000000900000039300000000000000a00000000000000                                                                                                                                                                                                   |
       | 59     | 61          | 6543210       | 7          | 1            |              | not           | not                |               | [{"$err": "can't map file memory - mongo requires 64 bit build for larger datasets", "code" : 10084}] | 850000003b0000003d000000010000000a0000006ad76300000000000700000001000000610000000224657272004800000063616e2774206d61702066696c65206d656d6f7279202d206d6f6e676f20726571756972657320363420626974206275696c6420666f72206c61726765722064617461736574730010636f6465006427000000 |
 
+  # hard to read off ID in PyMongo
+  @ruby
   Scenario: Unique message ID generation
     Given I have generated a message
     When I generate another message

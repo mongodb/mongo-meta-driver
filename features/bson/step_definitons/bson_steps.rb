@@ -3,8 +3,16 @@ Given /^a document containing a ((?:\S+) value (?:.+))$/ do |value|
   @doc = {:k => value}
 end
 
+Given /^an array value with the following items:$/ do |array|
+  @value = array
+end
+
 Given /^an IO stream containing ([0-9a-fA-F]+)$/ do |hex_bytes|
   @io = StringIO.new([hex_bytes].pack('H*'))
+end
+
+When /^I serialize a document mapping the key (\S+) to the value$/ do |key|
+  @bson = {key => @value}.to_bson
 end
 
 When /^I serialize the document$/ do
@@ -95,17 +103,21 @@ Then /^the result should be a (code value .*)$/ do |code|
   end
 end
 
-# TODO make this a transform
-# the result should be of the form { 0 => first_elem, 1 => second_elem ...}
-Then /^the result should be a hash corresponding to the following array:$/ do |array|
-  # process the array, verifying its structure
-  res_array = (@document.inject([0, []]) do |acc, e|
-    e[0].to_i.should == acc[0]
-    e.length.should == 2
-    [acc[0] + 1, acc[1] << e[1]]
-  end)[1]
-  # verify contents
-  res_array.should == array
+## TODO make this a transform
+## the result should be of the form { 0 => first_elem, 1 => second_elem ...}
+#Then /^the result should be a hash corresponding to the following array:$/ do |array|
+#  # process the array, verifying its structure
+#  res_array = (@document.inject([0, []]) do |acc, e|
+#    e[0].to_i.should == acc[0]
+#    e.length.should == 2
+#    [acc[0] + 1, acc[1] << e[1]]
+#  end)[1]
+#  # verify contents
+#  res_array.should == array
+#end
+
+Then /^the result should be a document mapping k to the following array:$/ do |array|
+  @document['k'].should == array
 end
 
 Then /^the result should be the following hash:$/ do |hash|
