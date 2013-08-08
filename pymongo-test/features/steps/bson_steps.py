@@ -104,7 +104,7 @@ def result_should_be_code_value(context, code):
   doccode = context.out_doc[0]['k']
   assert_equal( doccode, code )
 
-@given('^an array with the following items$')
+@given('^an array value with the following items$')
 def an_array_with_following_items(context):
   arr = []
   # build up array out of table

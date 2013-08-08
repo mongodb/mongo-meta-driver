@@ -7,52 +7,63 @@ Feature: Serialize Elements
   In order to store data in the database
   The driver needs to serialize BSON elements
 
-  # Scenario Outline: Serialize BSON types
-  #   Given a <value_type> value
-  #   Then the value should correspond to the BSON type <bson_type>
+  @ruby
+  Scenario Outline: Serialize BSON types
+    Given a <value_type> value
+    Then the value should correspond to the BSON type <bson_type>
 
-  #   Examples:
-  #     | value_type   | bson_type |
-  #     | double       |        01 |
-  #     | string       |        02 |
-  #     | document     |        03 |
-  #     | array        |        04 |
-  #     | binary       |        05 |
-  #     | undefined    |        06 |
-  #     | object_id    |        07 |
-  #     | boolean      |        08 |
-  #     | datetime     |        09 |
-  #     | null         |        0A |
-  #     | regex        |        0B |
-  #     | db_pointer   |        0C |
-  #     | code         |        0D |
-  #     | symbol       |        0E |
-  #     | code_w_scope |        0F |
-  #     | int32        |        10 |
-  #     | timestamp    |        11 |
-  #     | int64        |        12 |
-  #     | min_key      |        FF |
-  #     | max_key      |        7F |
+    Examples:
+      | value_type   | bson_type |
+      | double       |        01 |
+      | string       |        02 |
+      | document     |        03 |
+      | array        |        04 |
+      | binary       |        05 |
+      | undefined    |        06 |
+      | object_id    |        07 |
+      | boolean      |        08 |
+      | datetime     |        09 |
+      | null         |        0A |
+      | regex        |        0B |
+      | db_pointer   |        0C |
+      | code         |        0D |
+      | symbol       |        0E |
+      | code_w_scope |        0F |
+      | int32        |        10 |
+      | timestamp    |        11 |
+      | int64        |        12 |
+      | min_key      |        FF |
+      | max_key      |        7F |
 
-  # CLARIFY - ALL of these are really documents with key k
-  Scenario Outline: Serialize documents containing simple BSON values
+  @ruby @python
+  Scenario Outline: Serialize documents containing simple BSON values (universal)
+    Given a <value_type> value <value>
+    When I serialize a document mapping the key k to the value
+    Then the result should be <hex_bytes>
+
+    Examples:
+        | value_type | value                    | hex_bytes                                |
+        | double     | 3.1459                   | 10000000016b0026e4839ecd2a094000         |
+        | string     | test                     | 11000000026b0005000000746573740000       |
+        | object_id  | 50d3409d82cb8a4fc7000001 | 14000000076b0050d3409d82cb8a4fc700000100 |
+        | boolean    | false                    | 09000000086b000000                       |
+        | boolean    | true                     | 09000000086b000100                       |
+        | datetime   | 946702800                | 10000000096b008054e26bdc00000000         |
+        | regex      | regex                    | 0f0000000b6b007265676578000000           |
+        | int32      | 12345                    | 0c000000106b003930000000                 |
+        | int64      | 2147483648               | 10000000126b00000000800000000000         |
+
+  @ruby
+  Scenario Outline: Serialize documents containing simple BSON values (Ruby only)
     Given a <value_type> value <value>
     When I serialize a document mapping the key k to the value
     Then the result should be <hex_bytes>
 
     Examples:
       | value_type | value                    | hex_bytes                                |
-      | double     | 3.1459                   | 10000000016b0026e4839ecd2a094000         |
-      | string     | test                     | 11000000026b0005000000746573740000       |
-      | object_id  | 50d3409d82cb8a4fc7000001 | 14000000076b0050d3409d82cb8a4fc700000100 |
-      | boolean    | false                    | 09000000086b000000                       |
-      | boolean    | true                     | 09000000086b000100                       |
-      | datetime   | 946702800                | 10000000096b008054e26bdc00000000         | 
-      | regex      | regex                    | 0f0000000b6b007265676578000000           | 
-    # | symbol     | symbol                   | 130000000e6b000700000073796d626f6c0000   |
-      | int32      | 12345                    | 0c000000106b003930000000                 |
-      | int64      | 2147483648               | 10000000126b00000000800000000000         |
+      | symbol     | symbol                   | 130000000e6b000700000073796d626f6c0000   |
 
+  @ruby @python
   Scenario: Serialize hash value
     Given a hash with the following items:
       | key    | value_type | value |
@@ -62,8 +73,9 @@ Feature: Serialize Elements
     When I serialize a document mapping the key k to the value
     Then the result should be 39000000036b003100000001646f75626c65001f85eb51b81e094002737472696e670005000000746573740010696e74333200d20400000000
 
+  @ruby @python
   Scenario: Serialize array value
-    Given an array with the following items:
+    Given an array value with the following items:
       | value_type | value |
       | double     | 3.14  |
       | string     | test  |
@@ -71,6 +83,7 @@ Feature: Serialize Elements
     When I serialize a document mapping the key k to the value
     Then the result should be 2b000000046b00230000000130001f85eb51b81e0940023100050000007465737400103200d20400000000
 
+  @ruby @python
   Scenario Outline: Serialize binary values
     Given a binary value <value> with binary type <binary_type>
     When I serialize a document mapping the key k to the value
@@ -86,6 +99,7 @@ Feature: Serialize Elements
       | data  | md5         | 11000000056b0004000000056461746100         |
       | data  | user        | 11000000056b0004000000806461746100         |
 
+  @ruby @python
   Scenario Outline: Serialize code values
     Given a code value "<code>" with scope <scope>
     When I serialize a document mapping the key k to the value
@@ -95,7 +109,3 @@ Feature: Serialize Elements
       | code         | scope        | hex_bytes                                                                          |
       | function(){} |              | 190000000d6b000d00000066756e6374696f6e28297b7d0000                                 |
       | function(){} | {"a" : 1}    | 290000000f6b00210000000d00000066756e6374696f6e28297b7d000c000000106100010000000000 |
-
-
-
-
