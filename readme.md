@@ -1,8 +1,9 @@
 # MongoDB Meta Driver Project
 
-The MongoDB meta driver is an attempt to formally specify the client library interface for MongoDB. Eventually the documents and this specification will enhance and replace the current [MongoDB driver writing tutorial](http://www.mongodb.org/display/DOCS/Writing+Drivers+and+Tools).
+The MongoDB Meta Driver is an attempt to formally specify the client library interface for MongoDB. Eventually the documents and this specification will enhance and replace the current [MongoDB driver writing tutorial](http://www.mongodb.org/display/DOCS/Writing+Drivers+and+Tools). In the meantime, *all* content in this repository should be considered incomplete, draft, and non-final.
 
-In the meantime, *all* content in this repository should be considered incomplete, draft, and non-final.
+The MongoDB Meta Driver strives to be language-independent, producing a specification that can be used and tested directly against (almost) any language. To do so, we make use of the Cucumber framework to define the specifications and translate them into tests against the driver code. It is our hope that this specification will eventually be applied to as many production drivers as possible, in order to better standardize driver functionality and provide a more consistent developer experience with MongoDB across languages.
+
 
 ## Usage
 
@@ -35,7 +36,7 @@ Here is a high-level view of the process:
 	- You should understand how [*step transforms*](https://github.com/cucumber/cucumber/wiki/Step-Argument-Transforms) work, if the implementation of Cucumber for your language supports them. If it does not, try to find one that does. Transforms are used extensively in the reference Ruby implementation, and save a large amount of code duplication.
 - Run your tests, and report any bugs you find, either in your driver, or (more likely at this point) bugs or warts in the Meta Driver specification.
 
-The Meta Driver specifications are far from a finished state, and will always be an evolving standard. Therefore, if you choose to fork this repository, it is important to keep your version of the spec in sync with the official upstream version, to ensure you are conforming to the most up-to-date version of the spec. By the same coin, if you notice inconsistencies or problems in the specification that emerge while writing the step files for your language (for instance, subtle language-dependent assumptions in the <tt>.feature</tt> files), feel free to change the features as necessary (without introducing dependencies on your language), and submit a pull request. While some slight differences in the <tt>.feature</tt> files between languages are acceptable, the specifications are more useful the more similar they all are. Ideally, the only difference between languages should be in the step files, though this may not always be possible.
+The Meta Driver specifications are far from a finished state, and will always be an evolving standard. Therefore, if you choose to fork this repository, it is important to keep your version of the spec in sync with the official upstream version, to ensure you are conforming to the most up-to-date version of the spec. By the same coin, if you notice inconsistencies or problems in the specification that emerge while writing the step files for your language (for instance, subtle language-dependent assumptions in the <tt>.feature</tt> files), change the features as necessary (without introducing dependencies on your language; and only as necessary). If you do this, you should submit a pull request so that your changes can be merged back into the upstream version. While some slight differences in the <tt>.feature</tt> files between languages are acceptable, the specifications are more useful the more similar they all are. Ideally, the only difference between languages should be in the step files, though this may not always be possible.
 
 
 ## TODO
