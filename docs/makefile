@@ -96,15 +96,15 @@ publish:initial-dependencies
 
 ifeq ($(MODE),push)
 push-dc1:
-	rsync -arz $(public-output)/$(current-branch)/ www@www-c1.10gen.cc:/data/sites/docs/meta-driver/$(current-branch)
+	rsync -arz --rsh="ssh" --rsync-path="sudo -u www rsync" $(public-output)/$(current-branch)/ www-c1.10gen.cc:/data/sites/docs/meta-driver/$(current-branch)
 push-dc2:
-	rsync -arz $(public-output)/$(current-branch)/ www@www-c2.10gen.cc:/data/sites/docs/meta-driver/$(current-branch)
+	rsync -arz --rsh="ssh" --rsync-path="sudo -u www rsync" $(public-output)/$(current-branch)/ www-c2.10gen.cc:/data/sites/docs/meta-driver/$(current-branch)
 push-all-dc1:
-	rsync -arz $(public-output)/ www@www-c1.10gen.cc:/data/sites/docs/meta-driver/
+	rsync -arz --rsh="ssh" --rsync-path="sudo -u www rsync" $(public-output)/ www-c1.10gen.cc:/data/sites/docs/meta-driver/
 push-all-dc2:
-	rsync -arz $(public-output)/ www@www-c2.10gen.cc:/data/sites/docs/meta-driver/
+	rsync -arz --rsh="ssh" --rsync-path="sudo -u www rsync" $(public-output)/ www-c2.10gen.cc:/data/sites/docs/meta-driver/
 push-staging:
-	rsync -arz $(public-output)/ public@test.docs.10gen.cc:/srv/public/test
+	rsync -arz --rsh="ssh" --rsync-path="sudo -u www rsync" $(public-output)/ public@test.docs.10gen.cc:/srv/public/test
 endif
 
 ######################################################################

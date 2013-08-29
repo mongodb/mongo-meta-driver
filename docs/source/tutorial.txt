@@ -10,5 +10,5 @@ the :wiki:`MongoDB Wiki <>` provides a good starting point for
 building these interfaces.
 
 Also consider the `How to Build a MongoDB Driver
-<http://www.10gen.com/presentations/mongosv-2011/how-to-build-a-mongodb-driver>`_
-presentation on the 10gen website.
+<http://www.mongodb.com/presentations/mongosv-2011/how-to-build-a-mongodb-driver>`_
+presentation on the MongoDB.com website.

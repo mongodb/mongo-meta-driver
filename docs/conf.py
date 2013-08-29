@@ -32,7 +32,7 @@ source_suffix = '.txt'
 master_doc = 'contents'
 
 project = u'MongoDB Meta Driver'
-copyright = u'2012-' + meta['date'] + ', 10gen, Inc.'
+copyright = u'2012-' + meta['date'] + ', MongoDB, Inc.'
 
 version = '0.1'
 release = version + '-dev'
