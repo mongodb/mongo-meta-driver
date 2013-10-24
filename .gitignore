@@ -16,3 +16,4 @@ Makefile
 .idea/
 docs/fabfile
 docs/meta.yaml
+docs/source/includes/hash.rst
