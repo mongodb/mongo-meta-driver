@@ -50,7 +50,7 @@ composite_pages = []
 pygments_style = 'sphinx'
 
 extlinks = {
-    'manual': ('https://docs.mongodb.org/manual%s', '' ),
+    'manual': ('http://docs.mongodb.org/manual%s', '' ),
     'issue': ('https://jira.mongodb.org/browse/%s', '' ),
     'wiki': ('http://www.mongodb.org/display/DOCS/%s', ''),
     'api': ('http://api.mongodb.org/%s', ''),
