@@ -48,7 +48,7 @@ initial-dependencies:$(DOCS_SOURCE)/about.txt
 	@echo [build]: completed the pre-publication routine for the $(primary-branch) branch of the Manual.
 static-components:$(public-branch-output)/release.txt $(public-output)/index.html $(public-output)/osd.xml links
 	@echo [build]: completed building and migrating all non-Sphinx components of the build.
-sphinx-components:$(public-branch-output)/ $(public-branch-output)/sitemap.xml.gz
+sphinx-components:$(public-branch-output)/
 	@echo [build]: completed the publication routine for all Sphinx Components of the Manual Build.
 
 .PHONY:$(DOCS_SOURCE)/about.txt setup
@@ -81,8 +81,8 @@ $(public-branch-output)/:$(branch-output)/dirhtml
 $(public-branch-output)/release.txt:$(public-output)/latest
 	@echo [build]: generating '$@' with current release hash.
 	@git rev-parse --verify HEAD >|$@
-$(public-output)/latest:$(public-output)
-	@$(DOCS_DIR)/bin/create-link $(primary-branch) latest $@
+$(public-output)/latest:$(public-output) 
+	@fab process.input:master process.output:$@ process.create_link
 $(public-output):
 	@mkdir -p $@
 	@echo [build]: created $(branch-output)/
@@ -96,26 +96,6 @@ $(public-branch-output)/specifications:$(public-branch-output)/specification
 $(public-output)/index.html:$(DOCS_DIR)/themes/meta-driver/index.html
 	@cp $< $@
 	@echo [build]: migrated $@
-$(public-branch-output)/sitemap.xml.gz:$(branch-output)/sitemap.xml.gz
-	@cp $< $@
-	@echo [build]: migrated $@
 $(public-output)/osd.xml:$(DOCS_DIR)/themes/meta-driver/osd.xml
 	@cp $< $@
 	@echo [build]: migrated $@
-
-######################################################################
-#
-# Sitemap Builder
-#
-######################################################################
-
-$(branch-output)/sitemap.xml.gz:$(branch-output)/dirhtml
-
-SITEMAPBUILD = $(PYTHONBIN) $(DOCS_DIR)/bin/sitemap_gen.py
-sitemap:$(branch-output)/sitemap.xml.gz
-$(branch-output)/sitemap.xml.gz:$(public-output)/latest
-	@echo [sitemap]: starting sitemap build at `date`.
-	@echo [sitemap]: build time\: `date` >> $(branch-output)/sitemap-build.log
-	@$(SITEMAPBUILD) --testing --config=$(DOCS_DIR)/conf-sitemap.xml 2>&1 >> $(branch-output)/sitemap-build.log
-	@mv $(output)/sitemap.xml.gz $@
-	@echo [sitemap]: sitemap built at `date`.

@@ -100,7 +100,7 @@ html_theme_options = {
 }
 
 html_sidebars = {
-    '**': ['pagenav.html', 'intrasites.html'],
+    '**': ['pagenav.html'],
 }
 
 
