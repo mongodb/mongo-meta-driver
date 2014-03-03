@@ -78,11 +78,9 @@ $(public-branch-output)/:$(branch-output)/dirhtml
 	@echo [build]: migrated '$</*' to '$@'
 
 # Deployment related work for the non-Sphinx aspects of the build.
-$(public-branch-output)/release.txt:$(public-output)/latest
+$(public-branch-output)/release.txt:
 	@echo [build]: generating '$@' with current release hash.
 	@git rev-parse --verify HEAD >|$@
-$(public-output)/latest:$(public-output) 
-	@fab process.input:master process.output:$@ process.create_link
 $(public-output):
 	@mkdir -p $@
 	@echo [build]: created $(branch-output)/

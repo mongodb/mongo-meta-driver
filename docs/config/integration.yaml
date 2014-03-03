@@ -1,0 +1,14 @@
+base: 
+  targets:
+    - setup
+    - json
+    - html
+    - dirhtml
+    - 'build/public'
+  doc-root:
+    - 'sitemap.xml'
+    - '.htaccess'
+  branch-root: null 
+  links: 
+    - { 'latest': 'master' }
+...

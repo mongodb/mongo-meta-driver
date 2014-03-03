@@ -25,6 +25,7 @@ build:
     static:
       - 'makefile.compatibility'
       - 'makefile.clean'
+    branched: true  
   paths:
     output: 'build'
     source: 'source'
@@ -32,5 +33,5 @@ build:
     images: 'source/images'
     tools: 'bin'
     buildsystem: 'build/docs-tools'
-    builddata: 'bin/builddata'
+    builddata: 'config'
 ...

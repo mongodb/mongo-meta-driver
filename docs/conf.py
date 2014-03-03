@@ -66,7 +66,7 @@ intersphinx_mapping = {
 
 # -- Options for HTML output ---------------------------------------------------
 
-html_theme = 'mongodb'
+html_theme = 'meta-driver'
 html_theme_path = ['build/docs-tools/themes']
 
 html_title = project + ' Manual'
@@ -100,7 +100,7 @@ html_theme_options = {
 }
 
 html_sidebars = {
-    '**': ['pagenav.html'],
+    '**': ["pagenav.html"],
 }
 
 
