@@ -30,9 +30,12 @@ web-base:
     - web
 dirhtml:
   inherit: web-base
+  builder: dirhtml
 html:
+  builder: html
   inherit: web-base
 singlehtml:
+  builder: singlehtml
   tags:
     - web
 ...
