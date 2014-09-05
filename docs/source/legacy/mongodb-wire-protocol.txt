@@ -57,7 +57,7 @@ follows:
        int32   messageLength; // total message size, including this
        int32   requestID;     // identifier for this message
        int32   responseTo;    // requestID from the original request
-                              //   (used in reponses from db)
+                              //   (used in responses from db)
        int32   opCode;        // request type - see table below
    }
 
@@ -71,7 +71,7 @@ follows:
    (e.g. :ref:`OP_QUERY <wire-op-query>` and :ref:`OP_GET_MORE
    <wire-op-get-more>`), it will be returned in the ``responseTo``
    field of the :ref:`OP_REPLY <wire-op-reply>` message. Along with
-   the ``reponseTo`` field in responses, clients can use this to
+   the ``responseTo`` field in responses, clients can use this to
    associate query responses with the originating query.
 
 **responseTo**
