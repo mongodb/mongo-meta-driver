@@ -1,4 +1,4 @@
-Feature: Driver
+Feature: Standalone Connection
     In order to ensure the driver remains usable in the face of failures
     As a driver author
     I want the driver to recover in the event of failures
@@ -11,7 +11,7 @@ Feature: Driver
         And I insert a document
         Then the insert fails
         When I start the server
-        And insert a document
+        And I insert a document
         Then the insert succeeds
 
     Scenario: Server is restarted
@@ -19,5 +19,5 @@ Feature: Driver
         When I insert a document
         Then the insert succeeds
         When I restart the server
-        And insert a document with retries
+        And I insert a document with retries
         Then the insert succeeds (eventually)
