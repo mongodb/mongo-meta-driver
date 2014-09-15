@@ -53,7 +53,7 @@ Feature: Read Preference
     Scenario: Read Primary With Tag Sets
         Given an arbiter replica set
         And a document written to all data-bearing members
-        And a client with read-preference PRIMARY and tag sets [{'ordinal' => 'one'}, {'dc' => 'ny'}]
+        And a client with read-preference PRIMARY and tag sets [{"ordinal": "one"}, {"dc": "ny"}]
         When I read
         Then the read fails with error "PRIMARY cannot be combined with tags"
 
@@ -91,7 +91,6 @@ Feature: Read Preference
         When I read with opcounter tracking
         Then the read occurs on the primary
 
-    @solo
     Scenario: Read Nearest With Tag Sets
         Given an arbiter replica set
         And a document written to all data-bearing members
@@ -105,23 +104,24 @@ Feature: Read Preference
         When I read
         Then the read fails with error "No replica set member available for query with read preference matching mode nearest and tags matching <tags sets>"
 
-    @pending
-    Scenario: Secondary OK Commands
+    @solo
+    Scenario Outline: Secondary OK Commands
         Given an arbiter replica set
-        And some documents written to all data-bearing members
-        And the following commands:
-            | collStats                 |
-            | count                     |
-            | dbStats                   |
-            | distinct                  |
-            | geoNear                   |
-            | geoSearch                 |
-            | geoWalk                   |
-            | group                     |
-            | isMaster                  |
-            | parallelCollectionScan    |
-        When I run each of the commands with read-preference SECONDARY
+        And a document written to all data-bearing members
+        And a client with read-preference SECONDARY
+        When I run with opcounter tracking a <name> command with example <example>
         Then the command occurs on a secondary
+        Examples:
+          | name      | example |
+          | aggregate | {"aggregate": "test", "pipeline": [{"$group": {"_id": null, "count": {"$sum": 1}}}]} |
+          | collStats | {"collStats": "test" } |
+          | count     | {"count": "test"} |
+          | dbStats   | {"dbStats": 1} |
+          | distinct  | {"distinct": "test", "key": "a" } |
+          | group     | {"group": {"ns": "test", "key": "a", "$reduce": "function ( curr, result ) { }", "initial": {}}} |
+          | isMaster  | {"isMaster": 1} |
+          | mapReduce | {"mapReduce": "test", "map": "function(){emit('a',this.a)}", "reduce": "function(key,values){return Array.sum(values)}", "out": {"inline": 1}} |
+          | parallelCollectionScan | {"parallelCollectionScan": "test", "numCursors": 2} |
 
     @pending
     Scenario: MapReduce without inline
