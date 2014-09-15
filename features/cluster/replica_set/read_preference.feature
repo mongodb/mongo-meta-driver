@@ -6,88 +6,106 @@ Feature: Read Preference
     Scenario: Read Primary
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference PRIMARY
+        And a client with read-preference PRIMARY
+        When I read with opcounter tracking
         Then the read occurs on the primary
         When there is no primary
-        And I read with read-preference PRIMARY
+        And I read
         Then the read fails
 
     Scenario: Read Primary Preferred
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference PRIMARY_PREFERRED
+        And a client with read-preference PRIMARY_PREFERRED
+        When I read with opcounter tracking
         Then the read occurs on the primary
         When there is no primary
-        And I read with read-preference PRIMARY_PREFERRED
+        And I read
         Then the read succeeds
 
     Scenario: Read Secondary
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference SECONDARY
-        Then the read occurs on the secondary
+        And a client with read-preference SECONDARY
+        When I read with opcounter tracking
+        Then the read occurs on a secondary
         When there are no secondaries
-        And I read with read-preference SECONDARY
+        When I read
         Then the read fails
 
     Scenario: Read Secondary Preferred
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference SECONDARY_PREFERRED
-        Then the read occurs on the secondary
+        And a client with read-preference SECONDARY_PREFERRED
+        When I read with opcounter tracking
+        Then the read occurs on a secondary
         When there are no secondaries
-        And I read with read-preference SECONDARY_PREFERRED
+        And I read
         Then the read succeeds
 
     Scenario: Read With Nearest
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference NEAREST
+        And a client with read-preference NEAREST
+        When I read
         Then the read succeeds
 
     Scenario: Read Primary With Tag Sets
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference PRIMARY and a tag set
+        And a client with read-preference PRIMARY and tag sets [{'ordinal' => 'one'}, {'dc' => 'ny'}]
+        When I read
         Then the read fails with error "PRIMARY cannot be combined with tags"
 
     Scenario: Read Primary Preferred With Tag Sets
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference PRIMARY_PREFERRED and a tag set
+        And a client with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "two"}, {"dc": "pa"}]
+        When I read with opcounter tracking
         Then the read occurs on the primary
         When there is no primary
-        And I read with read-preference PRIMARY_PREFERRED and a matching tag set
-        Then the read occurs on a matching secondary
-        When I read with read-preference PRIMARY_PREFERRED and a non-matching tag set
-        Then the read fails with error "No replica set member available for query with ReadPreference PRIMARY_PREFERRED and tags <tags>"
+        Given a client with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "two"}]
+        When I read with opcounter tracking
+        Then the read occurs on a secondary
+        Given a client with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "three"}, {"dc": "na"}]
+        When I read
+        Then the read fails with error "No replica set member available for query with read preference matching mode primary_preferred and tags matching <tags sets>."
 
     Scenario: Read Secondary With Tag Sets
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference SECONDARY and a secondary-matching tag set
-        Then the read occurs on a matching secondary
-        When I read with read-preference SECONDARY and a non-secondary-matching tag set
-        Then the read fails with error "No replica set member available for query with ReadPreference SECONDARY and tags <tags>"
+        And a client with read-preference SECONDARY and tag sets [{"ordinal": "two"}]
+        When I read with opcounter tracking
+        Then the read occurs on a secondary
+        Given a client with read-preference SECONDARY and tag sets [{"ordinal": "one"}]
+        When I read
+        Then the read fails with error "No replica set member available for query with read preference matching mode secondary and tags matching <tags sets>."
 
     Scenario: Read Secondary Preferred With Tag Sets
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference SECONDARY_PREFERRED and a secondary-matching tag set
-        Then the read occurs on a matching secondary
-        When I read with read-preference SECONDARY_PREFERRED and a non-secondary-matching tag set
+        And a client with read-preference SECONDARY_PREFERRED and tag sets [{"ordinal": "two"}]
+        When I read with opcounter tracking
+        Then the read occurs on a secondary
+        Given a client with read-preference SECONDARY_PREFERRED and tag sets [{"ordinal": "three"}]
+        When I read with opcounter tracking
         Then the read occurs on the primary
 
+    @solo
     Scenario: Read Nearest With Tag Sets
         Given an arbiter replica set
         And a document written to all data-bearing members
-        When I read with read-preference NEAREST and a primary-matching tag set
+        And a client with read-preference NEAREST and tag sets [{"ordinal": "one"}]
+        When I read with opcounter tracking
         Then the read occurs on the primary
-        When I read with read-preference NEAREST and a secondary-matching tag set
-        Then the read occurs on a matching secondary
-        When I read with read-preference NEAREST and a non-matching tag set
-        Then the read fails with error "No replica set member available for query with ReadPreference NEAREST and tags <tags>"
+        Given a client with read-preference NEAREST and tag sets [{"ordinal": "two"}]
+        When I read with opcounter tracking
+        Then the read occurs on a secondary
+        Given a client with read-preference NEAREST and tag sets [{"ordinal": "three"}]
+        When I read
+        Then the read fails with error "No replica set member available for query with read preference matching mode nearest and tags matching <tags sets>"
 
+    @pending
     Scenario: Secondary OK Commands
         Given an arbiter replica set
         And some documents written to all data-bearing members
@@ -105,38 +123,44 @@ Feature: Read Preference
         When I run each of the commands with read-preference SECONDARY
         Then the command occurs on a secondary
 
+    @pending
     Scenario: MapReduce without inline
         Given an arbiter replica set
         And some documents written to all data-bearing members
         When I perform an inline map reduce with read-preference SECONDARY
         Then the command occurs on a primany
 
+    @pending
     Scenario: MapReduce with inline
         Given an arbiter replica set
         And some documents written to all data-bearing members
         When I perform an inline map reduce with read-preference SECONDARY
         Then the command occurs on a secondary
 
+    @pending
     Scenario: Aggregate with $out
         Given an arbiter replica set
         And some documents written to all data-bearing members
         When I perform aggregation with $out with read-preference SECONDARY
         Then the command occurs on a primany
 
+    @pending
     Scenario: Aggregate without $out
         Given an arbiter replica set
         And some documents written to all data-bearing members
         When I perform aggregation without $out with read-preference SECONDARY
         Then the command occurs on a secondary
 
+    @pending
     Scenario: Primary Only Commands
         Review - is this needed?
 
+    @pending
     Scenario: Node State Changes
-        (pending)
         kill_cursors to appropriate node
         cursor continuity through node state transition
 
+    @pending
     Scenario: Node is unpinned upon change in read preference
         Given a replica set with more than 1 member
         When I read a document with the default read preference
