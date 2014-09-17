@@ -101,7 +101,6 @@ Feature: Read Preference
         When I read with read-preference NEAREST and tag sets [{"ordinal": "three"}]
         Then the read fails with error "No replica set member available for query with read preference matching mode NEAREST and tags matching <tags sets>"
 
-    @pending
     Scenario Outline: Secondary OK Commands
         Given an arbiter replica set
         And a document written to all data-bearing members
@@ -118,7 +117,6 @@ Feature: Read Preference
           | isMaster  | {"isMaster": 1} |
           | parallelCollectionScan | {"parallelCollectionScan": "test", "numCursors": 2} |
 
-    @pending
     Scenario: Secondary OK Geonear
         Given an arbiter replica set
         And some geo documents written to all data-bearing members
@@ -127,7 +125,6 @@ Feature: Read Preference
         And I run a geonear command with read-preference SECONDARY
         Then the command occurs on a secondary
 
-    @pending
     Scenario: Secondary OK MapReduce with inline
         Given an arbiter replica set
         And some documents written to all data-bearing members
@@ -135,7 +132,6 @@ Feature: Read Preference
         And I run a map-reduce with field out value inline true and with read-preference SECONDARY
         Then the command occurs on a secondary
 
-    @pending
     Scenario: Primary Reroute MapReduce without inline
         Given an arbiter replica set
         And some documents written to all data-bearing members
@@ -143,7 +139,6 @@ Feature: Read Preference
         And I run a map-reduce with field out value other than inline and with read-preference SECONDARY
         Then the command occurs on the primary
 
-    @pending
     Scenario: Secondary OK Aggregate without $out
         Given an arbiter replica set
         And some documents written to all data-bearing members
@@ -151,7 +146,6 @@ Feature: Read Preference
         And I run an aggregate without $out and with read-preference SECONDARY
         Then the command occurs on a secondary
 
-    @pending
     Scenario: Primary Reroute Aggregate with $out
         Given an arbiter replica set
         And some documents written to all data-bearing members
