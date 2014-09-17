@@ -6,7 +6,7 @@ Feature:
         Then the insert succeeds
         When I stop router A
         And I insert a document with retries
-        Then the insert succeeds (eventually)
+        Then the insert succeeds
         When I stop router B
         And I insert a document
         Then the insert fails
@@ -18,7 +18,7 @@ Feature:
         Then the insert succeeds
         When I stop router B
         And I insert a document with retries
-        Then the insert succeeds (eventually)
+        Then the insert succeeds
 
     Scenario: mongos Router Restart
         Given a basic sharded cluster with routers A and B
@@ -26,7 +26,7 @@ Feature:
         Then the insert succeeds
         When I restart router A
         And I insert a document with retries
-        Then the insert succeeds (eventually)
+        Then the insert succeeds
         When I restart router B
         And I insert a document with retries
-        Then the insert succeeds (eventually)
+        Then the insert succeeds

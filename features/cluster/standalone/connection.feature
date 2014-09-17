@@ -20,4 +20,4 @@ Feature: Standalone Connection
         Then the insert succeeds
         When I restart the server
         And I insert a document with retries
-        Then the insert succeeds (eventually)
+        Then the insert succeeds

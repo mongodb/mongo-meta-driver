@@ -6,7 +6,7 @@ Feature:
         Then the insert succeeds
         When I command the primary to step down
         And I insert a document with retries
-        Then the insert succeeds (eventually)
+        Then the insert succeeds
 
     @pending
     Scenario: Primary Failure
