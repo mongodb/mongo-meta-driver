@@ -55,7 +55,6 @@ Feature: Read Preference
         When I query with read-preference PRIMARY and tag sets [{"ordinal": "one"}, {"dc": "ny"}]
         Then the query fails with error "PRIMARY cannot be combined with tags"
 
-    @pending
     Scenario: Read Primary Preferred With Tag Sets
         Given an arbiter replica set
         And a document written to all data-bearing members
@@ -63,9 +62,8 @@ Feature: Read Preference
         And I query with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "two"}, {"dc": "pa"}]
         Then the query occurs on the primary
         When there is no primary
-        When I track opcounters
         And I query with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "two"}]
-        Then the query occurs on a secondary
+        Then the query succeeds
         When I query with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "three"}, {"dc": "na"}]
         Then the query fails with error "No replica set member available for query with read preference matching mode PRIMARY_PREFERRED and tags matching <tags sets>."
 
