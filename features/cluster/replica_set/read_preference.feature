@@ -214,6 +214,38 @@ Feature: Read Preference
     # deprecated since version 2.6 - text cursorInfo
 
   @pending
+  @review
+  Scenario: Secondary Cursor Get More and Kill Cursors Continuity
+    Given a replica set with preset arbiter
+    And some documents written to all data-bearing members
+    When I query with read-preference SECONDARY and batch size 2
+    And I get 2 docs
+    Then the get succeeds
+    When I stop the arbiter and the primary
+    #And I track opcounters
+    And I get 2 docs
+    Then the get succeeds
+    #And the getmore occurs on the secondary
+    When I close the cursor
+    Then the close succeeds
+    #And the kill_cursors occurs on the secondary # no way to measure
+
+  @review
+  Scenario: Node is unpinned upon change in read preference
+    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
+    # See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
+    Given a replica set with preset arbiter
+    When I track opcounters
+    And I query with default read preference
+    Then the query occurs on the primary
+    When I track opcounters
+    And I query with read-preference SECONDARY_PREFERRED
+    Then the query occurs on the secondary
+    When I track opcounters
+    And I query with read-preference PRIMARY_PREFERRED
+    Then the query occurs on the primary
+
+  @pending
   @discuss
   Scenario: Ping Times
     # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#ping-times
@@ -224,30 +256,3 @@ Feature: Read Preference
   @discuss
   Scenario: Auto-retry
     # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
-
-  @pending
-  @discuss
-  Scenario: Pinning
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
-    # See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
-
-  @pending
-  @discuss
-  Scenario: Node is unpinned upon change in read preference
-    Given a replica set with more than 1 member
-    When I query with the default read preference
-    Then the query occurs on the primary
-    When I query with the read preference SECONDARY_PREFERRED
-    Then the query occurs on the secondary
-    When I query with the read preference PRIMARY_PREFERRED
-    Then the query occurs on the primary
-
-  @pending
-  @discuss
-  Scenario: Node State Changes
-    # https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/cursor_test.rb
-    # get_more to appropriate node
-    # kill_cursors to appropriate node
-    #
-    # cursor continuity through node state transition
-
