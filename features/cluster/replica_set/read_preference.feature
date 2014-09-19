@@ -102,7 +102,7 @@ Feature: Read Preference
     And I query with read-preference SECONDARY_PREFERRED and tag sets [{"ordinal": "three"}]
     Then the query occurs on the primary
 
-  @driver_broken
+  @ruby_1_x_broken
   Scenario: Read Nearest With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -139,8 +139,13 @@ Feature: Read Preference
     And I run a geonear command with read-preference SECONDARY
     Then the command occurs on a secondary
 
-  @pending
   Scenario: Secondary OK GeoSearch
+    Given a replica set with preset arbiter
+    And some geo documents written to all data-bearing members
+    And a geo geoHaystack index
+    When I track opcounters
+    And I run a geosearch command with read-preference SECONDARY
+    Then the command occurs on a secondary
 
   Scenario: Secondary OK MapReduce with inline
     Given a replica set with preset arbiter
