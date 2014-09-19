@@ -119,17 +119,17 @@ Feature: Read Preference
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
     When I track opcounters
-    And I run a <name> command with read-preference SECONDARY and with example <example>
-    Then the command occurs on a secondary
+    And I run a <db_type> <name> command with read-preference SECONDARY and with example <example>
+    Then the command occurs on a <member_type>
     Examples:
-      | name      | example |
-      | collStats | {"collStats": "test" } |
-      | count     | {"count": "test"} |
-      | dbStats   | {"dbStats": 1} |
-      | distinct  | {"distinct": "test", "key": "a" } |
-      | group     | {"group": {"ns": "test", "key": "a", "$reduce": "function ( curr, result ) { }", "initial": {}}} |
-      | isMaster  | {"isMaster": 1} |
-      | parallelCollectionScan | {"parallelCollectionScan": "test", "numCursors": 2} |
+      | member_type | db_type | name      | example | comment |
+      | secondary   | normal  | collStats | { "collStats": "test" } | |
+      | secondary   | normal  | count     | { "count": "test" } | |
+      | secondary   | normal  | dbStats   | { "dbStats": 1 } | |
+      | secondary   | normal  | distinct  | { "distinct": "test", "key": "a" } | |
+      | secondary   | normal  | group     | { "group": { "ns": "test", "key": "a", "$reduce": "function ( curr, result ) { }", "initial": { } } } | |
+      | secondary   | normal  | isMaster  | { "isMaster": 1 } | |
+      | secondary   | normal  | parallelCollectionScan | { "parallelCollectionScan": "test", "numCursors": 2 } | |
 
   Scenario: Secondary OK GeoNear
     Given a replica set with preset arbiter
@@ -170,10 +170,43 @@ Feature: Read Preference
     And I run an aggregate with $out and with read-preference SECONDARY
     Then the command occurs on the primary
 
-  @pending
-  @discuss
-  Scenario: Primary Only Commands
-    # Review - is this needed?
+  Scenario Outline: Primary Reroute Primary-Only Commands
+    Given a replica set with preset arbiter
+    And a document written to all data-bearing members
+    When I track opcounters
+    And I run a <db_type> <name> command with read-preference SECONDARY and with example <example>
+    Then the command occurs on the <member_type>
+    Examples:
+      | member_type | db_type | name           | example | comment |
+      #| primary     | normal  | buildInfo      | { "buildInfo": 1 } | |
+      #| primary     | normal  | collMod        | { "collMod": "test", "usePowerOf2Sizes": 1 } | |
+      #| primary     | normal  | create         | { "create": "test" } | |
+      #| primary     | normal  | delete         | { "delete": "test", "deletes": [{"q": {"a": 1}, "limit": 1}] } | |
+      #| primary     | normal  | drop           | { "drop": "test" } | |
+      #| primary     | normal  | dropDatabase   | { "dropDatabase": 1 } | |
+      #| primary     | normal  | eval           | { "eval": "function(){ return {x: 1} }" } | |
+      #| primary     | normal  | findAndModify  | { "findAndModify": "test", "query": {"a": 1}, "update": {"$inc": {"a": 1}} } | |
+      | primary     | admin   | fsync          | { "fsync": 1 } | |
+      #| primary     | admin   | getCmdLineOpts | { "getCmdLineOpts": 1 } | |
+      #| primary     | normal  | getLastError   | { "getLastError": 1 } | |
+      #| primary     | admin   | getParameter   | { "getParameter": 1, "logLevel": 1 } | |
+      #| primary     | normal  | getPrevError   | { "getPrevError": 1 } | |
+      #| primary     | admin   | getLog         | { "getLog": "*" } | |
+      #| primary     | normal  | hostInfo       | { "hostInfo": 1 } | |
+      #| primary     | normal  | insert         | { "insert": "test", "documents": [{"b": 2},{"c": 3}] } | |
+      #| primary     | normal  | listCommands   | { "listCommands": 1 } | |
+      #| primary     | admin   | listDatabases  | { "listDatabases": 1 } | |
+      #| primary     | admin   | logRotate      | { "logRotate": 1 } | |
+      | primary     | normal  | ping           | { "ping": 1 } | |
+      #| primary     | normal  | profile        | { "profile": 0 } | |
+      #| primary     | normal  | reIndex        | { "reIndex": "test" } | |
+      #| primary     | normal  | resetError     | { "resetError": 1 } | |
+      #| primary     | normal  | serverStatus   | { "serverStatus": "test", "scale": 1 } | |
+      #| primary     | admin   | setParameter   | { "setParameter": 1, "logLevel": 0 } | |
+      #| primary     | admin   | top            | { "top": 1 } | |
+      #| primary     | normal  | update         | { "update": "test", "updates": [{"q": {"a": 1}, "u": {"a": 2}}] } | |
+    # pending - createIndexes dropIndexes
+    # deprecated since version 2.6 - text cursorInfo
 
   @pending
   @discuss
@@ -191,6 +224,7 @@ Feature: Read Preference
   @discuss
   Scenario: Pinning
     # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
+    # See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
 
   @pending
   @discuss
@@ -206,6 +240,9 @@ Feature: Read Preference
   @pending
   @discuss
   Scenario: Node State Changes
+    # https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/cursor_test.rb
+    # get_more to appropriate node
     # kill_cursors to appropriate node
+    #
     # cursor continuity through node state transition
 
