@@ -22,7 +22,7 @@ Feature: Read Preference
   Scenario: Read Primary
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference PRIMARY
     Then the query occurs on the primary
     When there is no primary
@@ -32,17 +32,18 @@ Feature: Read Preference
   Scenario: Read Primary Preferred
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference PRIMARY_PREFERRED
     Then the query occurs on the primary
     When there is no primary
+    And I track server status on secondaries
     And I query with read-preference PRIMARY_PREFERRED
-    Then the query succeeds
+    Then the query occurs on the secondary
 
   Scenario: Read Secondary
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference SECONDARY
     Then the query occurs on a secondary
     When there are no secondaries
@@ -52,12 +53,13 @@ Feature: Read Preference
   Scenario: Read Secondary Preferred
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference SECONDARY_PREFERRED
     Then the query occurs on a secondary
     When there are no secondaries
+    And I track server status on the primary
     And I query with read-preference SECONDARY_PREFERRED
-    Then the query succeeds
+    Then the query occurs on the primary
 
   Scenario: Read With Nearest
     Given a replica set with preset arbiter
@@ -74,19 +76,20 @@ Feature: Read Preference
   Scenario: Read Primary Preferred With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "two"}, {"dc": "pa"}]
     Then the query occurs on the primary
     When there is no primary
+    And I track server status on secondaries
     And I query with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "two"}]
-    Then the query succeeds
+    Then the query occurs on the secondary
     When I query with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "three"}, {"dc": "na"}]
     Then the query fails with error "No replica set member available for query with read preference matching mode PRIMARY_PREFERRED and tags matching <tags sets>."
 
   Scenario: Read Secondary With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference SECONDARY and tag sets [{"ordinal": "two"}]
     Then the query occurs on a secondary
     When I query with read-preference SECONDARY and tag sets [{"ordinal": "one"}]
@@ -95,10 +98,10 @@ Feature: Read Preference
   Scenario: Read Secondary Preferred With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference SECONDARY_PREFERRED and tag sets [{"ordinal": "two"}]
     Then the query occurs on a secondary
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference SECONDARY_PREFERRED and tag sets [{"ordinal": "three"}]
     Then the query occurs on the primary
 
@@ -106,10 +109,10 @@ Feature: Read Preference
   Scenario: Read Nearest With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference NEAREST and tag sets [{"ordinal": "one"}]
     Then the query occurs on the primary
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference NEAREST and tag sets [{"ordinal": "two"}]
     Then the query occurs on a secondary
     When I query with read-preference NEAREST and tag sets [{"ordinal": "three"}]
@@ -118,7 +121,7 @@ Feature: Read Preference
   Scenario Outline: Secondary OK Commands
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I run a <db_type> <name> command with read-preference SECONDARY and with example <example>
     Then the command occurs on a <member_type>
     Examples:
@@ -135,7 +138,7 @@ Feature: Read Preference
     Given a replica set with preset arbiter
     And some geo documents written to all data-bearing members
     And a geo 2d index
-    When I track opcounters
+    When I track server status on all data members
     And I run a geonear command with read-preference SECONDARY
     Then the command occurs on a secondary
 
@@ -143,42 +146,42 @@ Feature: Read Preference
     Given a replica set with preset arbiter
     And some geo documents written to all data-bearing members
     And a geo geoHaystack index
-    When I track opcounters
+    When I track server status on all data members
     And I run a geosearch command with read-preference SECONDARY
     Then the command occurs on a secondary
 
   Scenario: Secondary OK MapReduce with inline
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I run a map-reduce with field out value inline true and with read-preference SECONDARY
     Then the command occurs on a secondary
 
   Scenario: Primary Reroute MapReduce without inline
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I run a map-reduce with field out value other than inline and with read-preference SECONDARY
     Then the command occurs on the primary
 
   Scenario: Secondary OK Aggregate without $out
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I run an aggregate without $out and with read-preference SECONDARY
     Then the command occurs on a secondary
 
   Scenario: Primary Reroute Aggregate with $out
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I run an aggregate with $out and with read-preference SECONDARY
     Then the command occurs on the primary
 
   Scenario Outline: Primary Reroute Primary-Only Commands
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
-    When I track opcounters
+    When I track server status on all data members
     And I run a <db_type> <name> command with read-preference SECONDARY and with example <example>
     Then the command occurs on the <member_type>
     Examples:
@@ -213,35 +216,46 @@ Feature: Read Preference
     # pending - createIndexes dropIndexes
     # deprecated since version 2.6 - text cursorInfo
 
-  @pending
   @review
-  Scenario: Secondary Cursor Get More and Kill Cursors Continuity
+  Scenario: Secondary Cursor Get More Continuity
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
     When I query with read-preference SECONDARY and batch size 2
     And I get 2 docs
     Then the get succeeds
-    When I stop the arbiter and the primary
-    #And I track opcounters
+    When I stop the arbiter
+    And I stop the primary
+    And I track server status on secondaries
     And I get 2 docs
     Then the get succeeds
-    #And the getmore occurs on the secondary
-    When I close the cursor
+    And the getmore occurs on the secondary
+
+  @review
+  Scenario: Secondary Kill Cursors Continuity
+    Given a replica set with preset arbiter
+    And some documents written to all data-bearing members
+    When I query with read-preference SECONDARY and batch size 2
+    And I get 2 docs
+    Then the get succeeds
+    When I stop the arbiter
+    And I stop the primary
+    And I track server status on secondaries
+    And I close the cursor
     Then the close succeeds
-    #And the kill_cursors occurs on the secondary # no way to measure
+    And the kill cursors occurs on the secondary
 
   @review
   Scenario: Node is unpinned upon change in read preference
     # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
     # See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
     Given a replica set with preset arbiter
-    When I track opcounters
+    When I track server status on all data members
     And I query with default read preference
     Then the query occurs on the primary
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference SECONDARY_PREFERRED
     Then the query occurs on the secondary
-    When I track opcounters
+    When I track server status on all data members
     And I query with read-preference PRIMARY_PREFERRED
     Then the query occurs on the primary
 
