@@ -39,21 +39,23 @@ Feature: Write Concern
     When I delete a document with the write concern { “w”: <nodes + 1>, “timeout”: 1}
     Then the write operation fails write concern
 
-  @pending
   @discuss
   Scenario: Replicated Bulk Write Operation Timeout with W Failure
     Given a replica set with preset basic
     When I execute an ordered bulk write operation with the write concern { “w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write concern error
-    When I execute an unordered bulk write operation with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    When I remove all documents from the collection
+    And I execute an unordered bulk write operation with the write concern { “w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write concern error
-    When I execute an ordered bulk write operation with a duplicate key and with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    When I remove all documents from the collection
+    And I execute an ordered bulk write operation with a duplicate key and with the write concern { “w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write error
     And the result includes a write concern error
-    When I execute an unordered bulk write operation with a duplicate key and with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    When I remove all documents from the collection
+    And I execute an unordered bulk write operation with a duplicate key and with the write concern { “w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write error
     And the result includes a write concern error

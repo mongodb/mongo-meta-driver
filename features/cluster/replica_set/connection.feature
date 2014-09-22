@@ -19,7 +19,7 @@ Feature: Replica Set Connection
   http://docs.mongodb.org/manual/reference/command/nav-replication/
   https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
-  Scenario: Primary Step Down
+  Scenario: Insert with Primary Step Down
     Given a replica set with preset basic
     When I insert a document
     Then the insert succeeds
@@ -27,21 +27,42 @@ Feature: Replica Set Connection
     And I insert a document with retries
     Then the insert succeeds
 
-  @pending
-  Scenario: Primary Failure
+  Scenario: Query with Primary Step Down Query
+    Given a replica set with preset basic
+    When I insert a document
+    And I query
+    Then the query succeeds
+    When I command the primary to step down
+    And I query with retries
+    Then the query succeeds
 
-  @pending
-  Scenario: Primary Recovery
+  @review
+  Scenario: Insert with Primary Failure, Start and Restart
+    Given a replica set with preset basic
+    When I insert a document
+    Then the insert succeeds
+    When I stop the primary
+    And I insert a document with retries
+    Then the insert succeeds
+    When I start the primary
+    And I insert a document with retries
+    Then the insert succeeds
+    When I restart the primary
+    And I insert a document with retries
+    Then the insert succeeds
 
-  @pending
-  Scenario: Primary Restart
-
-  @pending
-  Scenario: Secondary Failure
-
-  @pending
-  Scenario: Secondary Recovery
-
-  @pending
-  Scenario: Secondary Restart
-
+  @review
+  Scenario: Query with Primary Failure, Start and Restart
+    Given a replica set with preset basic
+    When I insert a document
+    And I query
+    Then the query succeeds
+    When I stop the primary
+    And I query with retries
+    Then the query succeeds
+    When I start the primary
+    And I query with retries
+    Then the query succeeds
+    When I restart the primary
+    And I query with retries
+    Then the query succeeds
