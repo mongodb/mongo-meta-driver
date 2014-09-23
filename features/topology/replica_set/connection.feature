@@ -20,7 +20,7 @@ Feature: Replica Set Connection
   https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
   Scenario: Insert with Primary Step Down
-    Given a replica set with preset basic
+    Given a replica set with preset arbiter
     When I insert a document
     Then the insert succeeds
     When I command the primary to step down
@@ -28,7 +28,7 @@ Feature: Replica Set Connection
     Then the insert succeeds
 
   Scenario: Query with Primary Step Down Query
-    Given a replica set with preset basic
+    Given a replica set with preset arbiter
     When I insert a document
     And I query
     Then the query succeeds
@@ -38,7 +38,7 @@ Feature: Replica Set Connection
 
   @review
   Scenario: Insert with Primary Failure, Start and Restart
-    Given a replica set with preset basic
+    Given a replica set with preset arbiter
     When I insert a document
     Then the insert succeeds
     When I stop the primary
@@ -53,7 +53,7 @@ Feature: Replica Set Connection
 
   @review
   Scenario: Query with Primary Failure, Start and Restart
-    Given a replica set with preset basic
+    Given a replica set with preset arbiter
     When I insert a document
     And I query
     Then the query succeeds

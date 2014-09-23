@@ -18,6 +18,7 @@ Feature: Write Concern
   As a driver author
   I want to verify that the driver correctly behaves according to documentation and specification
   http://docs.mongodb.org/manual/core/write-concern/
+  https://github.com/mongodb/specifications/blob/master/source/server_write_commands.rst
   https://github.com/10gen/specifications/blob/master/source/driver-bulk-update.rst
 
   @pending
@@ -31,7 +32,7 @@ Feature: Write Concern
     # probably (can) only test that write concern is in write command or GLE
 
   Scenario: Replicated Write Operations Timeout with W Failure
-    Given a replica set with preset basic
+    Given a replica set with preset arbiter
     When I insert a document with the write concern { “w”: <nodes + 1>, “timeout”: 1}
     Then the write operation fails write concern
     When I update a document with the write concern { “w”: <nodes + 1>, “timeout”: 1}
@@ -41,7 +42,7 @@ Feature: Write Concern
 
   @discuss
   Scenario: Replicated Bulk Write Operation Timeout with W Failure
-    Given a replica set with preset basic
+    Given a replica set with preset arbiter
     When I execute an ordered bulk write operation with the write concern { “w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write concern error
