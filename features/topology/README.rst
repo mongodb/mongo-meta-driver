@@ -38,14 +38,14 @@ The following modifications are recommended.
 2. To cover the basic generic tests with the “standard” standalone **mongod** on localhost port 27017,
    invoke the tests with ``MONGODB_URI=’mongodb://localhost:27017’``
 3. Migrate to running the generic tests against the full spectrum of “basic” preset topology configurations
-   provided by `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_.
+   provided by `Mongo Orchestration <https://github.com/mongodb/mongo-orchestration>`_.
    Run the full generic test suite with each of the following.
 
    1. servers/basic.json
    2. replica_sets/basic.json
    3. sharded_clusters/basic.json
 
-4. A test harness script that enables easy testing against a topology configuration provided by `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_.
+4. A test harness script that enables easy testing against a topology configuration provided by `Mongo Orchestration <https://github.com/mongodb/mongo-orchestration>`_.
    This aids both testing and development.
 
 Generic tests should be as comprehensive as possible without being dependent on topology configuration specifics.
@@ -60,20 +60,21 @@ Topology Dependent Tests
 
 This directory holds the **Driver Common Topology Test Suite** for MongoDB
 that summarizes recommended topology dependent tests.
-The feature behavior is described in the Gherkin language.
-While the reference implementation is in Ruby using Cucumber,
-we expect that driver engineers will choose to implement these topology tests as they see fit.
-Since Ruby is the primary implementation language for Cucumber,
-using Cucumber to run the feature specifications is natural for Ruby.
-Other languages may choose to manually implement the scenarios or step definitions.
+The feature behavior is described in the `Gherkin language <https://github.com/cucumber/cucumber/wiki/Gherkin>`_
+and tests can be automated using `Cucumber <http://cukes.info/>`_,
+a tool for `behavior-driven development <http://en.wikipedia.org/wiki/Behavior-driven_development>`_.
+Step definitions map feature steps into actual executable test code.
+Ruby is used for a reference implementation of the step definitions
+which is natural as Ruby is the primary implementation language for Cucumber.
 
-To support The `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_ project
+We expect that driver engineers will choose to implement these topology tests as they see fit.
+Cucumber can be used for actualizing the test suite,
+but manual implementation of the scenarios or step definitions is also acceptable.
 
-References
-
-* `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_
-* `Gherkin DSL <https://github.com/cucumber/cucumber/wiki/Gherkin>`_
-* `Cucumber <http://cukes.info/>`_
+To support testing with various topologies,
+the `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_ project provides
+for the setup, teardown, and management of topologies.
+Mongo Orchestration can be easily wrapped for more streamlined use.
 
 Reference implementations
 -------------------------
@@ -83,32 +84,37 @@ Step definitions
 * `Ruby 1.x-stable
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/tree/1.x-mongo-orchestration/test/cluster/step_definitions>`_
 
-Mongo Orchestration
+Mongo Orchestration wrapper
 
 * `Ruby 1.x-stable
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/test/orchestration/mongo_orchestration.rb>`_
 
 Pending Feature Descriptions
-----------------------------
+============================
 
 Incomplete but intended feature descriptions are marked ``@pending``.
 
-The following features are not currently in the `*.feature` files.
-Feature descriptions for them will be added to the `*.feature` files.
+The following features are not currently in the `.feature` files.
+Feature descriptions for them will be added to the `.feature` files.
 
-1. Cursor get more continuity
+Cursor get more continuity
+--------------------------
 
    1. test with two secondaries
 
-      1. get more fails with primary prefered and no primary and error is node unavailable
+      1. get more fails with primary preferred and no primary and error is node unavailable
 
-2. Pinning test
+Pinning
+-------
 
    1. 1000 reads with nearest should all go to the same node
 
       1. less attractive alternative - two secondaries, 1000 reads all go to the same secondary
 
-3. Discovery test - discuss overlap with Topology Monitoring
+Discovery
+---------
+
+Review overlap with Topology Monitoring
 
    1. all nodes down, check that driver initializes but can’t read/write, start up nodes, and check function progressively.
    2. one seed
@@ -117,7 +123,8 @@ Feature descriptions for them will be added to the `*.feature` files.
       2. secondary
       3. arbiter
 
-4. Auto-Retry
+Auto-Retry
+----------
 
    1. query (non-command) only (in Ruby driver)
 
@@ -125,7 +132,7 @@ Feature descriptions for them will be added to the `*.feature` files.
       2. stop primary
       3. query with primary preferred - should success without an error/exception
 
-   2. also with mongos failover(?) connection test
+   2. also with mongos fail-over connection test
    3. standalone connection test
 
       1. query succeeds
@@ -139,7 +146,7 @@ Feature descriptions for them will be added to the `*.feature` files.
 Postponed Feature Descriptions
 ==============================
 
-These feature tests are shelved and are not in the `*.feature` files.
+These feature tests are shelved and are not in the `.feature` files.
 
 Ping Times
 ----------
