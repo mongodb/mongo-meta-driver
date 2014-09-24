@@ -19,6 +19,28 @@ Feature: Replica Set Connection
   http://docs.mongodb.org/manual/reference/command/nav-replication/
   https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
+  @solo
+  @pending
+  Scenario: Discovery from Primary Seed
+    Given a replica set with preset arbiter
+    And a document written to all data-bearing members
+    And I stop the arbiter
+    And I stop the secondary
+    And I stop the primary
+    And a replica-set client with a seed from the primary
+    When I query with read-preference SECONDARY
+    Then the query fails
+    When I start the primary
+    And I query with read-preference SECONDARY
+    Then the query succeeds
+    When I insert a document
+    Then the insert fails
+    When I start the secondary
+    And I query with retries and read-preference PRIMARY
+    Then the query succeeds
+    When I insert a document
+    Then the insert succeeds
+
   Scenario: Insert with Primary Step Down
     Given a replica set with preset arbiter
     When I insert a document
