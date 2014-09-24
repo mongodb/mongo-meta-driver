@@ -41,9 +41,9 @@ The following modifications are recommended.
    provided by `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_.
    Run the full generic test suite with each of the following.
 
-    1. servers/basic.json
-    2. replica_sets/basic.json
-    3. sharded_clusters/basic.json
+   1. servers/basic.json
+   2. replica_sets/basic.json
+   3. sharded_clusters/basic.json
 
 4. A test harness script that enables easy testing against a topology configuration provided by `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_.
    This aids both testing and development.
@@ -71,9 +71,9 @@ To support The `mongo-orchestration <https://github.com/mongodb/mongo-orchestrat
 
 References
 
-* `mongo-orchestration<https://github.com/mongodb/mongo-orchestration>`_
-* `Gherkin DSL<https://github.com/cucumber/cucumber/wiki/Gherkin>`_
-* `Cucumber<http://cukes.info/>`_
+* `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_
+* `Gherkin DSL <https://github.com/cucumber/cucumber/wiki/Gherkin>`_
+* `Cucumber <http://cukes.info/>`_
 
 Reference implementations
 -------------------------
@@ -98,41 +98,41 @@ Feature descriptions for them will be added to the `*.feature` files.
 
 1. Cursor get more continuity
 
-    1. test with two secondaries
+   1. test with two secondaries
 
-        1. get more fails with primary prefered and no primary and error is node unavailable
+      1. get more fails with primary prefered and no primary and error is node unavailable
 
 2. Pinning test
 
-  1. 1000 reads with nearest should all go to the same node
+   1. 1000 reads with nearest should all go to the same node
 
       1. less attractive alternative - two secondaries, 1000 reads all go to the same secondary
 
 3. Discovery test - discuss overlap with Topology Monitoring
 
-    1. all nodes down, check that driver initializes but can’t read/write, start up nodes, and check function progressively.
-    2. one seed
+   1. all nodes down, check that driver initializes but can’t read/write, start up nodes, and check function progressively.
+   2. one seed
 
-        1. primary
-        2. secondary
-        3. arbiter
+      1. primary
+      2. secondary
+      3. arbiter
 
 4. Auto-Retry
 
-    1. query (non-command) only (in Ruby driver)
+   1. query (non-command) only (in Ruby driver)
 
-        1. query with primary preferred
-        2. stop primary
-        3. query with primary preferred - should success without an error/exception
+      1. query with primary preferred
+      2. stop primary
+      3. query with primary preferred - should success without an error/exception
 
-    2. also with mongos failover(?) connection test
-    3. standalone connection test
+   2. also with mongos failover(?) connection test
+   3. standalone connection test
 
-        1. query succeeds
-        2. restart node
-        3. ensure node is accepting queries (using side connection)
-        4. attempt to query using original connection
-        5. query succeeds without error/exception
+      1. query succeeds
+      2. restart node
+      3. ensure node is accepting queries (using side connection)
+      4. attempt to query using original connection
+      5. query succeeds without error/exception
 
 5. Hidden replica set members
 
