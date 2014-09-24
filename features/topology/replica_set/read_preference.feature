@@ -216,7 +216,6 @@ Feature: Read Preference
     # pending - createIndexes dropIndexes
     # deprecated since version 2.6 - text cursorInfo
 
-  @review
   Scenario: Secondary Cursor Get More Continuity
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -230,7 +229,6 @@ Feature: Read Preference
     Then the get succeeds
     And the getmore occurs on the secondary
 
-  @review
   Scenario: Secondary Kill Cursors Continuity
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -244,7 +242,6 @@ Feature: Read Preference
     Then the close succeeds
     And the kill cursors occurs on the secondary
 
-  @review
   Scenario: Node is unpinned upon change in read preference
     # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
     # See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
@@ -260,13 +257,5 @@ Feature: Read Preference
     Then the query occurs on the primary
 
   @pending
-  @discuss
-  Scenario: Ping Times
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#ping-times
-    # See https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#drivers-must-not-use-the-ping-command
-    # See https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#this-spec-does-not-mandate-how-round-trip-time-is-averaged
-
-  @pending
-  @discuss
   Scenario: Auto-retry
     # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry

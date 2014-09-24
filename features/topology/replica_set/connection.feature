@@ -36,7 +36,6 @@ Feature: Replica Set Connection
     And I query with retries
     Then the query succeeds
 
-  @review
   Scenario: Insert with Primary Failure, Start and Restart
     Given a replica set with preset arbiter
     When I insert a document
@@ -51,7 +50,6 @@ Feature: Replica Set Connection
     And I insert a document with retries
     Then the insert succeeds
 
-  @review
   Scenario: Query with Primary Failure, Start and Restart
     Given a replica set with preset arbiter
     When I insert a document

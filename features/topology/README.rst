@@ -153,6 +153,15 @@ Ping Times
 
 Ping time is implementation dependent and private to the implementation.
 
+References
+
+* `Ping Times - Driver Read Preferences: Specification
+  <https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#ping-times>`_
+* `Drivers must not use the "ping" command - Server Discovery And Monitoring
+  <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#drivers-must-not-use-the-ping-command>`_
+* `This spec does not mandate how round trip time is averaged - Server Discovery And Monitoring
+  <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#this-spec-does-not-mandate-how-round-trip-time-is-averaged>`_
+
 Wire Protocol
 -------------
 
