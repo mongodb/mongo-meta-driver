@@ -7,13 +7,13 @@ This is a suite of feature descriptions for MongoDB drivers according to specifi
 This suite is for behavior that depends on actual topologies,
 features that are not dependent on server topology should be covered elsewhere, e.g., in unit tests.
 
-The suite does _not_ attempt exhaustive code coverage or compliance,
+The suite does *not* attempt exhaustive code coverage or compliance,
 but should provide a reasonable balance between run time and feature testing.
 We welcome improvements to the test suite.
-This is _work in progress_.
+This is *work in progress*.
 
-This README file is in `reStructuredText<http://docutils.sourceforge.net/rst.html>` form and follows
-the `MongoDB Documentation Style Guidelines <http://docs.mongodb.org/manual/meta/style-guide/>`.
+This README file is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form and follows
+the `MongoDB Documentation Style Guidelines <http://docs.mongodb.org/manual/meta/style-guide/>`_.
 
 Building Documents
 ------------------
@@ -38,14 +38,14 @@ The following modifications are recommended.
 2. To cover the basic generic tests with the “standard” standalone **mongod** on localhost port 27017,
    invoke the tests with ``MONGODB_URI=’mongodb://localhost:27017’``
 3. Migrate to running the generic tests against the full spectrum of “basic” preset topology configurations
-   provided by `mongo-orchestration<https://github.com/mongodb/mongo-orchestration>`.
+   provided by `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_.
    Run the full generic test suite with each of the following.
 
     1. servers/basic.json
     2. replica_sets/basic.json
     3. sharded_clusters/basic.json
 
-4. A test harness script that enables easy testing against a topology configuration provided by `mongo-orchestration<https://github.com/mongodb/mongo-orchestration>`.
+4. A test harness script that enables easy testing against a topology configuration provided by `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_.
    This aids both testing and development.
 
 Generic tests should be as comprehensive as possible without being dependent on topology configuration specifics.
@@ -67,13 +67,13 @@ Since Ruby is the primary implementation language for Cucumber,
 using Cucumber to run the feature specifications is natural for Ruby.
 Other languages may choose to manually implement the scenarios or step definitions.
 
-To support The `mongo-orchestration<https://github.com/mongodb/mongo-orchestration>` project
+To support The `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_ project
 
 References
 
-* `mongo-orchestration<https://github.com/mongodb/mongo-orchestration>`
-* `Gherkin DSL<https://github.com/cucumber/cucumber/wiki/Gherkin>`
-* `Cucumber<http://cukes.info/>`
+* `mongo-orchestration<https://github.com/mongodb/mongo-orchestration>`_
+* `Gherkin DSL<https://github.com/cucumber/cucumber/wiki/Gherkin>`_
+* `Cucumber<http://cukes.info/>`_
 
 Reference implementations
 -------------------------
@@ -81,12 +81,12 @@ Reference implementations
 Step definitions
 
 * `Ruby 1.x-stable
-  <https://github.com/gjmurakami-10gen/mongo-ruby-driver/tree/1.x-mongo-orchestration/test/cluster/step_definitions>`
+  <https://github.com/gjmurakami-10gen/mongo-ruby-driver/tree/1.x-mongo-orchestration/test/cluster/step_definitions>`_
 
 Mongo Orchestration
 
 * `Ruby 1.x-stable
-  <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/test/orchestration/mongo_orchestration.rb>`
+  <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/test/orchestration/mongo_orchestration.rb>`_
 
 Pending Feature Descriptions
 ----------------------------
@@ -152,9 +152,9 @@ Wire Protocol
 References
 
 * `Wire Protocol - 10gen / specifications
-  <https://github.com/10gen/specifications/blob/master/source/driver-wire-protocol.rst>`
+  <https://github.com/10gen/specifications/blob/master/source/driver-wire-protocol.rst>`_
 * `Driver Wire Version Overlap Specification - 10gen / specifications
-  <https://github.com/10gen/specifications/blob/master/source/driver-wire-version-overlap-check.rst>`
+  <https://github.com/10gen/specifications/blob/master/source/driver-wire-version-overlap-check.rst>`_
 
 Use the primary for write-related values and operations.
 
