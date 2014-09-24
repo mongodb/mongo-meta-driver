@@ -216,6 +216,17 @@ Feature: Read Preference
     # pending - createIndexes dropIndexes
     # deprecated since version 2.6 - text cursorInfo
 
+  Scenario: Primary Preferred Cursor Get More Continuity
+    Given a replica set with preset arbiter
+    And some documents written to all data-bearing members
+    When I query with read-preference PRIMARY_PREFERRED and batch size 2
+    And I get 2 docs
+    Then the get succeeds
+    When I stop the arbiter
+    And I stop the primary
+    And I get 2 docs
+    Then the get fails
+
   Scenario: Secondary Cursor Get More Continuity
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members

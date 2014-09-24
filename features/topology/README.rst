@@ -97,13 +97,6 @@ Incomplete but intended feature descriptions are marked ``@pending``.
 The following features are not currently in the `.feature` files.
 Feature descriptions for them will be added to the `.feature` files.
 
-Cursor get more continuity
---------------------------
-
-   1. test with two secondaries
-
-      1. get more fails with primary preferred and no primary and error is node unavailable
-
 Pinning
 -------
 
