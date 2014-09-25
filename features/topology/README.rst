@@ -15,8 +15,8 @@ This is *work in progress*.
 This README file is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form and follows
 the `MongoDB Documentation Style Guidelines <http://docs.mongodb.org/manual/meta/style-guide/>`_.
 
-Building Documents
-------------------
+Building Specification Document
+-------------------------------
 
 ``pending``
 We intend to build a readable specification document that interpolates feature descriptions.
@@ -84,6 +84,14 @@ Step definitions
 * `Ruby 1.x-stable
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/tree/1.x-mongo-orchestration/test/cluster/step_definitions>`_
 
+  * current execution
+
+    $ rake test:cucumber
+    ...
+    44 scenarios (44 passed)
+    356 steps (356 passed)
+    19m13.363s
+
 Mongo Orchestration wrapper
 
 * `Ruby 1.x-stable
@@ -92,7 +100,8 @@ Mongo Orchestration wrapper
 Pending Feature Descriptions
 ============================
 
-Incomplete but intended feature descriptions are marked ``@pending``.
+Incomplete but intended feature descriptions are marked ``@pending``,
+mostly configuration related to replica sets or sharded clusters.
 
 The following features are not currently in the `.feature` files.
 Feature descriptions for them will be added to the `.feature` files.
@@ -107,13 +116,7 @@ Pinning
 Auto-Retry
 ----------
 
-   1. query (non-command) only (in Ruby driver)
-
-      1. query with primary preferred
-      2. stop primary
-      3. query with primary preferred - should success without an error/exception
-
-   2. also with mongos fail-over connection test
+   1. mongos fail-over connection test
 
 5. Hidden replica set members
 

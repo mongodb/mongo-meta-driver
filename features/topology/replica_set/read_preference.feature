@@ -267,6 +267,13 @@ Feature: Read Preference
     And I query with read-preference PRIMARY_PREFERRED
     Then the query occurs on the primary
 
-  @pending
-  Scenario: Auto-retry
+  Scenario: Query Auto-retry with Primary Stop
     # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    # Auto-retry - after primary stop, query succeeds without error/exception
+    Given a replica set with preset arbiter
+    And a document written to all data-bearing members
+    And I query with read-preference PRIMARY_PREFERRED
+    Then the query succeeds
+    When I stop the primary
+    And I query with read-preference PRIMARY_PREFERRED
+    Then the query succeeds
