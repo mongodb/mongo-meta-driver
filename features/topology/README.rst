@@ -88,9 +88,9 @@ Step definitions
 
     $ rake test:cucumber
     ...
-    44 scenarios (44 passed)
-    356 steps (356 passed)
-    19m13.363s
+    46 scenarios (46 passed)
+    383 steps (383 passed)
+    19m37.873s
 
 Mongo Orchestration wrapper
 
@@ -109,16 +109,16 @@ Feature descriptions for them will be added to the `.feature` files.
 Pinning
 -------
 
-   1. 1000 reads with nearest should all go to the same node
+1. 1000 reads with nearest should all go to the same node
 
-      1. less attractive alternative - two secondaries, 1000 reads all go to the same secondary
+   1. less attractive alternative - two secondaries, 1000 reads all go to the same secondary
 
-Auto-Retry
-----------
+Hidden members
+--------------
 
-   1. mongos fail-over connection test
+1. need preset configuration
 
-5. Hidden replica set members
+   1. cannot become primary, cannot read from hidden
 
 Postponed Feature Descriptions
 ==============================
