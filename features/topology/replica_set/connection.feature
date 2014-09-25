@@ -70,14 +70,14 @@ Feature: Replica Set Connection
 
   Scenario: Query with Primary Step Down Query
     Given a replica set with preset arbiter
-    When I insert a document
+    And a document written to all data-bearing members
     And I query
     Then the query succeeds
     When I command the primary to step down
     And I query with retries
     Then the query succeeds
 
-  Scenario: Insert with Primary Failure, Start and Restart
+  Scenario: Insert with Primary Stop, Start and Restart
     Given a replica set with preset arbiter
     When I insert a document
     Then the insert succeeds
@@ -91,9 +91,9 @@ Feature: Replica Set Connection
     And I insert a document with retries
     Then the insert succeeds
 
-  Scenario: Query with Primary Failure, Start and Restart
+  Scenario: Query with Primary Stop, Start and Restart
     Given a replica set with preset arbiter
-    When I insert a document
+    And a document written to all data-bearing members
     And I query
     Then the query succeeds
     When I stop the primary

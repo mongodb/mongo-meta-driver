@@ -18,7 +18,7 @@ Feature: Standalone Server Connection
   I want to verify that the driver correctly behaves according to documentation and specification
   https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
-  Scenario: Server is stopped and started
+  Scenario: Insert with Server Stop, Start and Restart
     Given a standalone server with preset basic
     When I insert a document
     Then the insert succeeds
@@ -28,11 +28,23 @@ Feature: Standalone Server Connection
     When I start the server
     And I insert a document
     Then the insert succeeds
-
-  Scenario: Server is restarted
-    Given a standalone server with preset basic
-    When I insert a document
-    Then the insert succeeds
     When I restart the server
     And I insert a document with retries
     Then the insert succeeds
+
+  Scenario: Query with Server Stop, Start and Restart Auto-retry
+    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    # query after restart succeeds without error/exception
+    Given a standalone server with preset basic
+    And a document written to the server
+    When I query
+    Then the query succeeds
+    When I stop the server
+    And I query
+    Then the query fails
+    When I start the server
+    And I query
+    Then the query succeeds
+    When I restart the server
+    And I query
+    Then the query succeeds

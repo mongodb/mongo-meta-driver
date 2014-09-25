@@ -114,13 +114,6 @@ Auto-Retry
       3. query with primary preferred - should success without an error/exception
 
    2. also with mongos fail-over connection test
-   3. standalone connection test
-
-      1. query succeeds
-      2. restart node
-      3. ensure node is accepting queries (using side connection)
-      4. attempt to query using original connection
-      5. query succeeds without error/exception
 
 5. Hidden replica set members
 
