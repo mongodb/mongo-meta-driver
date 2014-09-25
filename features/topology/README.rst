@@ -104,18 +104,6 @@ Pinning
 
       1. less attractive alternative - two secondaries, 1000 reads all go to the same secondary
 
-Discovery
----------
-
-Review overlap with Topology Monitoring
-
-   1. all nodes down, check that driver initializes but can’t read/write, start up nodes, and check function progressively.
-   2. one seed
-
-      1. primary
-      2. secondary
-      3. arbiter
-
 Auto-Retry
 ----------
 
