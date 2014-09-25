@@ -15,8 +15,10 @@ but should provide a reasonable balance between run time and feature testing.
 We welcome improvements to the test suite.
 This is *work in progress*.
 
-This README file is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form and follows
+This README file follows
 the `MongoDB Documentation Style Guidelines <http://docs.mongodb.org/manual/meta/style-guide/>`_.
+It is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form,
+intended for `GitHub Markup <https://github.com/github/markup>`_.
 
 Building Specification Document
 -------------------------------
@@ -84,20 +86,20 @@ Reference implementations
 
 Step definitions
 
-* `Ruby 1.x-stable
+* `step_definitions Ruby 1.x-stable
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/tree/1.x-mongo-orchestration/test/cluster/step_definitions>`_
 
   * current execution
 
-    $ rake test:cucumber
-    ...
-    46 scenarios (46 passed)
-    383 steps (383 passed)
-    19m37.873s
+        $ rake test:cucumber
+        ...
+        46 scenarios (46 passed)
+        383 steps (383 passed)
+        19m37.873s
 
 Mongo Orchestration wrapper
 
-* `Ruby 1.x-stable
+* `mongo_orchestration.rb Ruby 1.x-stable
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/test/orchestration/mongo_orchestration.rb>`_
 
 Pending Feature Descriptions
@@ -112,16 +114,16 @@ Feature descriptions for them will be added to the `.feature` files.
 Pinning
 -------
 
-1. 1000 reads with nearest should all go to the same node
+* 1000 reads with nearest should all go to the same node
 
-   1. less attractive alternative - two secondaries, 1000 reads all go to the same secondary
+  * less attractive alternative - two secondaries, 1000 reads all go to the same secondary
 
 Hidden members
 --------------
 
-1. need preset configuration
+* need preset configuration
 
-   1. cannot become primary, cannot read from hidden
+  * cannot become primary, cannot read from hidden
 
 Postponed Feature Descriptions
 ==============================
@@ -173,54 +175,87 @@ and topology categories including stand-alone server, replica set, and sharded c
 Testing beyond this requires a mixed server-version replica-set topology
 that is not available via mongo-orchestration.
 
-====================
-Feature Descriptions
-====================
 
-
-Feature: Replica Set Configuration
-==================================
+Feature: Standalone Server Connection
+=====================================
 
 Description:
 
-| In order to support changes to the configuration of a replica set
-| As a driver author
-| I want to verify that the driver correctly behaves according to documentation and specification
-| http://docs.mongodb.org/manual/reference/command/nav-replication/
-| https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
+    In order to support changes to the state of a standalone server
+    As a driver author
+    I want to verify that the driver correctly behaves according to documentation and specification
+    https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
 
-URI
+URI:
 
-| https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/configuration.feature
-
-Scenario: Member is added to replica set
-----------------------------------------
+    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/standalone/connection.feature
 
 
-Tags: `@pending`
 
-Scenario: Member is removed from replica set
---------------------------------------------
+Scenario: Insert with Server Stop, Start and Restart
+----------------------------------------------------
 
 
-Tags: `@pending`
+Steps:
+
+#. **Given** a standalone server with preset basic
+#. **When** I insert a document
+#. **Then** the insert succeeds
+#. **When** I stop the server
+#. **And** I insert a document
+#. **Then** the insert fails
+#. **When** I start the server
+#. **And** I insert a document
+#. **Then** the insert succeeds
+#. **When** I restart the server
+#. **And** I insert a document with retries
+#. **Then** the insert succeeds
+
+
+Scenario: Query with Server Stop, Start and Query Auto-retry with Server Restart
+--------------------------------------------------------------------------------
+
+Description:
+
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    Auto-retry - after restart, query succeeds without error/exception
+
+
+Steps:
+
+#. **Given** a standalone server with preset basic
+#. **And** a document written to the server
+#. **When** I query
+#. **Then** the query succeeds
+#. **When** I stop the server
+#. **And** I query
+#. **Then** the query fails
+#. **When** I start the server
+#. **And** I query
+#. **Then** the query succeeds
+#. **When** I restart the server
+#. **And** I query
+#. **Then** the query succeeds
+
 
 Feature: Replica Set Connection
 ===============================
 
 Description:
 
-| In order to support changes to the state of a replica set
-| As a driver author
-| I want to verify that the driver correctly behaves according to documentation and specification
-| http://docs.mongodb.org/manual/reference/command/nav-replication/
-| https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
+    In order to support changes to the state of a replica set
+    As a driver author
+    I want to verify that the driver correctly behaves according to documentation and specification
+    http://docs.mongodb.org/manual/reference/command/nav-replication/
+    https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
 
-URI
+URI:
 
-| https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/connection.feature
+    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/connection.feature
+
+
 
 Scenario: Discovery from Primary Seed
 -------------------------------------
@@ -242,6 +277,7 @@ Steps:
 #. **And** I query with retries and read-preference SECONDARY
 #. **Then** the query succeeds
 
+
 Scenario: Discovery from Secondary Seed
 ---------------------------------------
 
@@ -262,6 +298,7 @@ Steps:
 #. **And** I query with retries and read-preference SECONDARY
 #. **Then** the query succeeds
 
+
 Scenario: Discovery from Arbiter Seed
 -------------------------------------
 
@@ -278,6 +315,7 @@ Steps:
 #. **And** I query with retries and read-preference SECONDARY
 #. **Then** the query succeeds
 
+
 Scenario: Insert with Primary Step Down
 ---------------------------------------
 
@@ -290,6 +328,7 @@ Steps:
 #. **When** I command the primary to step down
 #. **And** I insert a document with retries
 #. **Then** the insert succeeds
+
 
 Scenario: Query with Primary Step Down Query
 --------------------------------------------
@@ -304,6 +343,7 @@ Steps:
 #. **When** I command the primary to step down
 #. **And** I query with retries
 #. **Then** the query succeeds
+
 
 Scenario: Insert with Primary Stop, Start and Restart
 -----------------------------------------------------
@@ -323,6 +363,7 @@ Steps:
 #. **When** I restart the primary
 #. **And** I insert a document with retries
 #. **Then** the insert succeeds
+
 
 Scenario: Query with Primary Stop, Start and Restart
 ----------------------------------------------------
@@ -344,21 +385,24 @@ Steps:
 #. **And** I query with retries
 #. **Then** the query succeeds
 
+
 Feature: Read Preference
 ========================
 
 Description:
 
-| In order to support read preference that describes how clients route read operations to members of a replica set
-| As a driver author
-| I want to verify that the driver correctly behaves according to documentation and specification
-| http://docs.mongodb.org/manual/core/read-preference/
-| https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst
+    In order to support read preference that describes how clients route read operations to members of a replica set
+    As a driver author
+    I want to verify that the driver correctly behaves according to documentation and specification
+    http://docs.mongodb.org/manual/core/read-preference/
+    https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst
 
 
-URI
+URI:
 
-| https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/read_preference.feature
+    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/read_preference.feature
+
+
 
 Scenario: Read Primary
 ----------------------
@@ -374,6 +418,7 @@ Steps:
 #. **When** there is no primary
 #. **And** I query with read-preference PRIMARY
 #. **Then** the query fails
+
 
 Scenario: Read Primary Preferred
 --------------------------------
@@ -391,6 +436,7 @@ Steps:
 #. **And** I query with read-preference PRIMARY_PREFERRED
 #. **Then** the query occurs on the secondary
 
+
 Scenario: Read Secondary
 ------------------------
 
@@ -405,6 +451,7 @@ Steps:
 #. **When** there are no secondaries
 #. **When** I query with read-preference SECONDARY
 #. **Then** the query fails
+
 
 Scenario: Read Secondary Preferred
 ----------------------------------
@@ -422,6 +469,7 @@ Steps:
 #. **And** I query with read-preference SECONDARY_PREFERRED
 #. **Then** the query occurs on the primary
 
+
 Scenario: Read With Nearest
 ---------------------------
 
@@ -433,6 +481,7 @@ Steps:
 #. **When** I query with read-preference NEAREST
 #. **Then** the query succeeds
 
+
 Scenario: Read Primary With Tag Sets
 ------------------------------------
 
@@ -443,6 +492,7 @@ Steps:
 #. **And** a document written to all data-bearing members
 #. **When** I query with read-preference PRIMARY and tag sets [{"ordinal": "one"}, {"dc": "ny"}]
 #. **Then** the query fails with error "PRIMARY cannot be combined with tags"
+
 
 Scenario: Read Primary Preferred With Tag Sets
 ----------------------------------------------
@@ -462,6 +512,7 @@ Steps:
 #. **When** I query with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "three"}, {"dc": "na"}]
 #. **Then** the query fails with error "No replica set member available for query with read preference matching mode PRIMARY_PREFERRED and tags matching <tags sets>."
 
+
 Scenario: Read Secondary With Tag Sets
 --------------------------------------
 
@@ -475,6 +526,7 @@ Steps:
 #. **Then** the query occurs on a secondary
 #. **When** I query with read-preference SECONDARY and tag sets [{"ordinal": "one"}]
 #. **Then** the query fails with error "No replica set member available for query with read preference matching mode SECONDARY and tags matching <tags sets>."
+
 
 Scenario: Read Secondary Preferred With Tag Sets
 ------------------------------------------------
@@ -490,6 +542,7 @@ Steps:
 #. **When** I track server status on all data members
 #. **And** I query with read-preference SECONDARY_PREFERRED and tag sets [{"ordinal": "three"}]
 #. **Then** the query occurs on the primary
+
 
 Scenario: Read Nearest With Tag Sets
 ------------------------------------
@@ -509,6 +562,7 @@ Steps:
 #. **Then** the query occurs on a secondary
 #. **When** I query with read-preference NEAREST and tag sets [{"ordinal": "three"}]
 #. **Then** the query fails with error "No replica set member available for query with read preference matching mode NEAREST and tags matching <tags sets>"
+
 
 Scenario: Secondary OK Commands
 -------------------------------
@@ -535,6 +589,7 @@ Examples:
     | secondary | normal | parallelCollectionScan | { "parallelCollectionScan": "test", "numCursors": 2 } |  |
 
 
+
 Scenario: Secondary OK GeoNear
 ------------------------------
 
@@ -547,6 +602,7 @@ Steps:
 #. **When** I track server status on all data members
 #. **And** I run a geonear command with read-preference SECONDARY
 #. **Then** the command occurs on a secondary
+
 
 Scenario: Secondary OK GeoSearch
 --------------------------------
@@ -561,6 +617,7 @@ Steps:
 #. **And** I run a geosearch command with read-preference SECONDARY
 #. **Then** the command occurs on a secondary
 
+
 Scenario: Secondary OK MapReduce with inline
 --------------------------------------------
 
@@ -572,6 +629,7 @@ Steps:
 #. **When** I track server status on all data members
 #. **And** I run a map-reduce with field out value inline true and with read-preference SECONDARY
 #. **Then** the command occurs on a secondary
+
 
 Scenario: Primary Reroute MapReduce without inline
 --------------------------------------------------
@@ -585,6 +643,7 @@ Steps:
 #. **And** I run a map-reduce with field out value other than inline and with read-preference SECONDARY
 #. **Then** the command occurs on the primary
 
+
 Scenario: Secondary OK Aggregate without $out
 ---------------------------------------------
 
@@ -597,6 +656,7 @@ Steps:
 #. **And** I run an aggregate without $out and with read-preference SECONDARY
 #. **Then** the command occurs on a secondary
 
+
 Scenario: Primary Reroute Aggregate with $out
 ---------------------------------------------
 
@@ -608,6 +668,7 @@ Steps:
 #. **When** I track server status on all data members
 #. **And** I run an aggregate with $out and with read-preference SECONDARY
 #. **Then** the command occurs on the primary
+
 
 Scenario: Primary Reroute Primary-Only Commands
 -----------------------------------------------
@@ -625,36 +686,9 @@ Examples:
 
 
     | member_type | db_type | name | example | comment |
-    #| primary     | normal  | buildInfo      | { "buildInfo": 1 } | | 
-    #| primary     | normal  | collMod        | { "collMod": "test", "usePowerOf2Sizes": 1 } | | 
-    #| primary     | normal  | create         | { "create": "test" } | | 
-    #| primary     | normal  | delete         | { "delete": "test", "deletes": [{"q": {"a": 1}, "limit": 1}] } | | 
-    #| primary     | normal  | drop           | { "drop": "test" } | | 
-    #| primary     | normal  | dropDatabase   | { "dropDatabase": 1 } | | 
-    #| primary     | normal  | eval           | { "eval": "function(){ return {x: 1} }" } | | 
-    #| primary     | normal  | findAndModify  | { "findAndModify": "test", "query": {"a": 1}, "update": {"$inc": {"a": 1}} } | | 
     | primary | admin | fsync | { "fsync": 1 } |  |
-    #| primary     | admin   | getCmdLineOpts | { "getCmdLineOpts": 1 } | | 
-    #| primary     | normal  | getLastError   | { "getLastError": 1 } | | 
-    #| primary     | admin   | getParameter   | { "getParameter": 1, "logLevel": 1 } | | 
-    #| primary     | normal  | getPrevError   | { "getPrevError": 1 } | | 
-    #| primary     | admin   | getLog         | { "getLog": "*" } | | 
-    #| primary     | normal  | hostInfo       | { "hostInfo": 1 } | | 
-    #| primary     | normal  | insert         | { "insert": "test", "documents": [{"b": 2},{"c": 3}] } | | 
-    #| primary     | normal  | listCommands   | { "listCommands": 1 } | | 
-    #| primary     | admin   | listDatabases  | { "listDatabases": 1 } | | 
-    #| primary     | admin   | logRotate      | { "logRotate": 1 } | | 
     | primary | normal | ping | { "ping": 1 } |  |
 
-    #| primary     | normal  | profile        | { "profile": 0 } | | 
-    #| primary     | normal  | reIndex        | { "reIndex": "test" } | | 
-    #| primary     | normal  | resetError     | { "resetError": 1 } | | 
-    #| primary     | normal  | serverStatus   | { "serverStatus": "test", "scale": 1 } | | 
-    #| primary     | admin   | setParameter   | { "setParameter": 1, "logLevel": 0 } | | 
-    #| primary     | admin   | top            | { "top": 1 } | | 
-    #| primary     | normal  | update         | { "update": "test", "updates": [{"q": {"a": 1}, "u": {"a": 2}}] } | | 
-    # pending - createIndexes dropIndexes 
-    # deprecated since version 2.6 - text cursorInfo 
 
 
 Scenario: Primary Preferred Cursor Get More Continuity
@@ -672,6 +706,7 @@ Steps:
 #. **And** I stop the primary
 #. **And** I get 2 docs
 #. **Then** the get fails
+
 
 Scenario: Secondary Cursor Get More Continuity
 ----------------------------------------------
@@ -691,6 +726,7 @@ Steps:
 #. **Then** the get succeeds
 #. **And** the getmore occurs on the secondary
 
+
 Scenario: Secondary Kill Cursors Continuity
 -------------------------------------------
 
@@ -709,14 +745,17 @@ Steps:
 #. **Then** the close succeeds
 #. **And** the kill cursors occurs on the secondary
 
+
 Scenario: Node is unpinned upon change in read preference
 ---------------------------------------------------------
 
+Description:
+
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
+    See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
+
 
 Steps:
-
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning 
-    # See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb 
 
 #. **Given** a replica set with preset arbiter
 #. **When** I track server status on all data members
@@ -729,14 +768,17 @@ Steps:
 #. **And** I query with read-preference PRIMARY_PREFERRED
 #. **Then** the query occurs on the primary
 
+
 Scenario: Query Auto-retry with Primary Stop
 --------------------------------------------
 
+Description:
+
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    Auto-retry - after primary stop, query succeeds without error/exception
+
 
 Steps:
-
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry 
-    # Auto-retry - after primary stop, query succeeds without error/exception 
 
 #. **Given** a replica set with preset arbiter
 #. **And** a document written to all data-bearing members
@@ -746,22 +788,25 @@ Steps:
 #. **And** I query with read-preference PRIMARY_PREFERRED
 #. **Then** the query succeeds
 
+
 Feature: Write Concern
 ======================
 
 Description:
 
-| In order to support write concern that describes the guarantee that MongoDB provides when reporting on
-|   the result of a write operation
-| As a driver author
-| I want to verify that the driver correctly behaves according to documentation and specification
-| http://docs.mongodb.org/manual/core/write-concern/
-| https://github.com/10gen/specifications/blob/master/source/driver-bulk-update.rst
+    In order to support write concern that describes the guarantee that
+    MongoDB provides when reporting on the result of a write operation
+    As a driver author
+    I want to verify that the driver correctly behaves according to documentation and specification
+    http://docs.mongodb.org/manual/core/write-concern/
+    https://github.com/10gen/specifications/blob/master/source/driver-bulk-update.rst
 
 
-URI
+URI:
 
-| https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/write_concern.feature
+    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/write_concern.feature
+
+
 
 Scenario: Write Operation with Write Concern
 --------------------------------------------
@@ -777,6 +822,7 @@ Steps:
 #. **When** I delete a document with the write concern {“w”: <nodes>}
 #. **Then** the write operation suceeeds
 
+
 Scenario: Bulk Write Operation with Write Concern
 -------------------------------------------------
 
@@ -789,6 +835,7 @@ Steps:
 #. **When** I remove all documents from the collection
 #. **And** I execute an unordered bulk write operation with the write concern {“w”: <nodes>}
 #. **Then** the bulk write operation succeeds
+
 
 Scenario: Replicated Write Operations Timeout with W Failure
 ------------------------------------------------------------
@@ -803,6 +850,7 @@ Steps:
 #. **Then** the write operation fails write concern
 #. **When** I delete a document with the write concern {“w”: <nodes + 1>, “timeout”: 1}
 #. **Then** the write operation fails write concern
+
 
 Scenario: Replicated Bulk Write Operation Timeout with W Failure
 ----------------------------------------------------------------
@@ -829,61 +877,55 @@ Steps:
 #. **And** the result includes a write error
 #. **And** the result includes a write concern error
 
-Feature: Sharded Cluster Configuration
-======================================
+
+Feature: Replica Set Configuration
+==================================
 
 Description:
 
-| In order to support changes to the configuration of a sharded cluster
-| As a driver author
-| I want to verify that the driver correctly behaves according to documentation and specification
-| http://docs.mongodb.org/manual/reference/command/nav-sharding/
-| http://docs.mongodb.org/manual/reference/command/nav-replication/
-| https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
+    In order to support changes to the configuration of a replica set
+    As a driver author
+    I want to verify that the driver correctly behaves according to documentation and specification
+    http://docs.mongodb.org/manual/reference/command/nav-replication/
+    https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
 
-URI
+URI:
 
-| https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/sharded_cluster/configuration.feature
-
-Scenario: Router added to cluster
----------------------------------
+    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/configuration.feature
 
 
-Tags: `@pending`
 
-Scenario: Router removed from cluster
--------------------------------------
+Scenario: Member is added to replica set
+----------------------------------------
 
 
 Tags: `@pending`
 
-Scenario: Shard added to cluster
---------------------------------
+
+Scenario: Member is removed from replica set
+--------------------------------------------
 
 
 Tags: `@pending`
 
-Scenario: Shard removed from cluster
-------------------------------------
-
-
-Tags: `@pending`
 
 Feature: Sharded Cluster Connection
 ===================================
 
 Description:
 
-| In order to support changes to the state of a sharded cluster
-| As a driver author
-| I want to verify that the driver correctly behaves according to documentation and specification
-| https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
+    In order to support changes to the state of a sharded cluster
+    As a driver author
+    I want to verify that the driver correctly behaves according to documentation and specification
+    https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
 
-URI
+URI:
 
-| https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/sharded_cluster/connection.feature
+    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/sharded_cluster/connection.feature
+
+
 
 Scenario: Insert with mongos Router Stop and Start
 --------------------------------------------------
@@ -910,14 +952,17 @@ Steps:
 #. **And** I insert a document with retries
 #. **Then** the insert succeeds
 
+
 Scenario: Query Auto-retry with mongos Router Stop and Start
 ------------------------------------------------------------
 
+Description:
+
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
+
 
 Steps:
-
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry 
-    # Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available 
 
 #. **Given** a sharded cluster with preset basic
 #. **And** a document written to the cluster
@@ -937,6 +982,7 @@ Steps:
 #. **Then** the query succeeds
 #. **When** I stop router B
 
+
 Scenario: Insert with mongos Router Restart
 -------------------------------------------
 
@@ -953,14 +999,17 @@ Steps:
 #. **And** I insert a document with retries
 #. **Then** the insert succeeds
 
+
 Scenario: Query Auto-retry with mongos Router Restart
 -----------------------------------------------------
 
+Description:
+
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
+
 
 Steps:
-
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry 
-    # Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available 
 
 #. **Given** a sharded cluster with preset basic
 #. **And** a document written to the cluster
@@ -973,62 +1022,52 @@ Steps:
 #. **And** I query
 #. **Then** the query succeeds
 
-Feature: Standalone Server Connection
-=====================================
+
+Feature: Sharded Cluster Configuration
+======================================
 
 Description:
 
-| In order to support changes to the state of a standalone server
-| As a driver author
-| I want to verify that the driver correctly behaves according to documentation and specification
-| https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
+    In order to support changes to the configuration of a sharded cluster
+    As a driver author
+    I want to verify that the driver correctly behaves according to documentation and specification
+    http://docs.mongodb.org/manual/reference/command/nav-sharding/
+    http://docs.mongodb.org/manual/reference/command/nav-replication/
+    https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
 
-URI
+URI:
 
-| https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/standalone/connection.feature
-
-Scenario: Insert with Server Stop, Start and Restart
-----------------------------------------------------
+    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/sharded_cluster/configuration.feature
 
 
-Steps:
 
-#. **Given** a standalone server with preset basic
-#. **When** I insert a document
-#. **Then** the insert succeeds
-#. **When** I stop the server
-#. **And** I insert a document
-#. **Then** the insert fails
-#. **When** I start the server
-#. **And** I insert a document
-#. **Then** the insert succeeds
-#. **When** I restart the server
-#. **And** I insert a document with retries
-#. **Then** the insert succeeds
-
-Scenario: Query with Server Stop, Start and Query Auto-retry with Server Restart
---------------------------------------------------------------------------------
+Scenario: Router added to cluster
+---------------------------------
 
 
-Steps:
+Tags: `@pending`
 
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry 
-    # Auto-retry - after restart, query succeeds without error/exception 
 
-#. **Given** a standalone server with preset basic
-#. **And** a document written to the server
-#. **When** I query
-#. **Then** the query succeeds
-#. **When** I stop the server
-#. **And** I query
-#. **Then** the query fails
-#. **When** I start the server
-#. **And** I query
-#. **Then** the query succeeds
-#. **When** I restart the server
-#. **And** I query
-#. **Then** the query succeeds
+Scenario: Router removed from cluster
+-------------------------------------
+
+
+Tags: `@pending`
+
+
+Scenario: Shard added to cluster
+--------------------------------
+
+
+Tags: `@pending`
+
+
+Scenario: Shard removed from cluster
+------------------------------------
+
+
+Tags: `@pending`
 
 | This file is auto-generated. Please do not edit this file, instead please edit the sources.
 

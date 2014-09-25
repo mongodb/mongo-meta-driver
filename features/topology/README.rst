@@ -12,8 +12,10 @@ but should provide a reasonable balance between run time and feature testing.
 We welcome improvements to the test suite.
 This is *work in progress*.
 
-This README file is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form and follows
+This README file follows
 the `MongoDB Documentation Style Guidelines <http://docs.mongodb.org/manual/meta/style-guide/>`_.
+It is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form,
+intended for `GitHub Markup <https://github.com/github/markup>`_.
 
 Building Specification Document
 -------------------------------
@@ -81,20 +83,20 @@ Reference implementations
 
 Step definitions
 
-* `Ruby 1.x-stable
+* `step_definitions Ruby 1.x-stable
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/tree/1.x-mongo-orchestration/test/cluster/step_definitions>`_
 
   * current execution
 
-    $ rake test:cucumber
-    ...
-    46 scenarios (46 passed)
-    383 steps (383 passed)
-    19m37.873s
+        $ rake test:cucumber
+        ...
+        46 scenarios (46 passed)
+        383 steps (383 passed)
+        19m37.873s
 
 Mongo Orchestration wrapper
 
-* `Ruby 1.x-stable
+* `mongo_orchestration.rb Ruby 1.x-stable
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/test/orchestration/mongo_orchestration.rb>`_
 
 Pending Feature Descriptions
@@ -109,16 +111,16 @@ Feature descriptions for them will be added to the `.feature` files.
 Pinning
 -------
 
-1. 1000 reads with nearest should all go to the same node
+* 1000 reads with nearest should all go to the same node
 
-   1. less attractive alternative - two secondaries, 1000 reads all go to the same secondary
+  * less attractive alternative - two secondaries, 1000 reads all go to the same secondary
 
 Hidden members
 --------------
 
-1. need preset configuration
+* need preset configuration
 
-   1. cannot become primary, cannot read from hidden
+  * cannot become primary, cannot read from hidden
 
 Postponed Feature Descriptions
 ==============================
@@ -169,3 +171,6 @@ and topology categories including stand-alone server, replica set, and sharded c
 
 Testing beyond this requires a mixed server-version replica-set topology
 that is not available via mongo-orchestration.
+
+---
+

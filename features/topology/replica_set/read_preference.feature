@@ -213,8 +213,8 @@ Feature: Read Preference
       #| primary     | admin   | setParameter   | { "setParameter": 1, "logLevel": 0 } | |
       #| primary     | admin   | top            | { "top": 1 } | |
       #| primary     | normal  | update         | { "update": "test", "updates": [{"q": {"a": 1}, "u": {"a": 2}}] } | |
-    # pending - createIndexes dropIndexes
-    # deprecated since version 2.6 - text cursorInfo
+      # pending - createIndexes dropIndexes
+      # deprecated since version 2.6 - text cursorInfo
 
   Scenario: Primary Preferred Cursor Get More Continuity
     Given a replica set with preset arbiter
@@ -254,8 +254,8 @@ Feature: Read Preference
     And the kill cursors occurs on the secondary
 
   Scenario: Node is unpinned upon change in read preference
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
-    # See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
+    See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
     Given a replica set with preset arbiter
     When I track server status on all data members
     And I query with default read preference
@@ -268,8 +268,8 @@ Feature: Read Preference
     Then the query occurs on the primary
 
   Scenario: Query Auto-retry with Primary Stop
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
-    # Auto-retry - after primary stop, query succeeds without error/exception
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    Auto-retry - after primary stop, query succeeds without error/exception
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
     And I query with read-preference PRIMARY_PREFERRED

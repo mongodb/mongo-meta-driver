@@ -13,8 +13,8 @@
 # limitations under the License.
 
 Feature: Write Concern
-  In order to support write concern that describes the guarantee that MongoDB provides when reporting on
-    the result of a write operation
+  In order to support write concern that describes the guarantee that
+  MongoDB provides when reporting on the result of a write operation
   As a driver author
   I want to verify that the driver correctly behaves according to documentation and specification
   http://docs.mongodb.org/manual/core/write-concern/

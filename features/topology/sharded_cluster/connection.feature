@@ -39,8 +39,8 @@ Feature: Sharded Cluster Connection
     Then the insert succeeds
 
   Scenario: Query Auto-retry with mongos Router Stop and Start
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
-    # Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
     Given a sharded cluster with preset basic
     And a document written to the cluster
     When I query
@@ -71,8 +71,8 @@ Feature: Sharded Cluster Connection
     Then the insert succeeds
 
   Scenario: Query Auto-retry with mongos Router Restart
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
-    # Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
     Given a sharded cluster with preset basic
     And a document written to the cluster
     When I query

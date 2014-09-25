@@ -33,8 +33,8 @@ Feature: Standalone Server Connection
     Then the insert succeeds
 
   Scenario: Query with Server Stop, Start and Query Auto-retry with Server Restart
-    # See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
-    # Auto-retry - after restart, query succeeds without error/exception
+    See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
+    Auto-retry - after restart, query succeeds without error/exception
     Given a standalone server with preset basic
     And a document written to the server
     When I query
