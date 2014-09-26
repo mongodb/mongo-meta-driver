@@ -20,6 +20,7 @@ Feature: Write Concern
   http://docs.mongodb.org/manual/core/write-concern/
   https://github.com/10gen/specifications/blob/master/source/driver-bulk-update.rst
 
+  @stable
   Scenario: Write Operation with Write Concern
     Given a replica set with preset arbiter
     When I insert a document with the write concern {“w”: <nodes>}
@@ -29,6 +30,7 @@ Feature: Write Concern
     When I delete a document with the write concern {“w”: <nodes>}
     Then the write operation suceeeds
 
+  @stable
   Scenario: Bulk Write Operation with Write Concern
     Given a replica set with preset arbiter
     When I execute an ordered bulk write operation with the write concern {“w”: <nodes>}
@@ -37,6 +39,7 @@ Feature: Write Concern
     And I execute an unordered bulk write operation with the write concern {“w”: <nodes>}
     Then the bulk write operation succeeds
 
+  @stable
   Scenario: Replicated Write Operations Timeout with W Failure
     Given a replica set with preset arbiter
     When I insert a document with the write concern {“w”: <nodes + 1>, “timeout”: 1}
@@ -46,6 +49,7 @@ Feature: Write Concern
     When I delete a document with the write concern {“w”: <nodes + 1>, “timeout”: 1}
     Then the write operation fails write concern
 
+  @stable
   Scenario: Replicated Bulk Write Operation Timeout with W Failure
     Given a replica set with preset arbiter
     When I execute an ordered bulk write operation with the write concern {“w”: <nodes + 1>, “timeout”: 1}

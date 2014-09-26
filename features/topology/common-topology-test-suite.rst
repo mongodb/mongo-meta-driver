@@ -9,17 +9,31 @@
 MongoDB Driver Common Topology Test Suite
 =========================================
 
-This directory holds the **Driver Common Topology Test Suite** for MongoDB.
-This is a suite of feature descriptions for MongoDB drivers according to specifications and documentation.
-This suite is for behavior that depends on actual topologies,
-features that are not dependent on server topology should be covered elsewhere, e.g., in unit tests.
+This is the **Driver Common Topology Test Suite** for MongoDB.
+It is a suite of feature descriptions for MongoDB drivers according to specifications and documentation.
+This suite is for behavior that depends on actual topology configurations and details,
+features that are not dependent on server topology should be covered elsewhere.
+
+The test suite is intended to help driver authors and maintainers
+understand, implement and verify driver behavior.
 
 The suite does *not* attempt exhaustive code coverage or compliance,
 but should provide a reasonable balance between run time and feature testing.
 We welcome improvements to the test suite.
 This is *work in progress*.
 
-This README file follows
+The following subdirectories contain feature descriptions in
+the `Gherkin language <https://github.com/cucumber/cucumber/wiki/Gherkin>`_.
+
+* `standalone <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/standalone>`_
+* `replica_set <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/replica_set>`_
+* `sharded_cluster <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/sharded_cluster>`_
+
+This specification document can be found online.
+
+* `common-topology-test-suite.rst (reStructured Text) <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/common-topology-test-suite.rst>`_
+
+This document file follows
 the `MongoDB Documentation Style Guidelines <http://docs.mongodb.org/manual/meta/style-guide/>`_.
 It is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form,
 intended for `GitHub Markup <https://github.com/github/markup>`_.
@@ -173,6 +187,20 @@ and topology categories including stand-alone server, replica set, and sharded c
 Testing beyond this requires a mixed server-version replica-set topology
 that is not available via mongo-orchestration.
 
+Feature Descriptions Notes
+==========================
+
+Tags
+----
+
+Tags and their meaning or purpose are as follows.
+
+* @destroy - the topology configuration is mutated during the test so destroy it afterwards
+* @pending - description of the scenario is not complete or fully working
+* @reset - the topology state is modified during the test and must be reset afterwards
+* @ruby_1.x_broken - the test fails for the Ruby 1.x driver due to a driver issue
+* @stable - the topology state is not modified during the test
+
 ---
 
 
@@ -195,13 +223,15 @@ Description:
 
 URI:
 
-    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/standalone/connection.feature
+    https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/standalone/connection.feature
 
 
 
 Scenario: Insert with Server Stop, Start and Restart
 ----------------------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -227,6 +257,8 @@ Description:
     See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
     Auto-retry - after restart, query succeeds without error/exception
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -259,13 +291,15 @@ Description:
 
 URI:
 
-    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/connection.feature
+    https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/replica_set/connection.feature
 
 
 
 Scenario: Discovery from Primary Seed
 -------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -288,6 +322,8 @@ Scenario: Discovery from Secondary Seed
 ---------------------------------------
 
 
+Tags: `@reset`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -309,6 +345,8 @@ Scenario: Discovery from Arbiter Seed
 -------------------------------------
 
 
+Tags: `@reset`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -326,6 +364,8 @@ Scenario: Insert with Primary Step Down
 ---------------------------------------
 
 
+Tags: `@reset`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -339,6 +379,8 @@ Steps:
 Scenario: Query with Primary Step Down Query
 --------------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -354,6 +396,8 @@ Steps:
 Scenario: Insert with Primary Stop, Start and Restart
 -----------------------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -374,6 +418,8 @@ Steps:
 Scenario: Query with Primary Stop, Start and Restart
 ----------------------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -406,13 +452,15 @@ Description:
 
 URI:
 
-    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/read_preference.feature
+    https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/replica_set/read_preference.feature
 
 
 
 Scenario: Read Primary
 ----------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -429,6 +477,8 @@ Steps:
 Scenario: Read Primary Preferred
 --------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -447,6 +497,8 @@ Scenario: Read Secondary
 ------------------------
 
 
+Tags: `@reset`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -462,6 +514,8 @@ Steps:
 Scenario: Read Secondary Preferred
 ----------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -480,6 +534,8 @@ Scenario: Read With Nearest
 ---------------------------
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -492,6 +548,8 @@ Scenario: Read Primary With Tag Sets
 ------------------------------------
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -503,6 +561,8 @@ Steps:
 Scenario: Read Primary Preferred With Tag Sets
 ----------------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -523,6 +583,8 @@ Scenario: Read Secondary With Tag Sets
 --------------------------------------
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -537,6 +599,8 @@ Steps:
 Scenario: Read Secondary Preferred With Tag Sets
 ------------------------------------------------
 
+
+Tags: `@stable`
 
 Steps:
 
@@ -554,7 +618,7 @@ Scenario: Read Nearest With Tag Sets
 ------------------------------------
 
 
-Tags: `@ruby_1_x_broken`
+Tags: `@ruby_1_x_broken` `@stable`
 
 Steps:
 
@@ -573,6 +637,8 @@ Steps:
 Scenario: Secondary OK Commands
 -------------------------------
 
+
+Tags: `@stable`
 
 Steps:
 
@@ -600,6 +666,8 @@ Scenario: Secondary OK GeoNear
 ------------------------------
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -613,6 +681,8 @@ Steps:
 Scenario: Secondary OK GeoSearch
 --------------------------------
 
+
+Tags: `@stable`
 
 Steps:
 
@@ -628,6 +698,8 @@ Scenario: Secondary OK MapReduce with inline
 --------------------------------------------
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -640,6 +712,8 @@ Steps:
 Scenario: Primary Reroute MapReduce without inline
 --------------------------------------------------
 
+
+Tags: `@stable`
 
 Steps:
 
@@ -654,6 +728,8 @@ Scenario: Secondary OK Aggregate without $out
 ---------------------------------------------
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -667,6 +743,8 @@ Scenario: Primary Reroute Aggregate with $out
 ---------------------------------------------
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -679,6 +757,8 @@ Steps:
 Scenario: Primary Reroute Primary-Only Commands
 -----------------------------------------------
 
+
+Tags: `@stable`
 
 Steps:
 
@@ -701,6 +781,8 @@ Scenario: Primary Preferred Cursor Get More Continuity
 ------------------------------------------------------
 
 
+Tags: `@reset`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -717,6 +799,8 @@ Steps:
 Scenario: Secondary Cursor Get More Continuity
 ----------------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -736,6 +820,8 @@ Steps:
 Scenario: Secondary Kill Cursors Continuity
 -------------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -761,6 +847,8 @@ Description:
     See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -783,6 +871,8 @@ Description:
     See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
     Auto-retry - after primary stop, query succeeds without error/exception
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -810,13 +900,15 @@ Description:
 
 URI:
 
-    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/write_concern.feature
+    https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/replica_set/write_concern.feature
 
 
 
 Scenario: Write Operation with Write Concern
 --------------------------------------------
 
+
+Tags: `@stable`
 
 Steps:
 
@@ -833,6 +925,8 @@ Scenario: Bulk Write Operation with Write Concern
 -------------------------------------------------
 
 
+Tags: `@stable`
+
 Steps:
 
 #. **Given** a replica set with preset arbiter
@@ -846,6 +940,8 @@ Steps:
 Scenario: Replicated Write Operations Timeout with W Failure
 ------------------------------------------------------------
 
+
+Tags: `@stable`
 
 Steps:
 
@@ -861,6 +957,8 @@ Steps:
 Scenario: Replicated Bulk Write Operation Timeout with W Failure
 ----------------------------------------------------------------
 
+
+Tags: `@stable`
 
 Steps:
 
@@ -898,7 +996,7 @@ Description:
 
 URI:
 
-    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/replica_set/configuration.feature
+    https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/replica_set/configuration.feature
 
 
 
@@ -906,14 +1004,14 @@ Scenario: Member is added to replica set
 ----------------------------------------
 
 
-Tags: `@pending`
+Tags: `@pending` `@destroy`
 
 
 Scenario: Member is removed from replica set
 --------------------------------------------
 
 
-Tags: `@pending`
+Tags: `@pending` `@destroy`
 
 
 Feature: Sharded Cluster Connection
@@ -929,13 +1027,15 @@ Description:
 
 URI:
 
-    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/sharded_cluster/connection.feature
+    https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/sharded_cluster/connection.feature
 
 
 
 Scenario: Insert with mongos Router Stop and Start
 --------------------------------------------------
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -968,6 +1068,8 @@ Description:
     Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
 
 
+Tags: `@reset`
+
 Steps:
 
 #. **Given** a sharded cluster with preset basic
@@ -993,6 +1095,8 @@ Scenario: Insert with mongos Router Restart
 -------------------------------------------
 
 
+Tags: `@reset`
+
 Steps:
 
 #. **Given** a sharded cluster with preset basic
@@ -1014,6 +1118,8 @@ Description:
     See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
     Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
 
+
+Tags: `@reset`
 
 Steps:
 
@@ -1044,7 +1150,7 @@ Description:
 
 URI:
 
-    https://github.com/gjmurakami-10gen/mongo-meta-driver/tree/mongo-orchestration/features/topology/sharded_cluster/configuration.feature
+    https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/sharded_cluster/configuration.feature
 
 
 
@@ -1052,28 +1158,28 @@ Scenario: Router added to cluster
 ---------------------------------
 
 
-Tags: `@pending`
+Tags: `@pending` `@destroy`
 
 
 Scenario: Router removed from cluster
 -------------------------------------
 
 
-Tags: `@pending`
+Tags: `@pending` `@destroy`
 
 
 Scenario: Shard added to cluster
 --------------------------------
 
 
-Tags: `@pending`
+Tags: `@pending` `@destroy`
 
 
 Scenario: Shard removed from cluster
 ------------------------------------
 
 
-Tags: `@pending`
+Tags: `@pending` `@destroy`
 
 ---
 

@@ -19,6 +19,7 @@ Feature: Read Preference
   http://docs.mongodb.org/manual/core/read-preference/
   https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst
 
+  @reset
   Scenario: Read Primary
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -29,6 +30,7 @@ Feature: Read Preference
     And I query with read-preference PRIMARY
     Then the query fails
 
+  @reset
   Scenario: Read Primary Preferred
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -40,6 +42,7 @@ Feature: Read Preference
     And I query with read-preference PRIMARY_PREFERRED
     Then the query occurs on the secondary
 
+  @reset
   Scenario: Read Secondary
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -50,6 +53,7 @@ Feature: Read Preference
     When I query with read-preference SECONDARY
     Then the query fails
 
+  @reset
   Scenario: Read Secondary Preferred
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -61,18 +65,21 @@ Feature: Read Preference
     And I query with read-preference SECONDARY_PREFERRED
     Then the query occurs on the primary
 
+  @stable
   Scenario: Read With Nearest
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
     When I query with read-preference NEAREST
     Then the query succeeds
 
+  @stable
   Scenario: Read Primary With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
     When I query with read-preference PRIMARY and tag sets [{"ordinal": "one"}, {"dc": "ny"}]
     Then the query fails with error "PRIMARY cannot be combined with tags"
 
+  @reset
   Scenario: Read Primary Preferred With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -86,6 +93,7 @@ Feature: Read Preference
     When I query with read-preference PRIMARY_PREFERRED and tag sets [{"ordinal": "three"}, {"dc": "na"}]
     Then the query fails with error "No replica set member available for query with read preference matching mode PRIMARY_PREFERRED and tags matching <tags sets>."
 
+  @stable
   Scenario: Read Secondary With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -95,6 +103,7 @@ Feature: Read Preference
     When I query with read-preference SECONDARY and tag sets [{"ordinal": "one"}]
     Then the query fails with error "No replica set member available for query with read preference matching mode SECONDARY and tags matching <tags sets>."
 
+  @stable
   Scenario: Read Secondary Preferred With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -106,6 +115,7 @@ Feature: Read Preference
     Then the query occurs on the primary
 
   @ruby_1_x_broken
+  @stable
   Scenario: Read Nearest With Tag Sets
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -118,6 +128,7 @@ Feature: Read Preference
     When I query with read-preference NEAREST and tag sets [{"ordinal": "three"}]
     Then the query fails with error "No replica set member available for query with read preference matching mode NEAREST and tags matching <tags sets>"
 
+  @stable
   Scenario Outline: Secondary OK Commands
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -134,6 +145,7 @@ Feature: Read Preference
       | secondary   | normal  | isMaster  | { "isMaster": 1 } | |
       | secondary   | normal  | parallelCollectionScan | { "parallelCollectionScan": "test", "numCursors": 2 } | |
 
+  @stable
   Scenario: Secondary OK GeoNear
     Given a replica set with preset arbiter
     And some geo documents written to all data-bearing members
@@ -142,6 +154,7 @@ Feature: Read Preference
     And I run a geonear command with read-preference SECONDARY
     Then the command occurs on a secondary
 
+  @stable
   Scenario: Secondary OK GeoSearch
     Given a replica set with preset arbiter
     And some geo documents written to all data-bearing members
@@ -150,6 +163,7 @@ Feature: Read Preference
     And I run a geosearch command with read-preference SECONDARY
     Then the command occurs on a secondary
 
+  @stable
   Scenario: Secondary OK MapReduce with inline
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -157,6 +171,7 @@ Feature: Read Preference
     And I run a map-reduce with field out value inline true and with read-preference SECONDARY
     Then the command occurs on a secondary
 
+  @stable
   Scenario: Primary Reroute MapReduce without inline
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -164,6 +179,7 @@ Feature: Read Preference
     And I run a map-reduce with field out value other than inline and with read-preference SECONDARY
     Then the command occurs on the primary
 
+  @stable
   Scenario: Secondary OK Aggregate without $out
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -171,6 +187,7 @@ Feature: Read Preference
     And I run an aggregate without $out and with read-preference SECONDARY
     Then the command occurs on a secondary
 
+  @stable
   Scenario: Primary Reroute Aggregate with $out
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -178,6 +195,7 @@ Feature: Read Preference
     And I run an aggregate with $out and with read-preference SECONDARY
     Then the command occurs on the primary
 
+  @stable
   Scenario Outline: Primary Reroute Primary-Only Commands
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -216,6 +234,7 @@ Feature: Read Preference
       # pending - createIndexes dropIndexes
       # deprecated since version 2.6 - text cursorInfo
 
+  @reset
   Scenario: Primary Preferred Cursor Get More Continuity
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -227,6 +246,7 @@ Feature: Read Preference
     And I get 2 docs
     Then the get fails
 
+  @reset
   Scenario: Secondary Cursor Get More Continuity
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -240,6 +260,7 @@ Feature: Read Preference
     Then the get succeeds
     And the getmore occurs on the secondary
 
+  @reset
   Scenario: Secondary Kill Cursors Continuity
     Given a replica set with preset arbiter
     And some documents written to all data-bearing members
@@ -253,6 +274,7 @@ Feature: Read Preference
     Then the close succeeds
     And the kill cursors occurs on the secondary
 
+  @stable
   Scenario: Node is unpinned upon change in read preference
     See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#note-on-pinning
     See https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/replica_set/pinning_test.rb
@@ -267,6 +289,7 @@ Feature: Read Preference
     And I query with read-preference PRIMARY_PREFERRED
     Then the query occurs on the primary
 
+  @reset
   Scenario: Query Auto-retry with Primary Stop
     See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
     Auto-retry - after primary stop, query succeeds without error/exception

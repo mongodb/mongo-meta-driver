@@ -19,6 +19,7 @@ Feature: Replica Set Connection
   http://docs.mongodb.org/manual/reference/command/nav-replication/
   https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
+  @reset
   Scenario: Discovery from Primary Seed
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -34,6 +35,7 @@ Feature: Replica Set Connection
     And I query with retries and read-preference SECONDARY
     Then the query succeeds
 
+  @reset
   Scenario: Discovery from Secondary Seed
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -49,6 +51,7 @@ Feature: Replica Set Connection
     And I query with retries and read-preference SECONDARY
     Then the query succeeds
 
+  @reset
   Scenario: Discovery from Arbiter Seed
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -60,6 +63,7 @@ Feature: Replica Set Connection
     And I query with retries and read-preference SECONDARY
     Then the query succeeds
 
+  @reset
   Scenario: Insert with Primary Step Down
     Given a replica set with preset arbiter
     When I insert a document
@@ -68,6 +72,7 @@ Feature: Replica Set Connection
     And I insert a document with retries
     Then the insert succeeds
 
+  @reset
   Scenario: Query with Primary Step Down Query
     Given a replica set with preset arbiter
     And a document written to all data-bearing members
@@ -77,6 +82,7 @@ Feature: Replica Set Connection
     And I query with retries
     Then the query succeeds
 
+  @reset
   Scenario: Insert with Primary Stop, Start and Restart
     Given a replica set with preset arbiter
     When I insert a document
@@ -91,6 +97,7 @@ Feature: Replica Set Connection
     And I insert a document with retries
     Then the insert succeeds
 
+  @reset
   Scenario: Query with Primary Stop, Start and Restart
     Given a replica set with preset arbiter
     And a document written to all data-bearing members

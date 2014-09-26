@@ -18,6 +18,7 @@ Feature: Sharded Cluster Connection
   I want to verify that the driver correctly behaves according to documentation and specification
   https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
+  @reset
   Scenario: Insert with mongos Router Stop and Start
     Given a sharded cluster with preset basic
     When I insert a document
@@ -38,6 +39,7 @@ Feature: Sharded Cluster Connection
     And I insert a document with retries
     Then the insert succeeds
 
+  @reset
   Scenario: Query Auto-retry with mongos Router Stop and Start
     See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
     Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available
@@ -59,6 +61,7 @@ Feature: Sharded Cluster Connection
     Then the query succeeds
     When I stop router B
 
+  @reset
   Scenario: Insert with mongos Router Restart
     Given a sharded cluster with preset basic
     When I insert a document
@@ -70,6 +73,7 @@ Feature: Sharded Cluster Connection
     And I insert a document with retries
     Then the insert succeeds
 
+  @reset
   Scenario: Query Auto-retry with mongos Router Restart
     See https://github.com/10gen/specifications/blob/master/source/driver-read-preferences.rst#requests-and-auto-retry
     Auto-retry - mongos fail-over - query succeeds without error/exception as long as one mongos is available

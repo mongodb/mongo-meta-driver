@@ -21,13 +21,17 @@ Feature: Sharded Cluster Configuration
   https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
   @pending
+  @destroy
   Scenario: Router added to cluster
 
   @pending
+  @destroy
   Scenario: Router removed from cluster
 
   @pending
+  @destroy
   Scenario: Shard added to cluster
 
   @pending
+  @destroy
   Scenario: Shard removed from cluster
