@@ -13,49 +13,59 @@
 # limitations under the License.
 
 Feature: Write Concern
-  In order to support write concern that describes the guarantee that MongoDB provides when reporting on
-    the result of a write operation
+  In order to support write concern that describes the guarantee that
+  MongoDB provides when reporting on the result of a write operation
   As a driver author
   I want to verify that the driver correctly behaves according to documentation and specification
   http://docs.mongodb.org/manual/core/write-concern/
   https://github.com/10gen/specifications/blob/master/source/driver-bulk-update.rst
 
-  @pending
-  @discuss
+  @stable
   Scenario: Write Operation with Write Concern
-    # probably (can) only test that write concern is in write command or GLE
+    Given a replica set with preset arbiter
+    When I insert a document with the write concern {“w”: <nodes>}
+    Then the write operation suceeeds
+    When I update a document with the write concern {“w”: <nodes>}
+    Then the write operation suceeeds
+    When I delete a document with the write concern {“w”: <nodes>}
+    Then the write operation suceeeds
 
-  @pending
-  @discuss
-  Scenario: Bulk Write with Write Concern
-    # probably (can) only test that write concern is in write command or GLE
+  @stable
+  Scenario: Bulk Write Operation with Write Concern
+    Given a replica set with preset arbiter
+    When I execute an ordered bulk write operation with the write concern {“w”: <nodes>}
+    Then the bulk write operation succeeds
+    When I remove all documents from the collection
+    And I execute an unordered bulk write operation with the write concern {“w”: <nodes>}
+    Then the bulk write operation succeeds
 
+  @stable
   Scenario: Replicated Write Operations Timeout with W Failure
-    Given a replica set with preset basic
-    When I insert a document with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    Given a replica set with preset arbiter
+    When I insert a document with the write concern {“w”: <nodes + 1>, “timeout”: 1}
     Then the write operation fails write concern
-    When I update a document with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    When I update a document with the write concern {“w”: <nodes + 1>, “timeout”: 1}
     Then the write operation fails write concern
-    When I delete a document with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    When I delete a document with the write concern {“w”: <nodes + 1>, “timeout”: 1}
     Then the write operation fails write concern
 
-  @discuss
+  @stable
   Scenario: Replicated Bulk Write Operation Timeout with W Failure
-    Given a replica set with preset basic
-    When I execute an ordered bulk write operation with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    Given a replica set with preset arbiter
+    When I execute an ordered bulk write operation with the write concern {“w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write concern error
     When I remove all documents from the collection
-    And I execute an unordered bulk write operation with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    And I execute an unordered bulk write operation with the write concern {“w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write concern error
     When I remove all documents from the collection
-    And I execute an ordered bulk write operation with a duplicate key and with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    And I execute an ordered bulk write operation with a duplicate key and with the write concern {“w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write error
     And the result includes a write concern error
     When I remove all documents from the collection
-    And I execute an unordered bulk write operation with a duplicate key and with the write concern { “w”: <nodes + 1>, “timeout”: 1}
+    And I execute an unordered bulk write operation with a duplicate key and with the write concern {“w”: <nodes + 1>, “timeout”: 1}
     Then the bulk write operation fails
     And the result includes a write error
     And the result includes a write concern error

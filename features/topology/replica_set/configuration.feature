@@ -20,7 +20,9 @@ Feature: Replica Set Configuration
   https://github.com/mongodb/specifications/tree/master/source/server-discovery-and-monitoring
 
   @pending
+  @destroy
   Scenario: Member is added to replica set
 
   @pending
+  @destroy
   Scenario: Member is removed from replica set

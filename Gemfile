@@ -19,5 +19,6 @@ group :development, :test do
     gem "rb-fchange", :require => false # Windows
     gem "terminal-notifier-guard"
     gem "ruby-prof", :platforms => :mri
+    gem "github-markup" # pip install docutils
   end
 end
