@@ -17,12 +17,6 @@ the `MongoDB Documentation Style Guidelines <http://docs.mongodb.org/manual/meta
 It is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form,
 intended for `GitHub Markup <https://github.com/github/markup>`_.
 
-Building Specification Document
--------------------------------
-
-``pending``
-We intend to build a readable specification document that interpolates feature descriptions.
-
 Generic Tests
 =============
 
@@ -84,15 +78,15 @@ Reference implementations
 Step definitions
 
 * `step_definitions Ruby 1.x-stable
-  <https://github.com/gjmurakami-10gen/mongo-ruby-driver/tree/1.x-mongo-orchestration/test/cluster/step_definitions>`_
+  <https://github.com/gjmurakami-10gen/mongo-ruby-driver/tree/1.x-mongo-orchestration/test/topology/step_definitions>`_
 
   * current execution
 
-        $ rake test:cucumber
-        ...
-        46 scenarios (46 passed)
-        383 steps (383 passed)
-        19m37.873s
+      $ rake test:cucumber
+      ...
+      46 scenarios (46 passed)
+      383 steps (383 passed)
+      19m37.873s
 
 Mongo Orchestration wrapper
 
