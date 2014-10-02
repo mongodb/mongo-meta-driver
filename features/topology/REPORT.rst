@@ -36,29 +36,41 @@ A reference implementation has been completed for the
 At present, the approximate statistics are:
 
 * 7 features
+
   * 46 scenarios
+
     * 394 steps
+
       * 695 lines (Gherkin)
+
 * 53 step definitions
+
   * 533 lines (Ruby reference implementation)
+
 * mongo-orchestration wrapper
+
   * 254 lines (Ruby reference implementation)
   * 489 lines (Ruby reference RSpec tests)
 
 The high-level **taxonomy** is as follows.
 
 * `standalone <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/standalone>`_
+
   * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/standalone/connection.feature>`_
+
 * `replica_set <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/replica_set>`_
+
   * `configuration.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/configuration.feature>`_
   * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/connection.feature>`_
   * `read_preference.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/read_preference.feature>`_
   * `write_concern.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/write_concern.feature>`_
+
 * `sharded_cluster <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/sharded_cluster>`_
+
   * `configuration.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/sharded_cluster/configuration.feature>`_
   * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/sharded_cluster/connection.feature>`_
 
-This specification document can be found online.
+The specification document can be found online.
 
 * `common-topology-test-suite.rst <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/common-topology-test-suite.rst>`_
 
@@ -351,8 +363,10 @@ Step definitions
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/features/step_definitions/cluster_steps.rb>`_
 
   * 53 step definitions
+
     * 533 lines (Ruby)
-  * current execution
+
+current execution
 
     $ rake test:cucumber
     ...
@@ -366,6 +380,7 @@ Mongo Orchestration wrapper
 
 * `mongo_orchestration.rb Ruby 1.x-stable
   <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/test/orchestration/mongo_orchestration.rb>`_
+
   * 254 lines (implementation)
   * 489 lines (RSpec tests)
 
@@ -380,5 +395,5 @@ Q & A
 -----
 
 
----
+----
 

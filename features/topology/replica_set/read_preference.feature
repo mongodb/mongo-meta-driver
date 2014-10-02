@@ -114,7 +114,7 @@ Feature: Read Preference
     And I query with read-preference SECONDARY_PREFERRED and tag sets [{"ordinal": "three"}]
     Then the query occurs on the primary
 
-  @ruby_1_x_broken
+  @red_ruby_1_x
   @stable
   Scenario: Read Nearest With Tag Sets
     Given a replica set with preset arbiter
