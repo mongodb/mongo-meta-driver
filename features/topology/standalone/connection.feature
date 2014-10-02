@@ -27,7 +27,7 @@ Feature: Standalone Server Connection
     And I insert a document
     Then the insert fails
     When I start the server
-    And I insert a document
+    And I insert a document with retries
     Then the insert succeeds
     When I restart the server
     And I insert a document with retries
