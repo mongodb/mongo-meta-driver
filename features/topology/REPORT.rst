@@ -366,7 +366,7 @@ Step definitions
 
     * 533 lines (Ruby)
 
-current execution
+current execution::
 
     $ rake test:cucumber
     ...
