@@ -257,7 +257,7 @@ that incorporates server versions
 and topology categories including stand-alone server, replica set, and sharded cluster.
 
 Testing beyond this requires a mixed server-version replica-set topology
-that is not available via mongo-orchestration.
+that is not available via Mongo Orchestration.
 
 
 mongos Load Balancing
@@ -295,9 +295,9 @@ The test suite will be refined and then integrated into other drivers over time.
 1. Formally review this specification and improve it
 2. Implement the step definitions to realize the test suite in a specific driver and specific programming language
 3. Incorporate improvements and iterate with next driver and programming language
-4. Backport improvments to *all* other drivers.
+4. Backport improvements to *all* other drivers.
 
-Backporting is why hand-translation of tests is expensive.
+Back-porting is why hand-translation of tests is expensive.
 As changes are made to the test suite, resynchronizing and validation is manual and error prone.
 
 Candidates for the next implementation include Perl and Python.
@@ -317,7 +317,7 @@ and their own non-standard topology test suites.
 There is minimal sharing of understanding,
 and fluency in another programming language is need to benefit
 from knowledge embedded in another driver implementation.
-The overall effort to testtopologies across the spectrum of drivers is a significant problem.
+The overall effort to test topologies across the spectrum of drivers is a significant problem.
 But it is also an opportunity for improving efficiency.
 
 The `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_ project addresses the need
@@ -329,7 +329,7 @@ is appropriate, and includes the following rationale.
 
 1. It is programming language independent.
 2. It can describe distributed system topology and associated behavior.
-3. It can describe features using consisten structure and terminology.
+3. It can describe features using consistent structure and terminology.
 4. It can be incorporated into documentation.
 5. It can be executed using software tools like Cucumber.
 6. It builds on test best-practices from `behavior-driven development (BDD) <http://en.wikipedia.org/wiki/Behavior-driven_development>`_.
@@ -347,7 +347,7 @@ For Ruby, using (gem) Cucumber is straightforward and obvious.
 For other languages where the environment or integration is more difficult,
 driver maintainers are welcome to hand code these tests.
 Regardless of implementation choice,
-the **Common Tolopology Test Suite** provides readable specification.
+the **Common Topology Test Suite** provides readable specification.
 It can be refined and augmented as desired.
 
 
