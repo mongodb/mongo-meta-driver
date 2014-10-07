@@ -33,7 +33,7 @@ Software tools like `Cucumber <http://cukes.info/>`_ can drive the tests or they
 A reference implementation has been completed for the
 `Ruby 1.x driver <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/features/step_definitions/cluster_steps.rb>`_.
 
-At present, the approximate statistics are:
+At present, the statistics are:
 
 * 7 features
 
@@ -52,36 +52,17 @@ At present, the approximate statistics are:
   * 254 lines (Ruby reference implementation)
   * 489 lines (Ruby reference RSpec tests)
 
-The high-level **taxonomy** is as follows.
-
-* `standalone <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/standalone>`_
-
-  * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/standalone/connection.feature>`_
-
-* `replica_set <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/replica_set>`_
-
-  * `configuration.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/configuration.feature>`_
-  * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/connection.feature>`_
-  * `read_preference.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/read_preference.feature>`_
-  * `write_concern.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/write_concern.feature>`_
-
-* `sharded_cluster <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/sharded_cluster>`_
-
-  * `configuration.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/sharded_cluster/configuration.feature>`_
-  * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/sharded_cluster/connection.feature>`_
-
 The specification document can be found online.
 
 * `common-topology-test-suite.rst <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/common-topology-test-suite.rst>`_
+
+Meta
+----
 
 This document file follows
 the `MongoDB Documentation Style Guidelines <http://docs.mongodb.org/manual/meta/style-guide/>`_.
 It is in `reStructuredText <http://docutils.sourceforge.net/rst.html>`_ form,
 intended for `GitHub Markup <https://github.com/github/markup>`_.
-
-
-Meta
-----
 
 The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL
 NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and
@@ -93,58 +74,6 @@ NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED",  "MAY", and
 
 Specification
 -------------
-
-Important note:
-
-    For the feature specification,
-    please see the section **Full Specification** below
-    that is generated from the *test suite* feature description files.
-
-This **Full Specification** is for behavior that depends on actual topology configurations and details,
-features that are not specific to server topology should be covered elsewhere,
-as in generic tests discussed below.
-
-The suite does *not* attempt exhaustive code coverage or compliance,
-however it is reasonably comprehensive for topology-dependent behavior
-that is common across drivers and language independent.
-Improvements to the test suite are welcome.
-This is *work in progress* and some features and scenarios are pending.
-
-
-Generic Tests
-'''''''''''''
-
-The significant majority of tests are generic and not topology dependent.
-These tests should definitely be run against a standalone **mongod** server to test basic function,
-but we want to expand this so that the generic unit tests can also be run with a replica set or sharded cluster.
-At present most drivers instantiate a client that connects explicitly to localhost port 27017.
-This is fine for basic function,
-but it makes it difficult to run generic tests against other topology configurations.
-We need to do this for completeness and robustness.
-
-The following modifications are recommended.
-
-1. Generic tests should instantiate a client using ``MONGODB_URI`` rather than explicitly specifying localhost port 27017.
-2. To cover the basic generic tests with the “standard” standalone **mongod** on localhost port 27017,
-   invoke the tests with ``MONGODB_URI=’mongodb://localhost:27017’``
-3. Migrate to running the generic tests against the full spectrum of “basic” preset topology configurations
-   provided by `Mongo Orchestration <https://github.com/mongodb/mongo-orchestration>`_.
-   Run the full generic test suite with each of the following.
-
-   1. servers/basic.json
-   2. replica_sets/basic.json
-   3. sharded_clusters/basic.json
-
-4. A test harness script that enables easy testing against a topology configuration provided by `Mongo Orchestration <https://github.com/mongodb/mongo-orchestration>`_.
-   This aids both testing and development.
-
-Generic tests should be as comprehensive as possible without being dependent on topology configuration specifics.
-The generic tests should include all basic driver functions including
-authorization, SSL, max values / MongoDB API version, etc.
-Comprehensive generic tests are important,
-as they both maximize test coverage for the above spectrum of topology configurations
-and also minimize the following configuration-dependent test suit.
-
 
 Topology Tests
 ''''''''''''''
@@ -168,6 +97,62 @@ for the setup, teardown, and management of topologies.
 Mongo Orchestration can be easily wrapped for more streamlined use.
 
 
+Taxonomy
+````````
+
+The Common Topology Test Suite is organized into the following **taxonomy**.
+
+* `standalone <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/standalone>`_
+
+  * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/standalone/connection.feature>`_
+
+* `replica_set <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/replica_set>`_
+
+  * `configuration.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/configuration.feature>`_
+  * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/connection.feature>`_
+  * `read_preference.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/read_preference.feature>`_
+  * `write_concern.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/replica_set/write_concern.feature>`_
+
+* `sharded_cluster <https://github.com/mongodb/mongo-meta-driver/tree/master/features/topology/sharded_cluster>`_
+
+  * `configuration.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/sharded_cluster/configuration.feature>`_
+  * `connection.feature <https://github.com/mongodb/mongo-meta-driver/blob/master/features/topology/sharded_cluster/connection.feature>`_
+
+Important note:
+
+    For the feature specification,
+    please see the section **Full Specification** below
+    that is generated from the *test suite* feature description files.
+
+This **Full Specification** is for behavior that depends on actual topology configurations and details,
+features that are not specific to server topology should be covered elsewhere,
+as in generic tests discussed below.
+
+The suite does *not* attempt exhaustive code coverage or compliance,
+however it is reasonably comprehensive for topology-dependent behavior
+that is common across drivers and language independent.
+Improvements to the test suite are welcome.
+This is *work in progress* and some features and scenarios are pending.
+
+
+Scenario Tags
+`````````````
+
+Scenarios in the feature descriptions can be tagged.
+Tags and their meaning or purpose are as follows.
+
+* @destroy - the topology configuration is mutated during the test so destroy it afterwards.
+  If a server is added or removed,
+  Mongo Orchestration cannot reset to the state before the configuration change.
+  So the topology should be destroyed so that an unexpected configuration is not used for a subsequent test.
+* @pending - description of the scenario is not complete or fully working
+* @reset - the topology state is modified during the test and must be reset afterwards.
+  Mongo Orchestration brings up any server that has been shut down
+  and checks to see that each server is in a sane state.
+* @red_ruby_1.x - the test fails for the Ruby 1.x driver due to a driver issue
+* @stable - the topology state is not modified during the test
+
+
 Pending Feature Descriptions
 ''''''''''''''''''''''''''''
 
@@ -177,20 +162,6 @@ as in adding or removing members.
 
 The following features are not currently in the `.feature` files.
 Feature descriptions for them will be added to the `.feature` files.
-
-
-Pinning
-```````
-
-Pinning provides more consistent read behavior in a threaded environment.
-For a given read preference,
-a thread is pinned to a node until the read preference changes.
-If the thread were not pinned,
-it would get more inconsistent results reading from various members due to differences in replication.
-
-* 1000 reads with nearest should all go to the same node
-
-  * less attractive alternative - two secondaries, 1000 reads all go to the same secondary
 
 
 Hidden members
@@ -210,6 +181,26 @@ These feature tests are shelved and are not in the `.feature` files.
 They may be added when dependent implementation details or infrastructure become available.
 
 
+Pinning
+```````
+
+Pinning provides more consistent read behavior in a threaded environment.
+For a given read preference,
+a thread is pinned to a node until the read preference changes.
+If the thread were not pinned,
+it would get more inconsistent results reading from various members due to differences in replication.
+
+* 1000 reads with nearest should all go to the same node
+
+  * less attractive alternative - two secondaries, 1000 reads all go to the same secondary
+
+Pinning was quietly removed from mongos in 2.6.
+Reads from a single client connection to mongos are now randomly distributed among members matching
+the read preference, with no regard for consistency.
+The Server Selection Spec needs to be resolve this difference.
+So testing for pinning is postponed.
+
+
 Ping Times
 ``````````
 
@@ -224,11 +215,14 @@ References
 * `This spec does not mandate how round trip time is averaged - Server Discovery And Monitoring
   <https://github.com/mongodb/specifications/blob/master/source/server-discovery-and-monitoring/server-discovery-and-monitoring.rst#this-spec-does-not-mandate-how-round-trip-time-is-averaged>`_
 
+The Server Selection Spec will describe the ping time feature.
+When the standardization is completed,
+tests for ping time can be added.
 
 Wire Protocol
 `````````````
 
-Wire Protocol Limit depend on configuring a mix of servers and associated wire versions or (max) values.
+Correct communication with servers depends on Wire-Protocol values provided by the `isMaster` command.
 
 References
 
@@ -237,16 +231,20 @@ References
 * `Driver Wire Version Overlap Specification - 10gen / specifications
   <https://github.com/10gen/specifications/blob/master/source/driver-wire-version-overlap-check.rst>`_
 
-Drivers should used the primary for write-related values and operations.
-For read related values,
-the driver should use the minimimum of the live maxWireVersion values.
+The values include the following.
 
-* Version
-* Limits - Max Values
+* maxBsonObjectSize
+* maxMessageSizeBytes
+* maxWireVersion
+* minWireVersion
+* maxWriteBatchSize
+
+Drivers should used the values from the primary when writing to a replica set.
 
 For adequate testing, this requires a mixed server-version replica-set topology
 that is not available in mongo-orchestration.
-It is shelved indefinitely.
+`BUILD-399 <https://jira.mongodb.org/browse/BUILD-399>`_ requests that
+"mongo-orchestration can set up mixed-version RSes and sharded clusters."
 
 
 Write Commands and Write Operations
@@ -262,16 +260,12 @@ Testing beyond this requires a mixed server-version replica-set topology
 that is not available via mongo-orchestration.
 
 
-Feature Descriptions Notes
-``````````````````````````
+mongos Load Balancing
+`````````````````````
 
-Tags and their meaning or purpose are as follows.
-
-* @destroy - the topology configuration is mutated during the test so destroy it afterwards
-* @pending - description of the scenario is not complete or fully working
-* @reset - the topology state is modified during the test and must be reset afterwards
-* @red_ruby_1.x - the test fails for the Ruby 1.x driver due to a driver issue
-* @stable - the topology state is not modified during the test
+Load balancing by distributing queries over multiple mongos routers is a planned feature.
+When the Server Selection Spec describes the feature behavior,
+then topology test can be added.
 
 
 Test Plan
@@ -286,7 +280,8 @@ The following steps outline the method used for development of the feature descr
 
 1. Add a feature description and/or scenario
 2. Implement the associated step definitions
-3. Test run single scenario with Cucumber and `@solo` tag
+3. Test run a single scenario with Cucumber.
+   To do this, tag the scenario with a unique tag like `@solo` and use the `--tag` option.
 4. Iterate until satisfied, then commit
 
 The reference implementation will be added to the continuous integration runs for the Ruby 1.x driver.
@@ -300,6 +295,10 @@ The test suite will be refined and then integrated into other drivers over time.
 1. Formally review this specification and improve it
 2. Implement the step definitions to realize the test suite in a specific driver and specific programming language
 3. Incorporate improvements and iterate with next driver and programming language
+4. Backport improvments to *all* other drivers.
+
+Backporting is why hand-translation of tests is expensive.
+As changes are made to the test suite, resynchronizing and validation is manual and error prone.
 
 Candidates for the next implementation include Perl and Python.
 
@@ -310,17 +309,18 @@ The overarching business goal is to improve driver quality and efficiency of dev
 across drivers with respect to supporting the various server topologies.
 
 Topology support is a significant work load for drivers.
-Approximately half of the driver code is for topology support, significantly for replica sets.
+A large portion of driver code is for topology support, significantly for replica sets.
 Replica set behavior is complex and difficult to fully comprehend with all of the details.
 This overhead is multiplied by each driver and programming language,
-and at present each driver implements their own topology test manager and their own topology test suites.
+and at present each driver implements their own topology manager for testing
+and their own non-standard topology test suites.
 There is minimal sharing of understanding,
 and fluency in another programming language is need to benefit
 from knowledge embedded in another driver implementation.
-The overall effort to topologies across the spectrum of drivers is a significant problem.
+The overall effort to testtopologies across the spectrum of drivers is a significant problem.
 But it is also an opportunity for improving efficiency.
 
-The `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_ addresses the need
+The `mongo-orchestration <https://github.com/mongodb/mongo-orchestration>`_ project addresses the need
 for a common topology manager that can be used across the drivers.
 
 This **Common Topology Test Suite** is needed as the next major component to complete the necessary groundwork.
@@ -329,9 +329,10 @@ is appropriate, and includes the following rationale.
 
 1. It is programming language independent.
 2. It can describe distributed system topology and associated behavior.
-3. It can be incorporated into documentation.
-4. It can be executed using software tools like Cucumber.
-5. It builds on test best-practices from `behavior-driven development (BDD) <http://en.wikipedia.org/wiki/Behavior-driven_development>`_.
+3. It can describe features using consisten structure and terminology.
+4. It can be incorporated into documentation.
+5. It can be executed using software tools like Cucumber.
+6. It builds on test best-practices from `behavior-driven development (BDD) <http://en.wikipedia.org/wiki/Behavior-driven_development>`_.
 
 The results from the reference implementation show the benefit from Gherkin and Cucumber.
 Before the reference implementation of the step definitions in Ruby,
@@ -393,6 +394,41 @@ Future Work
 
 Q & A
 -----
+
+
+Generic Tests
+'''''''''''''
+
+The significant majority of tests are generic and not topology dependent.
+These tests should definitely be run against a standalone **mongod** server to test basic function,
+but we want to expand this so that the generic unit tests can also be run with a replica set or sharded cluster.
+At present most drivers instantiate a client that connects explicitly to localhost port 27017.
+This is fine for basic function,
+but it makes it difficult to run generic tests against other topology configurations.
+We need to do this for completeness and robustness.
+
+The following modifications are recommended.
+
+1. Generic tests should instantiate a client using ``MONGODB_URI`` rather than explicitly specifying localhost port 27017.
+2. To cover the basic generic tests with the “standard” standalone **mongod** on localhost port 27017,
+   invoke the tests with ``MONGODB_URI=’mongodb://localhost:27017’``
+3. Migrate to running the generic tests against the full spectrum of “basic” preset topology configurations
+   provided by `Mongo Orchestration <https://github.com/mongodb/mongo-orchestration>`_.
+   Run the full generic test suite with each of the following.
+
+   1. servers/basic.json
+   2. replica_sets/basic.json
+   3. sharded_clusters/basic.json
+
+4. A test harness script that enables easy testing against a topology configuration provided by `Mongo Orchestration <https://github.com/mongodb/mongo-orchestration>`_.
+   This aids both testing and development.
+
+Generic tests should be as comprehensive as possible without being dependent on topology configuration specifics.
+The generic tests should include all basic driver functions including
+authorization, SSL, max values / MongoDB API version, etc.
+Comprehensive generic tests are important,
+as they both maximize test coverage for the above spectrum of topology configurations
+and also minimize the following configuration-dependent test suit.
 
 
 ----
