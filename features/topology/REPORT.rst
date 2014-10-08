@@ -153,6 +153,72 @@ Tags and their meaning or purpose are as follows.
 * @stable - the topology state is not modified during the test
 
 
+Step-definition Notes
+`````````````````````
+
+Preset
+
+The initial step in a scenario typically describes a specific topology in the form::
+
+    Given a <topology_type> with preset <preset_name>
+
+where `<topology_type>` is `standalone`, `replica set` or `sharded cluster`.
+Combined with the `preset` name, this maps to a preset topology provided by Mongo Orchestration.
+For example, the step::
+
+    Given a replica set with preset arbiter
+
+maps to Mongo Orchestration configuration::
+
+    {orchestration: "replica_sets", request_content: {preset: "arbiter.json"}}
+
+and the following path in the Mongo Orchestration project::
+
+    configurations/replica_sets/arbiter.json
+
+Some tests depend on details in the preset, for example, the scenarios testing `Tag Sets` include values
+tath are specific to the referenced `preset` replica set provided by Mongo Orchestration.
+
+Retries
+
+In scenario steps like the following::
+
+    And I insert a document with retries
+    And I query with retries and read-preference PRIMARY
+
+the client test application retries the specified operation.
+To clarify, this is not driver behavior,
+but a directive for the step definition to actualize the step.
+
+Track server status / Occurs on
+
+The Ruby 1.x reference implementation uses the `serverStatus` command to collect values.
+For a step like::
+
+   When I track server status on all data members
+
+the results from the `serverStatus` command are stored.
+For a step like::
+
+    Then the query occurs on the primary
+
+results for the `serverStatus` command are collected again.
+The before and after values are compared,
+and the only value difference for the corresponding operation should be on the specified member.
+Note that for a query, the desired difference of one is correct,
+but for a command, the desired difference will be two as the count for the `serverStatus` command is included.
+For `kill cursors`, check the `totalOpen` field in the `cursors` sub-document.
+The step definition implementation is the discretion of the author,
+but using `serverStatus` is a known way to verify behavior.
+
+Topology check
+
+All drivers' test suites need a way to trigger an immediate topology check,
+rather than sleeping 10 or 60 seconds waiting for the periodic check.
+Otherwise a step will need to account for the delay before the periodic check,
+for example, in the number of retries.
+An immediate topology check also reduces test time significantly.
+
 Pending Feature Descriptions
 ''''''''''''''''''''''''''''
 
