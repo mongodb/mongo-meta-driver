@@ -22,7 +22,11 @@ Feature: Replica Set Configuration
   @pending
   @destroy
   Scenario: Member is added to replica set
+    #  Trigger an immediate topology check, and assert that within a few seconds the
+    #  member appears in the TopologyDescription with the proper ServerType and tags.
 
   @pending
   @destroy
   Scenario: Member is removed from replica set
+    #  Trigger an immediate topology check, and assert that within a few seconds the
+    #  member appears in the TopologyDescription with the proper ServerType and tags.
