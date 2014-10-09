@@ -497,5 +497,31 @@ as they both maximize test coverage for the above spectrum of topology configura
 and also minimize the following configuration-dependent test suit.
 
 
+Cucumber or Hand-coding?
+''''''''''''''''''''''''
+
+Cucumber is natively implemented in Ruby, so writing step definitions is straightforward and convenient.
+However, using Cucumber is not as convenient in other programming languages.
+Implementation of the scenarios or step definitions is at the discretion of the author.
+
+Due to skepticism about Cucumber, initial scenario definition was implemented manually.
+The experience showed the following issues.
+
+1. Hand-coding at the scenario level results in duplicated code.
+   Instead, coding at the step definition allows code reuse.
+2. Hand-coding necessitates a copy of the scenario steps.
+   This adds significant consistency overhead when refining or updating scenarios and steps.
+3. For development and refinement of the scenarios,
+   Cucumber is a useful tool that streamlines iterative BDD,
+   and it is recommended for this.
+4. For completion of the step definitions,
+   Cucumber is recommended for Ruby and other languages where implementation is native or convenient to use.
+
+Representations other than Gherkin for the feature descriptions are under investigation,
+and hopefully there will be a solution for languages where Gherkin is inconvenient.
+Cucumber can generate JSON for feature descriptions,
+and the JSON format can be mechanically translated into other formats like YAML.
+
+
 ----
 
