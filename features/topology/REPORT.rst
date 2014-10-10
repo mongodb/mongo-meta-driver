@@ -31,7 +31,7 @@ The feature descriptions can be combined with step definitions in an actual prog
 into tests for continuous integration.
 Software tools like `Cucumber <http://cukes.info/>`_ can drive the tests or they can be coded manually.
 A reference implementation has been completed for the
-`Ruby 1.x driver <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/features/step_definitions/cluster_steps.rb>`_.
+`Ruby 1.x driver <https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/features/step_definitions/cluster_steps.rb>`_.
 
 At present, the statistics are:
 
@@ -427,7 +427,7 @@ Step definitions
 ''''''''''''''''
 
 * `step_definitions Ruby 1.x-stable
-  <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/features/step_definitions/cluster_steps.rb>`_
+  <https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/features/step_definitions/cluster_steps.rb>`_
 
   * 53 step definitions
 
@@ -446,7 +446,7 @@ Mongo Orchestration wrapper
 '''''''''''''''''''''''''''
 
 * `mongo_orchestration.rb Ruby 1.x-stable
-  <https://github.com/gjmurakami-10gen/mongo-ruby-driver/blob/1.x-mongo-orchestration/test/orchestration/mongo_orchestration.rb>`_
+  <https://github.com/mongodb/mongo-ruby-driver/blob/1.x-stable/test/orchestration/mongo_orchestration.rb>`_
 
   * 254 lines (implementation)
   * 489 lines (RSpec tests)
