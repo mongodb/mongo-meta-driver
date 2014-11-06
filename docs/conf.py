@@ -12,12 +12,19 @@ import sys, os
 import datetime
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "bin")))
 
-import mongodb_docs_meta
+
+from giza.config.runtime import RuntimeStateConfig
+from giza.config.helper import fetch_config, get_versions, get_manual_path
+from giza.tools.strings import dot_concat
+
+conf = fetch_config(RuntimeStateConfig())
+
+sys.path.append(os.path.join(conf.paths.projectroot, conf.paths.buildsystem, 'sphinxext'))
 
 meta = {
-    'branch': mongodb_docs_meta.get_branch(),
-    'commit': mongodb_docs_meta.get_commit(),
-    'manual_path': mongodb_docs_meta.get_manual_path(),
+    'branch': conf.git.branches.current,
+    'commit': conf.git.commit,
+    'manual_path': get_manual_path(conf),
     'date': str(datetime.date.today().year),
 }
 
@@ -25,7 +32,7 @@ meta = {
 
 needs_sphinx = '1.0'
 
-extensions = ["sphinx.ext.intersphinx", "sphinx.ext.extlinks", "mongodb_domain", "additional_directives"]
+extensions = ["sphinx.ext.intersphinx", "sphinx.ext.extlinks", "mongodb", "directives"]
 
 templates_path = ['.templates']
 source_suffix = '.txt'

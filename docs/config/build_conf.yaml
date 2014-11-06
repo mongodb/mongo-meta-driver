@@ -2,36 +2,31 @@ git:
   remote:
     upstream: 'mongodb/mongo-meta-driver'
     tools: 'mongodb/docs-tools'
-  branches:
-    manual: 'master'
-    published:
-      - 'master'
-      # the branches/published list **must** be ordered from most to
-      # least recent release.
+  # branches:
+  #   manual: 'master'
+  #   published:
+  #     - 'master'
+  #     # the branches/published list **must** be ordered from most to
+  #     # least recent release.
 project:
   name: 'meta-driver'
   tag: 'meta-driver'
   url: 'http://docs.mongodb.org/meta-driver'
 version:
-  published:
-    - 'master'
-  stable: null
-  upcoming: null
-build:
-  system:
-    files: 
-      - push
-      - sphinx
-    static:
-      - 'makefile.compatibility'
-      - 'makefile.clean'
-    branched: true  
-  paths:
-    output: 'build'
-    source: 'source'
-    includes: 'source/includes'
-    images: 'source/images'
-    tools: 'bin'
-    buildsystem: 'build/docs-tools'
-    builddata: 'config'
+  release: '2.6.5'
+  branch: '2.6'
+system:
+  files:
+    - 'push.yaml'
+    - 'sphinx.yaml'
+    - 'integration.yaml'
+  branched: true
+paths:
+  output: 'build'
+  source: 'source'
+  includes: 'source/includes'
+  images: 'source/images'
+  tools: 'bin'
+  buildsystem: 'build/docs-tools'
+  builddata: 'config'
 ...
