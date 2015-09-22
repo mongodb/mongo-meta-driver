@@ -12,6 +12,7 @@ project:
   name: 'meta-driver'
   tag: 'meta-driver'
   url: 'http://docs.mongodb.org/meta-driver'
+  branched: true
 version:
   release: '2.6.5'
   branch: '2.6'
