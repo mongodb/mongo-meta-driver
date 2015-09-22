@@ -15,7 +15,6 @@ sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), "bin")))
 
 from giza.config.runtime import RuntimeStateConfig
 from giza.config.helper import fetch_config, get_versions, get_manual_path
-from giza.tools.strings import dot_concat
 
 conf = fetch_config(RuntimeStateConfig())
 
@@ -140,8 +139,8 @@ man_pages = [
 # Bibliographic Dublin Core info.
 epub_title = u'MongoDB'
 epub_author = u'MongoDB Documentation Project'
-epub_publisher = u'MongoDB Documentation Project'
-epub_copyright = u'2012-' + meta['date'] + ', 10gen Inc.'
+epub_publisher = u'MongoDB'
+epub_copyright = copyright
 epub_theme = 'epub_mongodb'
 epub_tocdup = True
 epub_tocdepth = 3

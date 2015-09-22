@@ -21,6 +21,11 @@ system:
     - 'sphinx.yaml'
     - 'integration.yaml'
   branched: true
+assets:
+  - branch: master
+    path: build/docs-tools
+    repository: https://github.com/mongodb/docs-tools.git
+
 paths:
   output: 'build'
   source: 'source'

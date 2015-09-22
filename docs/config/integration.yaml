@@ -1,7 +1,5 @@
 base: 
   targets:
-    - setup
-    - json
     - html
     - dirhtml
     - 'build/public'

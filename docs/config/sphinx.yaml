@@ -20,7 +20,6 @@ builders:
   - linkcheck
   - texinfo
 prerequisites:
-  - setup
   - intersphinx
   - generate-source
 generated-source:
