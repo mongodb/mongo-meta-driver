@@ -17,3 +17,4 @@ Makefile
 docs/fabfile
 docs/meta.yaml
 docs/source/includes/hash.rst
+docs/giza.log

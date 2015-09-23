@@ -38,7 +38,7 @@ source_suffix = '.txt'
 master_doc = 'contents'
 
 project = u'MongoDB Meta Driver'
-copyright = u'2012-{0}'.format(datetime.date.today().year)
+copyright = u'2008-{0}'.format(datetime.date.today().year)
 
 version = '0.1'
 release = version + '-dev'
